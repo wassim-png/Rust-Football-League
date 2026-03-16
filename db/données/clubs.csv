@@ -1,7 +1,0 @@
-id,nom,nom_court,reputation,budget_eur,revenu_par_journee_eur,avantage_domicile
-1,Paris Saint-Germain,PSG,95,200000000,5000000,10
-2,Olympique de Marseille,OM,85,50000000,2000000,15
-3,AS Monaco,ASM,82,45000000,1500000,5
-4,Olympique Lyonnais,OL,80,35000000,1500000,8
-5,LOSC Lille,LOSC,81,30000000,1200000,7
-6,RC Lens,RCL,78,25000000,1000000,12
