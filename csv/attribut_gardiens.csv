@@ -1,0 +1,55 @@
+joueur_id,saison_id,plongeon,jeu_a_la_main,passe,reflexe,vitesse,position,moral,forme,nationalite,note_actuelle,nom,club,poste
+1,1,86,78,76,88,50,84,50,50,France,85,Lucas Chevalier,Paris Saint-Germain,GK
+2,1,78,75,70,80,45,78,50,50,Russie,77,Matvey Safonov,Paris Saint-Germain,GK
+3,1,72,68,65,74,45,70,50,50,Bresil,71,Renato Marin,Paris Saint-Germain,GK
+4,1,82,78,76,84,48,80,50,50,Argentine,81,Geronimo Rulli,Olympique de Marseille,GK
+5,1,75,72,70,78,45,74,50,50,Pays-Bas,74,Jeffrey de Lange,Olympique de Marseille,GK
+6,1,72,68,65,75,50,70,50,50,Espagne,72,Ruben Blanco,Olympique de Marseille,GK
+7,1,80,75,72,82,45,78,50,50,Pologne,80,Radoslaw Majecki,AS Monaco,GK
+8,1,78,72,70,80,42,75,50,50,Suisse,78,Philipp Kohn,AS Monaco,GK
+9,1,70,65,60,72,40,68,50,50,France,69,Yann Lienard,AS Monaco,GK
+10,1,81,75,72,83,45,80,50,50,Allemagne,80,Kevin Trapp,Paris FC,GK
+11,1,74,70,65,76,42,72,50,50,France,73,Obed Nkambadio,Paris FC,GK
+12,1,70,68,62,72,40,70,50,50,France,70,Remy Riou,Paris FC,GK
+13,1,84,78,75,86,48,82,50,50,Pologne,83,Marcin Bulka,OGC Nice,GK
+14,1,76,72,70,78,45,75,50,50,France,75,Maxime Dupe,OGC Nice,GK
+15,1,68,65,62,70,40,68,50,50,Algerie,67,Teddy Boulhendi,OGC Nice,GK
+16,1,74,70,68,75,40,74,50,50,France,73,Lucas Lavallee,LOSC Lille,GK
+17,1,74,70,68,75,40,74,50,50,Italie,73,Vito Mannone,LOSC Lille,GK
+18,1,68,65,60,70,45,65,50,50,France,67,Lisandru Olmeta,LOSC Lille,GK
+19,1,84,75,78,86,45,82,50,50,Bresil,82,Lucas Perri,Olympique Lyonnais,GK
+20,1,82,72,74,84,48,80,50,50,Portugal,80,Anthony Lopes,Olympique Lyonnais,GK
+21,1,70,68,65,72,40,70,50,50,France,70,Remy Descamps,Olympique Lyonnais,GK
+22,1,82,75,80,84,40,84,50,50,France,82,Steve Mandanda,Stade Rennais FC,GK
+23,1,74,70,68,76,42,74,50,50,France,73,Gauthier Gallon,Stade Rennais FC,GK
+24,1,68,65,60,70,38,68,50,50,Centrafrique,68,Geoffrey Lembet,Stade Rennais FC,GK
+25,1,78,70,72,82,45,76,50,50,Serbie,78,Djordje Petrovic,Strasbourg RC,GK
+26,1,74,70,68,76,42,74,50,50,Suede,74,Karl-Johan Johnsson,Strasbourg RC,GK
+27,1,66,62,60,68,40,66,50,50,Maroc,66,Walid Hasbi,Strasbourg RC,GK
+28,1,86,76,80,88,52,84,50,50,France,85,Brice Samba,RC Lens,GK
+29,1,75,70,68,76,45,74,50,50,Burkina Faso,74,Herve Koffi,RC Lens,GK
+30,1,70,65,65,72,40,70,50,50,Slovenie,70,Denis Petric,RC Lens,GK
+31,1,78,74,70,80,45,75,50,50,Suisse,78,Yvon Mvogo,FC Lorient,GK
+32,1,70,68,65,72,40,70,50,50,France,70,Benjamin Leroy,FC Lorient,GK
+33,1,65,60,58,68,38,65,50,50,France,64,Gael Alette,FC Lorient,GK
+34,1,81,75,76,84,48,80,50,50,France,81,Alban Lafont,FC Nantes,GK
+35,1,74,70,68,75,42,74,50,50,Suede,74,Patrik Carlgren,FC Nantes,GK
+36,1,68,65,62,70,40,68,50,50,France,67,Hugo Barbet,FC Nantes,GK
+37,1,82,75,76,85,50,80,50,50,France,82,Guillaume Restes,Toulouse FC,GK
+38,1,75,70,68,76,42,74,50,50,Espagne,74,Alex Dominguez,Toulouse FC,GK
+39,1,65,60,60,68,40,65,50,50,France,65,Justin Niflore,Toulouse FC,GK
+40,1,76,70,68,78,45,75,50,50,France,76,Donovan Leon,AJ Auxerre,GK
+41,1,70,65,65,72,40,70,50,50,France,70,Theo De Percin,AJ Auxerre,GK
+42,1,66,62,60,68,38,66,50,50,France,66,Raphael Adiceam,AJ Auxerre,GK
+43,1,76,70,72,78,45,74,50,50,Algerie,75,Alexandre Oukidja,FC Metz,GK
+44,1,70,65,62,72,40,70,50,50,Senegal,69,Pape Sy,FC Metz,GK
+45,1,65,60,58,68,38,65,50,50,France,64,Romain Mirbach,FC Metz,GK
+46,1,82,75,76,84,45,82,50,50,Pays-Bas,81,Marco Bizot,Brest Armorique FC,GK
+47,1,72,68,65,74,40,72,50,50,France,71,Gregoire Coudert,Brest Armorique FC,GK
+48,1,65,60,60,68,38,65,50,50,France,65,Noah Jauny,Brest Armorique FC,GK
+49,1,77,72,70,78,45,75,50,50,Cote d'Ivoire,77,Yahia Fofana,Angers SCO,GK
+50,1,70,65,65,72,40,70,50,50,France,70,Melvin Zinga,Angers SCO,GK
+51,1,65,60,60,68,38,65,50,50,France,65,Oumar Pona,Angers SCO,GK
+52,1,78,72,70,80,45,76,50,50,France,78,Arthur Desmas,Le Havre AC,GK
+53,1,72,68,65,74,40,72,50,50,France,72,Mathieu Gorgelin,Le Havre AC,GK
+54,1,65,60,60,68,38,65,50,50,France,65,Paul Argney,Le Havre AC,GK

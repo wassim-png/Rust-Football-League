@@ -1,0 +1,361 @@
+joueur_id,saison_id,vitesse,tir,passe,dribble,defense,physique,moral,forme,nationalite,note_actuelle,nom,club,poste
+55,1,90,75,82,84,80,78,50,50,Maroc,84,Achraf Hakimi,Paris Saint-Germain,DEF
+56,1,78,55,75,70,88,82,50,50,Bresil,86,Marquinhos,Paris Saint-Germain,DEF
+57,1,82,50,70,68,84,85,50,50,Equateur,82,Willian Pacho,Paris Saint-Germain,DEF
+58,1,89,70,80,82,78,75,50,50,Portugal,84,Nuno Mendes,Paris Saint-Germain,DEF
+59,1,75,45,72,65,80,76,50,50,Bresil,79,Lucas Beraldo,Paris Saint-Germain,DEF
+60,1,84,60,74,72,82,80,50,50,France,83,Lucas Hernandez,Paris Saint-Germain,DEF
+61,1,85,55,68,70,72,65,50,50,France,72,Yoram Zague,Paris Saint-Germain,DEF
+62,1,76,50,68,66,81,83,50,50,Ukraine,81,Ilya Zabarnyi,Paris Saint-Germain,DEF
+63,1,80,78,88,86,72,70,50,50,Portugal,86,Vitinha,Paris Saint-Germain,MIL
+64,1,82,75,84,82,76,78,50,50,France,84,Warren Zaire-Emery,Paris Saint-Germain,MIL
+65,1,80,72,85,82,75,72,50,50,Portugal,83,Joao Neves,Paris Saint-Germain,MIL
+66,1,75,76,86,84,70,70,50,50,Espagne,83,Fabian Ruiz,Paris Saint-Germain,MIL
+67,1,84,78,82,86,55,65,50,50,Coree du Sud,81,Kang-in Lee,Paris Saint-Germain,MIL
+68,1,78,72,76,80,65,68,50,50,France,76,Senny Mayulu,Paris Saint-Germain,MIL
+69,1,94,80,84,90,40,68,50,50,France,86,Ousmane Dembele,Paris Saint-Germain,ATT
+70,1,92,82,80,88,45,70,50,50,France,85,Bradley Barcola,Paris Saint-Germain,ATT
+71,1,82,86,74,78,40,80,50,50,Portugal,83,Goncalo Ramos,Paris Saint-Germain,ATT
+72,1,80,82,80,82,45,65,50,50,Espagne,80,Marco Asensio,Paris Saint-Germain,ATT
+73,1,86,78,80,85,50,65,50,50,France,80,Desire Doue,Paris Saint-Germain,ATT
+74,1,88,72,70,80,35,60,50,50,France,72,Ibrahim Mbaye,Paris Saint-Germain,ATT
+75,1,84,65,72,75,78,74,50,50,Panama,78,Michael Murillo,Olympique de Marseille,DEF
+76,1,78,50,70,68,82,80,50,50,Argentine,81,Leonardo Balerdi,Olympique de Marseille,DEF
+77,1,80,55,68,65,80,82,50,50,France,79,Lilian Brassier,Olympique de Marseille,DEF
+78,1,82,65,75,74,75,70,50,50,France,78,Quentin Merlin,Olympique de Marseille,DEF
+79,1,75,45,65,60,78,84,50,50,Cote d'Ivoire,76,Bamo Meite,Olympique de Marseille,DEF
+80,1,85,60,70,72,74,68,50,50,Suisse,76,Ulisses Garcia,Olympique de Marseille,DEF
+81,1,82,65,72,74,70,68,50,50,Espagne,75,Pol Lirola,Olympique de Marseille,DEF
+82,1,76,50,68,62,76,82,50,50,Canada,75,Derek Cornelius,Olympique de Marseille,DEF
+83,1,75,76,82,78,80,84,50,50,Danemark,83,Pierre-Emile Hojbjerg,Olympique de Marseille,MIL
+84,1,76,72,78,76,68,70,50,50,Maroc,74,Bilal Nadir,Olympique de Marseille,MIL
+85,1,76,70,80,78,76,78,50,50,France,79,Valentin Rongier,Olympique de Marseille,MIL
+86,1,72,74,78,76,80,84,50,50,Centrafrique,80,Geoffrey Kondogbia,Olympique de Marseille,MIL
+87,1,82,75,80,84,55,65,50,50,Maroc,79,Amine Harit,Olympique de Marseille,MIL
+88,1,84,72,75,82,60,68,50,50,Canada,77,Ismael Kone,Olympique de Marseille,MIL
+89,1,88,84,78,86,45,70,50,50,Angleterre,84,Mason Greenwood,Olympique de Marseille,ATT
+90,1,88,80,72,82,40,74,50,50,France,79,Elye Wahi,Olympique de Marseille,ATT
+91,1,86,75,76,84,45,68,50,50,Bresil,78,Luis Henrique,Olympique de Marseille,ATT
+92,1,85,76,74,82,40,70,50,50,Angleterre,77,Jonathan Rowe,Olympique de Marseille,ATT
+93,1,80,78,65,72,35,84,50,50,Cameroun,76,Faris Moumbagna,Olympique de Marseille,ATT
+94,1,80,74,78,82,45,65,50,50,Argentine,77,Valentin Carboni,Olympique de Marseille,ATT
+95,1,86,65,78,80,78,75,50,50,Bresil,82,Vanderson,AS Monaco,DEF
+96,1,78,55,70,68,82,84,50,50,Allemagne,81,Thilo Kehrer,AS Monaco,DEF
+97,1,80,50,68,65,80,82,50,50,Ghana,80,Mohammed Salisu,AS Monaco,DEF
+98,1,84,65,75,76,76,74,50,50,Bresil,79,Caio Henrique,AS Monaco,DEF
+99,1,75,50,65,60,78,84,50,50,Cote d'Ivoire,78,Wilfried Singo,AS Monaco,DEF
+100,1,82,60,70,72,74,70,50,50,France,77,Christian Mawissa,AS Monaco,DEF
+101,1,76,55,68,66,78,76,50,50,Pays-Bas,76,Jordan Teze,AS Monaco,DEF
+102,1,80,55,65,68,72,70,50,50,Cote d'Ivoire,74,Kassoum Ouattara,AS Monaco,DEF
+103,1,78,76,82,80,78,84,50,50,Suisse,82,Denis Zakaria,AS Monaco,MIL
+104,1,82,80,84,86,60,65,50,50,Russie,83,Aleksandr Golovin,AS Monaco,MIL
+105,1,76,72,78,76,76,80,50,50,Mali,79,Lamine Camara,AS Monaco,MIL
+106,1,84,76,80,84,55,68,50,50,France,80,Maghnes Akliouche,AS Monaco,MIL
+107,1,85,78,76,82,50,65,50,50,Maroc,79,Eliesse Ben Seghir,AS Monaco,MIL
+108,1,74,68,72,74,70,75,50,50,Belgique,74,Eliot Matazo,AS Monaco,MIL
+109,1,86,82,75,80,45,84,50,50,Suisse,82,Breel Embolo,AS Monaco,ATT
+110,1,88,80,78,84,40,74,50,50,Etats-Unis,81,Folarin Balogun,AS Monaco,ATT
+111,1,85,78,75,82,42,76,50,50,Japon,80,Takumi Minamino,AS Monaco,ATT
+112,1,86,76,74,80,40,75,50,50,Nigeria,78,George Ilenikhena,AS Monaco,ATT
+113,1,78,74,76,78,72,75,50,50,Senegal,77,Krepin Diatta,AS Monaco,ATT
+114,1,84,75,70,78,38,72,50,50,France,76,Lucas Michal,AS Monaco,ATT
+115,1,72,45,65,60,76,78,50,50,France,74,Timothee Kolodziejczak,Paris FC,DEF
+116,1,76,50,62,64,74,76,50,50,Senegal,73,Moustapha Mbow,Paris FC,DEF
+117,1,74,45,60,58,73,78,50,50,Cote d'Ivoire,72,Kouadio-Yves Dabila,Paris FC,DEF
+118,1,80,60,68,70,70,68,50,50,France,71,Jules Gaudin,Paris FC,DEF
+119,1,82,55,66,68,72,70,50,50,France,72,Sofiane Alakouch,Paris FC,DEF
+120,1,75,50,64,62,72,75,50,50,France,71,Samir Chergui,Paris FC,DEF
+121,1,70,45,60,55,70,74,50,50,France,69,Yoan Kore,Paris FC,DEF
+122,1,78,55,62,64,68,70,50,50,France,70,Tuomas Ollila,Paris FC,DEF
+123,1,74,68,72,70,72,76,50,50,France,74,Cyril Mandouki,Paris FC,MIL
+124,1,76,70,74,72,70,74,50,50,France,73,Adama Camara,Paris FC,MIL
+125,1,72,65,75,74,68,70,50,50,France,72,Vincent Marchetti,Paris FC,MIL
+126,1,80,72,78,82,55,60,50,50,Algerie,76,Ilan Kebbal,Paris FC,MIL
+127,1,75,68,72,70,68,72,50,50,France,71,Lohann Doucet,Paris FC,MIL
+128,1,74,66,70,72,65,68,50,50,France,70,Julien Lopez,Paris FC,MIL
+129,1,78,76,70,75,40,80,50,50,Cote d'Ivoire,76,Jean-Philippe Krasso,Paris FC,ATT
+130,1,82,72,68,76,35,70,50,50,France,73,Alimami Gory,Paris FC,ATT
+131,1,80,74,65,72,30,75,50,50,Mali,72,Nouha Dicko,Paris FC,ATT
+132,1,84,70,66,74,35,68,50,50,France,71,Lamine Diaby-Fadiga,Paris FC,ATT
+133,1,82,72,68,75,40,70,50,50,France,72,Warren Caddy,Paris FC,ATT
+134,1,85,68,65,72,35,65,50,50,France,70,Josias Lukembila,Paris FC,ATT
+135,1,82,60,75,76,80,78,50,50,France,81,Jonathan Clauss,OGC Nice,DEF
+136,1,78,55,70,68,82,84,50,50,Bresil,80,Dante,OGC Nice,DEF
+137,1,84,65,74,75,76,74,50,50,France,79,Melvin Bard,OGC Nice,DEF
+138,1,80,60,72,74,78,76,50,50,Egypte,78,Mohamed Abdelmonem,OGC Nice,DEF
+139,1,75,50,65,60,78,82,50,50,Canada,77,Moise Bombito,OGC Nice,DEF
+140,1,82,55,68,66,75,78,50,50,France,76,Antoine Mendy,OGC Nice,DEF
+141,1,76,45,62,60,74,76,50,50,Tunisie,75,Ali Abdi,OGC Nice,DEF
+142,1,72,40,60,55,70,72,50,50,Cameroun,71,Yanis Nahounou,OGC Nice,DEF
+143,1,78,74,80,78,76,82,50,50,France,80,Tanguy Ndombele,OGC Nice,MIL
+144,1,82,76,82,84,65,70,50,50,Pays-Bas,79,Pablo Rosario,OGC Nice,MIL
+145,1,80,75,78,80,60,68,50,50,France,78,Morgan Sanson,OGC Nice,MIL
+146,1,76,72,76,75,74,78,50,50,Algerie,77,Hicham Boudaoui,OGC Nice,MIL
+147,1,78,74,75,76,72,76,50,50,Burundi,76,Youssouf Ndayishimiye,OGC Nice,MIL
+148,1,75,70,74,74,70,75,50,50,France,75,Tom Louchet,OGC Nice,MIL
+149,1,86,82,75,80,45,80,50,50,Nigeria,81,Terem Moffi,OGC Nice,ATT
+150,1,85,80,74,82,40,78,50,50,Cote d'Ivoire,80,Jeremie Boga,OGC Nice,ATT
+151,1,84,78,76,84,42,75,50,50,Cote d'Ivoire,79,Evann Guessand,OGC Nice,ATT
+152,1,82,75,74,80,38,72,50,50,France,77,Mohamed-Ali Cho,OGC Nice,ATT
+153,1,80,74,70,76,40,78,50,50,Allemagne,75,Youssoufa Moukoko,OGC Nice,ATT
+154,1,84,76,74,82,40,70,50,50,France,78,Sofiane Diop,OGC Nice,ATT
+155,1,84,65,76,78,80,75,50,50,Bresil,81,Tiago Santos,LOSC Lille,DEF
+156,1,78,55,70,68,82,80,50,50,France,80,Bafode Diakite,LOSC Lille,DEF
+157,1,76,50,68,65,80,82,50,50,Pays-Bas,79,Mitchel Bakker,LOSC Lille,DEF
+158,1,85,60,72,74,76,72,50,50,Suede,78,Gabriel Gudmundsson,LOSC Lille,DEF
+159,1,75,50,65,60,78,84,50,50,Bresil,77,Alexsandro,LOSC Lille,DEF
+160,1,80,55,68,66,75,78,50,50,Algerie,76,Aissa Mandi,LOSC Lille,DEF
+161,1,76,45,62,60,74,76,50,50,Belgique,75,Thomas Meunier,LOSC Lille,DEF
+162,1,74,45,60,58,72,74,50,50,France,73,Ousmane Toure,LOSC Lille,DEF
+163,1,78,76,82,80,78,82,50,50,France,81,Benjamin Andre,LOSC Lille,MIL
+164,1,82,78,80,84,65,70,50,50,Kosovo,80,Edon Zhegrova,LOSC Lille,MIL
+165,1,80,75,78,82,60,68,50,50,Islande,79,Hakon Arnar Haraldsson,LOSC Lille,MIL
+166,1,76,72,76,78,74,78,50,50,Angleterre,78,Angel Gomes,LOSC Lille,MIL
+167,1,78,74,75,76,72,76,50,50,France,77,Ngal'ayel Mukau,LOSC Lille,MIL
+168,1,85,75,74,80,38,70,50,50,France,77,Ayyoub Bouaddi,LOSC Lille,MIL
+169,1,86,84,78,82,45,80,50,50,Canada,83,Jonathan David,LOSC Lille,ATT
+170,1,84,78,75,80,40,82,50,50,Guinee,80,Mohamed Bayo,LOSC Lille,ATT
+171,1,86,76,74,82,42,74,50,50,Maroc,79,Osame Sahraoui,LOSC Lille,ATT
+172,1,82,78,72,78,45,84,50,50,Pays-Bas,78,Matias Fernandez-Pardo,LOSC Lille,ATT
+173,1,80,74,70,76,40,78,50,50,France,75,Aaron Malouda,LOSC Lille,ATT
+174,1,84,72,68,76,35,70,50,50,Belgique,74,Younes Lachaab,LOSC Lille,ATT
+175,1,82,60,74,75,78,76,50,50,Argentine,80,Nicolas Tagliafico,Olympique Lyonnais,DEF
+176,1,78,55,70,68,80,82,50,50,Senegal,80,Moussa Niakhate,Olympique Lyonnais,DEF
+177,1,76,50,68,65,79,84,50,50,Croatie,79,Duje Caleta-Car,Olympique Lyonnais,DEF
+178,1,84,65,75,76,76,74,50,50,Angola,78,Clinton Mata,Olympique Lyonnais,DEF
+179,1,85,60,72,74,74,70,50,50,Bresil,77,Abner,Olympique Lyonnais,DEF
+180,1,80,55,68,66,76,78,50,50,Angleterre,76,Ainsley Maitland-Niles,Olympique Lyonnais,DEF
+181,1,75,50,65,62,75,76,50,50,France,74,Sael Kumbedi,Olympique Lyonnais,DEF
+182,1,74,45,62,60,74,78,50,50,Bresil,73,Adryelson,Olympique Lyonnais,DEF
+183,1,76,74,82,80,78,82,50,50,Serbie,82,Nemanja Matic,Olympique Lyonnais,MIL
+184,1,80,76,80,82,75,78,50,50,France,81,Corentin Tolisso,Olympique Lyonnais,MIL
+185,1,78,72,76,78,74,76,50,50,France,78,Maxence Caqueret,Olympique Lyonnais,MIL
+186,1,75,70,74,75,76,80,50,50,Etats-Unis,77,Tanner Tessmann,Olympique Lyonnais,MIL
+187,1,80,74,76,78,70,74,50,50,France,76,Mahamadou Diawara,Olympique Lyonnais,MIL
+188,1,82,75,80,82,70,72,50,50,France,79,Jordan Veretout,Olympique Lyonnais,MIL
+189,1,86,84,78,82,45,82,50,50,France,85,Alexandre Lacazette,Olympique Lyonnais,ATT
+190,1,85,82,74,80,45,84,50,50,Georgie,81,Georges Mikautadze,Olympique Lyonnais,ATT
+191,1,88,78,76,82,40,75,50,50,Algerie,80,Said Benrahma,Olympique Lyonnais,ATT
+192,1,88,80,75,84,40,76,50,50,Belgique,82,Malick Fofana,Olympique Lyonnais,ATT
+193,1,86,76,74,82,42,74,50,50,Ghana,79,Ernest Nuamah,Olympique Lyonnais,ATT
+194,1,82,75,78,84,65,68,50,50,France,80,Rayan Cherki,Olympique Lyonnais,ATT
+195,1,84,65,76,78,80,75,50,50,France,81,Adrien Truffert,Stade Rennais FC,DEF
+196,1,78,55,70,68,82,84,50,50,Cameroun,80,Christopher Wooh,Stade Rennais FC,DEF
+197,1,82,60,74,75,78,78,50,50,Senegal,79,Mikayil Faye,Stade Rennais FC,DEF
+198,1,85,60,72,74,76,72,50,50,Pays-Bas,78,Hans Hateboer,Stade Rennais FC,DEF
+199,1,80,55,68,66,76,78,50,50,Norvege,76,Leo Ostigard,Stade Rennais FC,DEF
+200,1,74,45,60,58,72,75,50,50,Ghana,74,Alidu Seidu,Stade Rennais FC,DEF
+201,1,82,65,70,72,74,70,50,50,France,75,Lorenz Assignon,Stade Rennais FC,DEF
+202,1,75,50,65,60,78,82,50,50,Maroc,77,Abdelhamid Ait Boudlal,Stade Rennais FC,DEF
+203,1,80,78,82,84,65,70,50,50,France,81,Ludovic Blas,Stade Rennais FC,MIL
+204,1,78,74,80,78,76,82,50,50,Finlande,80,Glen Kamara,Stade Rennais FC,MIL
+205,1,82,76,78,82,60,68,50,50,Danemark,79,Albert Gronbaek,Stade Rennais FC,MIL
+206,1,76,72,76,75,74,78,50,50,France,78,Baptiste Santamaria,Stade Rennais FC,MIL
+207,1,75,70,74,74,70,75,50,50,Pays-Bas,76,Azor Matusiwa,Stade Rennais FC,MIL
+208,1,80,72,75,76,68,70,50,50,France,75,Naouirou Ahamada,Stade Rennais FC,MIL
+209,1,86,82,75,80,45,80,50,50,Algerie,81,Amine Gouiri,Stade Rennais FC,ATT
+210,1,85,80,74,82,40,78,50,50,France,80,Arnaud Kalimuendo,Stade Rennais FC,ATT
+211,1,88,78,76,84,42,75,50,50,Portugal,79,Jota,Stade Rennais FC,ATT
+212,1,86,75,74,80,38,72,50,50,Danemark,77,Henrik Meister,Stade Rennais FC,ATT
+213,1,84,76,72,78,45,82,50,50,Colombie,78,Andres Gomez,Stade Rennais FC,ATT
+214,1,80,74,70,76,40,78,50,50,Maroc,75,Ibrahim Salah,Stade Rennais FC,ATT
+215,1,82,60,72,75,78,75,50,50,Cote d'Ivoire,78,Guela Doue,Strasbourg RC,DEF
+216,1,80,55,68,70,76,78,50,50,Cote d'Ivoire,77,Abakar Sylla,Strasbourg RC,DEF
+217,1,78,50,65,68,75,80,50,50,Guinee,76,Saidou Sow,Strasbourg RC,DEF
+218,1,84,65,70,72,74,72,50,50,France,75,Marvin Senaya,Strasbourg RC,DEF
+219,1,82,60,72,74,72,70,50,50,France,74,Thomas Delaine,Strasbourg RC,DEF
+220,1,75,55,70,68,75,78,50,50,France,75,Ismael Doukoure,Strasbourg RC,DEF
+221,1,78,50,68,65,74,76,50,50,France,74,Mamadou Sarr,Strasbourg RC,DEF
+222,1,76,55,70,68,72,74,50,50,Ukraine,74,Eduard Sobol,Strasbourg RC,DEF
+223,1,78,70,78,80,68,70,50,50,Bresil,79,Andrey Santos,Strasbourg RC,MIL
+224,1,82,74,76,80,65,68,50,50,Senegal,78,Habib Diarra,Strasbourg RC,MIL
+225,1,80,75,78,82,60,65,50,50,Suede,78,Sebastian Nanasi,Strasbourg RC,MIL
+226,1,78,72,76,78,65,68,50,50,France,76,Felix Lemarechal,Strasbourg RC,MIL
+227,1,76,70,75,78,70,75,50,50,France,77,Junior Mwanga,Strasbourg RC,MIL
+228,1,74,68,72,75,68,74,50,50,Senegal,73,Pape Daouda Diong,Strasbourg RC,MIL
+229,1,86,78,72,80,40,78,50,50,Pays-Bas,79,Emanuel Emegha,Strasbourg RC,ATT
+230,1,85,80,70,82,35,76,50,50,France,78,Sekou Mara,Strasbourg RC,ATT
+231,1,88,75,78,84,45,70,50,50,France,80,Dilane Bakwa,Strasbourg RC,ATT
+232,1,82,72,68,75,30,70,50,50,France,74,Jeremy Sebas,Strasbourg RC,ATT
+233,1,84,70,72,76,40,72,50,50,Cote d'Ivoire,75,Moise Sahi Dion,Strasbourg RC,ATT
+234,1,80,72,68,78,35,65,50,50,France,73,Rayane Messi,Strasbourg RC,ATT
+235,1,82,60,75,76,80,78,50,50,Argentine,81,Facundo Medina,RC Lens,DEF
+236,1,78,55,70,68,82,84,50,50,Autriche,80,Kevin Danso,RC Lens,DEF
+237,1,84,65,74,75,76,74,50,50,Pologne,79,Przemyslaw Frankowski,RC Lens,DEF
+238,1,85,60,72,74,75,72,50,50,Equateur,78,Jhoanner Chavez,RC Lens,DEF
+239,1,75,50,65,60,78,82,50,50,Ouzbekistan,77,Abdukodir Khusanov,RC Lens,DEF
+240,1,80,55,68,66,76,78,50,50,France,76,Jonathan Gradit,RC Lens,DEF
+241,1,74,45,60,58,72,75,50,50,France,74,Ruben Aguilar,RC Lens,DEF
+242,1,76,55,68,65,78,74,50,50,Senegal,75,Malang Sarr,RC Lens,DEF
+243,1,78,74,80,78,76,82,50,50,France,80,Andy Diouf,RC Lens,MIL
+244,1,82,76,82,84,65,70,50,50,Portugal,79,David Costa,RC Lens,MIL
+245,1,80,75,78,80,60,68,50,50,France,78,Adrien Thomasson,RC Lens,MIL
+246,1,76,45,62,60,74,76,50,50,Senegal,75,Nampalys Mendy,RC Lens,MIL
+247,1,75,70,74,74,70,75,50,50,Maroc,75,Neil El Aynaoui,RC Lens,MIL
+248,1,78,70,72,74,72,78,50,50,Nigeria,74,Hamzat Ojediran,RC Lens,MIL
+249,1,84,82,75,80,45,80,50,50,France,81,Florian Sotoca,RC Lens,ATT
+250,1,86,80,74,82,40,78,50,50,Angola,80,M'Bala Nzola,RC Lens,ATT
+251,1,85,78,76,84,42,75,50,50,Maroc,79,Anass Zaroury,RC Lens,ATT
+252,1,82,76,72,78,45,82,50,50,Uruguay,78,Martin Satriano,RC Lens,ATT
+253,1,80,74,70,76,40,78,50,50,France,75,Wesley Said,RC Lens,ATT
+254,1,84,72,68,75,35,72,50,50,France,74,Remy Labeau-Lascary,RC Lens,ATT
+255,1,78,55,70,68,78,80,50,50,Tunisie,78,Montassar Talbi,FC Lorient,DEF
+256,1,76,50,68,65,76,78,50,50,France,76,Julien Laporte,FC Lorient,DEF
+257,1,82,60,72,74,74,72,50,50,Senegal,75,Formose Mendy,FC Lorient,DEF
+258,1,84,65,70,72,72,70,50,50,Grece,74,Panos Katseris,FC Lorient,DEF
+259,1,80,55,68,70,74,75,50,50,Cameroun,74,Darlin Yongwa,FC Lorient,DEF
+260,1,75,50,65,68,75,78,50,50,Cote d'Ivoire,75,Isaac Toure,FC Lorient,DEF
+261,1,82,60,72,75,72,70,50,50,RD Congo,74,Gedeon Kalulu,FC Lorient,DEF
+262,1,78,50,68,65,74,75,50,50,Bresil,73,Igor Silva,FC Lorient,DEF
+263,1,76,72,78,75,76,78,50,50,France,77,Laurent Abergel,FC Lorient,MIL
+264,1,80,74,76,78,65,70,50,50,France,76,Julien Ponceau,FC Lorient,MIL
+265,1,78,70,75,76,74,78,50,50,France,75,Jean-Victor Makengo,FC Lorient,MIL
+266,1,76,72,78,75,65,70,50,50,Maroc,74,Imran Louza,FC Lorient,MIL
+267,1,82,70,74,78,45,65,50,50,Norvege,74,Joel Mvuka,FC Lorient,MIL
+268,1,75,68,72,74,68,72,50,50,Cameroun,72,Arthur Avom,FC Lorient,MIL
+269,1,85,78,70,80,40,82,50,50,Cote d'Ivoire,78,Mohamed Bamba,FC Lorient,ATT
+270,1,84,76,72,78,35,75,50,50,Senegal,76,Sambou Soumano,FC Lorient,ATT
+271,1,86,75,70,78,40,74,50,50,Senegal,75,Bamba Dieng,FC Lorient,ATT
+272,1,80,72,68,75,35,70,50,50,France,73,Pablo Pagis,FC Lorient,ATT
+273,1,80,75,72,76,50,68,50,50,France,75,Eli Junior Kroupi,FC Lorient,ATT
+274,1,84,74,72,76,45,72,50,50,Benin,75,Tosin Aiyegun,FC Lorient,ATT
+275,1,78,55,70,68,78,82,50,50,Cameroun,78,Jean-Charles Castelletto,FC Nantes,DEF
+276,1,74,50,65,60,76,84,50,50,France,76,Nicolas Pallois,FC Nantes,DEF
+277,1,80,55,68,66,75,78,50,50,France,75,Nathan Zeze,FC Nantes,DEF
+278,1,82,60,72,74,74,72,50,50,France,75,Kelvin Amian,FC Nantes,DEF
+279,1,80,65,70,72,72,70,50,50,France,74,Nicolas Cozza,FC Nantes,DEF
+280,1,78,55,68,65,74,75,50,50,Haiti,74,Jean-Kevin Duverne,FC Nantes,DEF
+281,1,84,65,70,75,70,72,50,50,France,74,Marcus Coco,FC Nantes,DEF
+282,1,86,75,74,80,38,72,50,50,Colombie,77,Deiver Machado,FC Nantes,DEF
+283,1,76,72,80,78,74,76,50,50,Espagne,78,Pedro Chirivella,FC Nantes,MIL
+284,1,78,70,76,75,75,80,50,50,Bresil,77,Douglas Augusto,FC Nantes,MIL
+285,1,75,70,75,76,72,74,50,50,France,75,Johann Lepenant,FC Nantes,MIL
+286,1,82,78,80,84,40,70,50,50,France,79,Remy Cabella,FC Nantes,MIL
+287,1,78,72,75,76,72,78,50,50,France,75,Mohamed Kaba,FC Nantes,MIL
+288,1,75,65,74,72,75,80,50,50,Mali,75,Ibrahima Sissoko,FC Nantes,MIL
+289,1,88,78,75,84,40,70,50,50,Nigeria,80,Moses Simon,FC Nantes,ATT
+290,1,82,80,72,78,45,82,50,50,Egypte,79,Mostafa Mohamed,FC Nantes,ATT
+291,1,84,78,70,76,40,75,50,50,France,77,Matthis Abline,FC Nantes,ATT
+292,1,82,75,72,75,45,70,50,50,Zimbabwe,75,Tino Kadewere,FC Nantes,ATT
+293,1,85,74,70,76,40,74,50,50,Cameroun,75,Ignatius Ganago,FC Nantes,ATT
+294,1,80,74,72,76,35,70,50,50,Suede,74,Ali Youssef,FC Nantes,ATT
+295,1,78,55,70,68,78,82,50,50,Danemark,78,Rasmus Nicolaisen,Toulouse FC,DEF
+296,1,76,50,68,65,76,78,50,50,Cap-Vert,76,Logan Costa,Toulouse FC,DEF
+297,1,82,65,72,74,72,70,50,50,Chili,75,Gabriel Suazo,Toulouse FC,DEF
+298,1,84,60,70,72,70,72,50,50,Norvege,74,Warren Kamanzi,Toulouse FC,DEF
+299,1,80,55,68,66,74,76,50,50,Etats-Unis,75,Mark McKenzie,Toulouse FC,DEF
+300,1,82,65,72,75,72,70,50,50,France,74,Djibril Sidibe,Toulouse FC,DEF
+301,1,78,50,68,65,74,75,50,50,Turquie,73,Umit Akdag,Toulouse FC,DEF
+302,1,80,60,70,72,70,72,50,50,Angleterre,72,Charlie Cresswell,Toulouse FC,DEF
+303,1,76,72,80,78,74,76,50,50,Suisse,78,Vincent Sierro,Toulouse FC,MIL
+304,1,78,70,76,75,75,80,50,50,Venezuela,77,Cristian Casseres,Toulouse FC,MIL
+305,1,75,74,78,76,70,72,50,50,Allemagne,76,Niklas Schmidt,Toulouse FC,MIL
+306,1,76,72,75,76,72,74,50,50,Slovenie,75,Miha Zajc,Toulouse FC,MIL
+307,1,78,70,74,75,70,72,50,50,Australie,74,Denis Genreau,Toulouse FC,MIL
+308,1,80,75,78,80,60,65,50,50,Espagne,75,Cesar Gelabert,Toulouse FC,MIL
+309,1,85,78,75,82,40,75,50,50,Maroc,79,Zakaria Aboukhlal,Toulouse FC,ATT
+310,1,84,80,72,78,45,82,50,50,Cameroun,78,Frank Magri,Toulouse FC,ATT
+311,1,82,76,75,80,45,74,50,50,Norvege,77,Aron Donnum,Toulouse FC,ATT
+312,1,85,75,74,80,40,70,50,50,France,76,Yann Gboho,Toulouse FC,ATT
+313,1,86,74,72,78,35,75,50,50,Norvege,75,Joshua King,Toulouse FC,ATT
+314,1,88,72,70,76,40,68,50,50,Gabon,74,Shavy Babicka,Toulouse FC,ATT
+315,1,78,55,70,68,76,80,50,50,Bresil,77,Jubal,AJ Auxerre,DEF
+316,1,82,60,72,74,72,70,50,50,France,75,Paul Joly,AJ Auxerre,DEF
+317,1,76,50,68,65,75,78,50,50,Angleterre,75,Gabriel Osho,AJ Auxerre,DEF
+318,1,80,65,70,72,70,72,50,50,France,74,Clement Akpa,AJ Auxerre,DEF
+319,1,84,60,72,75,70,68,50,50,Ghana,74,Gideon Mensah,AJ Auxerre,DEF
+320,1,75,50,68,65,74,76,50,50,France,73,Theo Pellenard,AJ Auxerre,DEF
+321,1,78,55,65,68,73,75,50,50,Maroc,73,Saad Agouzoul,AJ Auxerre,DEF
+322,1,82,60,70,72,70,68,50,50,France,72,Ange Loic N'Gatta,AJ Auxerre,DEF
+323,1,76,70,76,75,74,78,50,50,France,76,Elisha Owusu,AJ Auxerre,MIL
+324,1,78,72,75,76,72,75,50,50,Madagascar,75,Rayan Raveloson,AJ Auxerre,MIL
+325,1,75,68,74,72,75,76,50,50,Senegal,74,Assane Diousse,AJ Auxerre,MIL
+326,1,80,75,76,78,60,65,50,50,France,75,Gaetan Perrin,AJ Auxerre,MIL
+327,1,82,74,75,78,50,68,50,50,Cote d'Ivoire,74,Hamed Junior Traore,AJ Auxerre,MIL
+328,1,84,70,72,76,45,65,50,50,France,73,Kays Ruiz-Atil,AJ Auxerre,MIL
+329,1,85,78,74,80,45,78,50,50,Mali,77,Lassine Sinayoko,AJ Auxerre,ATT
+330,1,84,76,70,75,40,80,50,50,Canada,76,Thelonius Bair,AJ Auxerre,ATT
+331,1,82,75,72,76,35,75,50,50,Japon,75,Ado Onaiwu,AJ Auxerre,ATT
+332,1,80,74,70,74,40,82,50,50,France,74,Florian Ayé,AJ Auxerre,ATT
+333,1,86,72,68,75,35,70,50,50,Mali,73,Ousmane Camara,AJ Auxerre,ATT
+334,1,84,70,65,72,40,78,50,50,Mali,72,Kalifa Coulibaly,AJ Auxerre,ATT
+335,1,80,55,70,68,76,78,50,50,France,76,Matthieu Udol,FC Metz,DEF
+336,1,78,50,68,65,75,80,50,50,Cote d'Ivoire,75,Ismael Traore,FC Metz,DEF
+337,1,76,55,68,66,76,75,50,50,France,75,Christophe Herelle,FC Metz,DEF
+338,1,84,60,70,72,72,70,50,50,Cote d'Ivoire,74,Koffi Kouao,FC Metz,DEF
+339,1,82,65,72,74,70,68,50,50,France,74,Maxime Colin,FC Metz,DEF
+340,1,78,50,65,68,74,76,50,50,Senegal,73,Sadibou Sane,FC Metz,DEF
+341,1,80,60,70,72,72,75,50,50,Guinee-Bissau,74,Fali Cande,FC Metz,DEF
+342,1,76,50,65,60,73,75,50,50,Senegal,72,Aboubacar Lô,FC Metz,DEF
+343,1,76,68,75,74,76,80,50,50,France,75,Kevin N'Doram,FC Metz,MIL
+344,1,78,72,74,76,72,75,50,50,Haiti,74,Danley Jean Jacques,FC Metz,MIL
+345,1,82,75,76,80,50,65,50,50,Gambie,75,Ablie Jallow,FC Metz,MIL
+346,1,80,74,75,78,60,68,50,50,Senegal,74,Cheikh Sabaly,FC Metz,MIL
+347,1,78,72,76,78,65,70,50,50,France,74,Arthur Atta,FC Metz,MIL
+348,1,75,70,72,74,68,72,50,50,France,73,Jessy Deminguet,FC Metz,MIL
+349,1,86,76,72,78,40,75,50,50,Suede,76,Joel Asoro,FC Metz,ATT
+350,1,84,78,70,76,45,82,50,50,Senegal,76,Amadou Diallo,FC Metz,ATT
+351,1,85,74,72,78,35,70,50,50,Senegal,75,Ibou Sané,FC Metz,ATT
+352,1,80,75,70,74,40,78,50,50,France,74,Simon Elisor,FC Metz,ATT
+353,1,86,72,68,76,35,68,50,50,Senegal,73,Malick Mbaye,FC Metz,ATTjoueur_id,saison_id,vitesse,tir,passe,dribble,defense,physique,moral,forme,nationalite,note_actuelle,nom,club,poste
+354,1,82,74,65,72,40,80,50,50,Ghana,73,Benjamin Tetteh,FC Metz,ATT
+355,1,80,60,74,75,80,78,50,50,France,80,Kenny Lala,Brest Armorique FC,DEF
+356,1,78,55,70,68,82,84,50,50,France,79,Brendan Chardonnet,Brest Armorique FC,DEF
+357,1,82,65,72,74,76,74,50,50,Mali,78,Massadio Haidara,Brest Armorique FC,DEF
+358,1,80,60,70,72,78,76,50,50,France,77,Julien Le Cardinal,Brest Armorique FC,DEF
+359,1,75,50,65,60,78,82,50,50,Senegal,76,Abdoulaye Ndiaye,Brest Armorique FC,DEF
+360,1,82,55,68,66,75,78,50,50,France,75,Bradley Locko,Brest Armorique FC,DEF
+361,1,76,45,62,60,74,76,50,50,France,74,Jordan Amavi,Brest Armorique FC,DEF
+362,1,74,45,60,58,72,75,50,50,Cote d'Ivoire,73,Luck Zogbe,Brest Armorique FC,DEF
+363,1,78,76,80,78,76,82,50,50,France,79,Pierre Lees-Melou,Brest Armorique FC,MIL
+364,1,82,74,82,80,65,70,50,50,France,78,Romain Del Castillo,Brest Armorique FC,MIL
+365,1,80,75,76,78,60,68,50,50,France,77,Mahdi Camara,Brest Armorique FC,MIL
+366,1,76,72,78,75,74,78,50,50,France,76,Hugo Magnetti,Brest Armorique FC,MIL
+367,1,78,74,75,76,72,76,50,50,France,75,Jonas Martin,Brest Armorique FC,MIL
+368,1,75,70,74,74,70,75,50,50,Mali,74,Kamory Doumbia,Brest Armorique FC,MIL
+369,1,86,82,75,80,45,80,50,50,France,80,Ludovic Ajorque,Brest Armorique FC,ATT
+370,1,85,80,74,82,40,78,50,50,Senegal,79,Abdallah Sima,Brest Armorique FC,ATT
+371,1,84,78,76,84,42,75,50,50,Guinee-Bissau,78,Mama Balde,Brest Armorique FC,ATT
+372,1,86,76,72,78,45,82,50,50,France,77,Mathias Pereira Lage,Brest Armorique FC,ATT
+373,1,82,75,74,80,38,72,50,50,France,76,Ibrahim Salah,Brest Armorique FC,ATT
+374,1,80,74,70,76,40,78,50,50,France,75,Axel Camblan,Brest Armorique FC,ATT
+375,1,78,55,70,68,76,80,50,50,Cote d'Ivoire,76,Abdoulaye Bamba,Angers SCO,DEF
+376,1,76,50,68,65,75,78,50,50,France,75,Jordan Lefort,Angers SCO,DEF
+377,1,78,50,65,62,75,82,50,50,Benin,74,Cedric Hountondji,Angers SCO,DEF
+378,1,80,65,70,72,72,70,50,50,France,74,Florent Hanin,Angers SCO,DEF
+379,1,82,60,72,74,70,68,50,50,France,73,Lilian Raolisoa,Angers SCO,DEF
+380,1,84,65,70,72,68,70,50,50,Tunisie,74,Yan Valery,Angers SCO,DEF
+381,1,78,55,65,68,74,76,50,50,Senegal,73,Ousmane Camara,Angers SCO,DEF
+382,1,76,50,60,62,72,74,50,50,France,71,Brahim Courcoul,Angers SCO,DEF
+383,1,80,74,76,78,70,72,50,50,Algerie,76,Himad Abdelli,Angers SCO,MIL
+384,1,76,70,75,74,74,80,50,50,Cote d'Ivoire,75,Jean-Eudes Aholou,Angers SCO,MIL
+385,1,75,68,74,72,75,78,50,50,Algerie,74,Haris Belkebla,Angers SCO,MIL
+386,1,78,72,75,76,68,70,50,50,France,74,Pierrick Capelle,Angers SCO,MIL
+387,1,82,74,76,78,60,65,50,50,Algerie,75,Zinedine Ferhat,Angers SCO,MIL
+388,1,76,70,72,74,70,72,50,50,France,72,Zinedine Ould Khaled,Angers SCO,MIL
+389,1,84,78,70,76,40,78,50,50,France,76,Lois Diony,Angers SCO,ATT
+390,1,82,75,72,74,35,75,50,50,France,74,Esteban Lepaul,Angers SCO,ATT
+391,1,85,76,68,75,40,80,50,50,Senegal,75,Ibrahima Niane,Angers SCO,ATT
+392,1,86,72,70,76,45,70,50,50,Gabon,74,Jim Allevinah,Angers SCO,ATT
+393,1,85,74,72,78,35,65,50,50,Algerie,75,Farid El Melali,Angers SCO,ATT
+394,1,80,72,65,74,40,72,50,50,France,72,Sidiki Cherif,Angers SCO,ATT
+395,1,78,55,70,68,76,80,50,50,Senegal,76,Arouna Sangante,Le Havre AC,DEF
+396,1,76,50,68,65,75,78,50,50,France,75,Gautier Lloris,Le Havre AC,DEF
+397,1,78,55,65,68,75,76,50,50,France,74,Yoann Salmier,Le Havre AC,DEF
+398,1,82,65,70,72,72,70,50,50,Cote d'Ivoire,75,Christopher Operi,Le Havre AC,DEF
+399,1,84,65,72,75,70,72,50,50,Hongrie,75,Loic Nego,Le Havre AC,DEF
+400,1,76,50,65,60,74,82,50,50,France,74,Etienne Youte Kinkoue,Le Havre AC,DEF
+401,1,85,60,70,74,68,70,50,50,France,73,Timothee Pembele,Le Havre AC,DEF
+402,1,78,50,65,68,72,74,50,50,France,72,Yanis Zouaoui,Le Havre AC,DEF
+403,1,80,74,78,80,72,70,50,50,Maroc,76,Oussama Targalline,Le Havre AC,MIL
+404,1,78,70,76,75,76,82,50,50,France,76,Abdoulaye Toure,Le Havre AC,MIL
+405,1,76,72,78,76,70,74,50,50,Russie,75,Daler Kuzyaev,Le Havre AC,MIL
+406,1,82,70,76,78,65,68,50,50,Maroc,74,Yassine Kechta,Le Havre AC,MIL
+407,1,78,74,75,76,70,75,50,50,Senegal,74,Rassoul Ndiaye,Le Havre AC,MIL
+408,1,75,65,72,70,74,76,50,50,France,72,Alois Confais,Le Havre AC,MIL
+409,1,86,76,72,78,40,75,50,50,Etats-Unis,76,Emmanuel Sabbi,Le Havre AC,ATT
+410,1,85,74,70,76,35,74,50,50,France,75,Josue Casimir,Le Havre AC,ATT
+411,1,84,72,75,80,45,72,50,50,France,74,Antoine Joujou,Le Havre AC,ATT
+412,1,82,75,68,74,40,78,50,50,RD Congo,73,Yann Kitala,Le Havre AC,ATT
+413,1,80,74,65,72,35,75,50,50,France,72,Steve Ngoura,Le Havre AC,ATT
+414,1,84,72,74,76,45,70,50,50,France,73,Samuel Grandsir,Le Havre AC,ATT
