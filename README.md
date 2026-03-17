@@ -6,6 +6,8 @@ sqlite3 db/simulation.db < db/schema.sql
 sqlite3 db/simulation.db <<EOF
 .mode csv
 .import --skip 1 db/data/competitions.csv competitions
+.import --skip 1 db/data/info_club.csv info_club
+.import --skip 1 db/data/joueurs.csv joueurs
 .import --skip 1 db/data/saisons.csv saisons
 .import --skip 1 db/data/clubs.csv clubs
 .import --skip 1 db/data/saison_club.csv saison_club
