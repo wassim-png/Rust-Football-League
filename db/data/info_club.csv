@@ -1,19 +1,19 @@
 club_id,nom_stade,stade_capacite,url_logo,url_stade,nom_meilleur_buteur
-1,Parc des Princes,47929,/assets/logos/psg.png,/assets/stades/parc_des_princes.jpg,Dimitri Favier
-2,Orange Vélodrome,67394,/assets/logos/om.png,/assets/stades/velodrome.jpg,Alexandre Petit
-3,Stade Louis II,18523,/assets/logos/asm.png,/assets/stades/louis_ii.jpg,Wissam Bennacer
-4,Stade Charléty,20000,/assets/logos/pfc.png,/assets/stades/charlety.jpg,Yann Terrier
-5,Allianz Riviera,35624,/assets/logos/ogcn.png,/assets/stades/allianz_riviera.jpg,Oumar Gaye
-6,Stade Pierre-Mauroy,52000,/assets/logos/losc.png,/assets/stades/pierre_mauroy.jpg,Jonathan Davide
-7,Groupama Stadium,59186,/assets/logos/ol.png,/assets/stades/groupama.jpg,Gabriel Lopes
-8,Roazhon Park,29778,/assets/logos/srfc.png,/assets/stades/roazhon_park.jpg,Arnaud Kali
-9,Stade de la Meinau,26165,/assets/logos/rcs.png,/assets/stades/meinau.jpg,Emmanuel Emegha
-10,Stade Bollaert-Delelis,38223,/assets/logos/rcl.png,/assets/stades/bollaert.jpg,Lois Bakary
-11,Stade du Moustoir,18500,/assets/logos/fcl.png,/assets/stades/moustoir.jpg,Dango Ouédraogo
-12,Stade de la Beaujoire,37473,/assets/logos/fcn.png,/assets/stades/beaujoire.jpg,Mostafa Mohamed
-13,Stadium de Toulouse,33150,/assets/logos/tfc.png,/assets/stades/stadium_toulouse.jpg,Thijs Dallinga
-14,Stade Abbé-Deschamps,22000,/assets/logos/aja.png,/assets/stades/abbe_deschamps.jpg,Lassine Sinayoko
-15,Stade Saint-Symphorien,25636,/assets/logos/fcm.png,/assets/stades/saint_symphorien.jpg,Georges Mikautadze
-16,Stade Francis-Le Blé,15233,/assets/logos/bfca.png,/assets/stades/le_ble.jpg,Jérémy Le Douaron
-17,Stade Raymond-Kopa,18000,/assets/logos/sco.png,/assets/stades/raymond_kopa.jpg,Mohamed-Ali Cho
-18,Stade Océane,25178,/assets/logos/hac.png,/assets/stades/oceane.jpg,André Ayew
+1,Parc des Princes,47929,/assets/logos/psg.png,/assets/stades/parc_des_princes.jpg,Kylian Mbappé
+2,Orange Vélodrome,67394,/assets/logos/om.png,/assets/stades/velodrome.jpg,Gunnar Andersson
+3,Stade Louis II,18523,/assets/logos/asm.png,/assets/stades/louis_ii.jpg,Delio Onnis
+4,Stade Charléty,20000,/assets/logos/pfc.png,/assets/stades/charlety.jpg,Jean-François Beltramini
+5,Allianz Riviera,35624,/assets/logos/ogcn.png,/assets/stades/allianz_riviera.jpg,Joaquin Valle
+6,Stade Pierre-Mauroy,52000,/assets/logos/losc.png,/assets/stades/pierre_mauroy.jpg,Jean Baratte
+7,Groupama Stadium,59186,/assets/logos/ol.png,/assets/stades/groupama.jpg,Alexandre Lacazette
+8,Roazhon Park,29778,/assets/logos/srfc.png,/assets/stades/roazhon_park.jpg,Daniel Rodighiero
+9,Stade de la Meinau,26165,/assets/logos/rcs.png,/assets/stades/meinau.jpg,Oskar Rohr
+10,Stade Bollaert-Delelis,38223,/assets/logos/rcl.png,/assets/stades/bollaert.jpg,Ahmed Oudjani
+11,Stade du Moustoir,18500,/assets/logos/fcl.png,/assets/stades/moustoir.jpg,Bernard Goraguer
+12,Stade de la Beaujoire,37473,/assets/logos/fcn.png,/assets/stades/beaujoire.jpg,Philippe Gondet
+13,Stadium de Toulouse,33150,/assets/logos/tfc.png,/assets/stades/stadium_toulouse.jpg,Robert Pintenat 
+14,Stade Abbé-Deschamps,22000,/assets/logos/aja.png,/assets/stades/abbe_deschamps.jpg,Andrzej Szarmach 
+15,Stade Saint-Symphorien,25636,/assets/logos/fcm.png,/assets/stades/saint_symphorien.jpg,Nico Braun 
+16,Stade Francis-Le Blé,15233,/assets/logos/bfca.png,/assets/stades/le_ble.jpg,Drago Vabec
+17,Stade Raymond-Kopa,18000,/assets/logos/sco.png,/assets/stades/raymond_kopa.jpg,Marc Berdoll
+18,Stade Océane,25178,/assets/logos/hac.png,/assets/stades/oceane.jpg,Jean Saunier
