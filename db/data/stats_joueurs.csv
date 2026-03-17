@@ -1,4 +1,4 @@
-joueur_id,saison_id,vitesse,tir,passe,dribble,defense,physique,sante,moral,nationalite,note_actuelle
+joueur_id,saison_id,vitesse,tir,passe,dribble,defense,physique,forme,moral,nationalite,note_actuelle
 4,1,75,55,78,70,88,80,100,85,Bresil,88
 5,1,93,75,82,84,78,76,100,85,Maroc,87
 6,1,91,65,77,82,76,74,100,85,Portugal,83
