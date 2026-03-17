@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS etat_club_saison (
 -- =========================
 CREATE TABLE IF NOT EXISTS joueurs (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-  club_id             INTEGER NOT NULL,
+  club_id             INTEGER,
 
   nom                 TEXT NOT NULL,
   age                 INTEGER NOT NULL CHECK (age BETWEEN 14 AND 60),
