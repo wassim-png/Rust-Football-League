@@ -1,40 +1,45 @@
 use eframe::egui;
-
-use crate::models::{Equipe, Ecran};
-
+use rusqlite::Connection;
+use crate::models::{Club , Ecran};
+use crate::selection_club::businessLogic::ClubFacade;
+use std::sync::Arc;
 
 
 
 
 pub struct MyApp {
-    ecran_actuel: Ecran,
-    equipe_choisie: Option<Equipe>,
-    base_de_donnees_temporaire: Vec<Equipe>,
+    pub ecran_actuel: Ecran,
+    pub equipe_choisie: Option<Club>,
+    pub liste_equipes: Vec<Club>, 
+    pub facade: ClubFacade,   
 }
 
-impl Default for MyApp {
-    fn default() -> Self {
+impl MyApp {
+    pub fn new(conn:  Arc<Connection>) -> Self {
+        let facade = ClubFacade::new(conn);
+        
+        let equipes = facade.get_all().unwrap_or_else(|e| {
+            println!("Erreur lors de la récupération des clubs : {:?}", e);
+            vec![]
+        });
+
         Self {
             ecran_actuel: Ecran::Selection,
             equipe_choisie: None,
-            
-            base_de_donnees_temporaire: vec![
-                Equipe { id: 1, nom: "PSG".into(), stade: "Parc des Princes".into(), budget: 700},
-                Equipe { id: 2, nom: "OM".into(), stade: "Vélodrome".into(), budget: 300 },
-                Equipe { id: 3, nom: "OL".into(), stade: "Groupama Stadium".into(), budget: 250 },
-            ],
+            liste_equipes: equipes,
+            facade,
         }
     }
 }
 
-impl eframe::App for MyApp {
+impl eframe::App for MyApp{
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.ecran_actuel {
 
                 Ecran::Selection => {
                     ui.heading("Sélectionnez votre club");
-                    for eq in &self.base_de_donnees_temporaire {
+                    for eq in &self.liste_equipes  {
                         if ui.button(&eq.nom).clicked() {
                             self.equipe_choisie = Some(eq.clone());
                             self.ecran_actuel = Ecran::MenuPrincipal;
@@ -54,8 +59,8 @@ impl eframe::App for MyApp {
                 Ecran::InfosClub => {
                     if let Some(eq) = &self.equipe_choisie {
                         ui.heading("Détails du Club");
-                        ui.label(format!("Stade : {}", eq.stade));
-                        ui.label(format!("Budget : {} M€", eq.budget));
+                        ui.label(format!("Nom : {}", eq.nom));
+                        ui.label(format!("Budget : {} M€", eq.budget_eur));
                         if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
                     }
                 }

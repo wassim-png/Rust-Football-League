@@ -1,15 +1,17 @@
 
 mod models; // Déclare l'existence de models.rs
 mod app;
-pub mod db_setup; // Module for DB initialization
+mod selection_club;
+mod database;
+use database:: Database;
+use std::sync::Arc;
 
 use app::MyApp;
 fn main() -> eframe::Result<()> {
     // Initialize the database before starting the GUI
-    if let Err(e) = db_setup::init_db("db/simulation.db") {
-        eprintln!("Failed to initialize database: {}", e);
-    }
+   let db = Database::new("db/simulation.db")
+   .expect("Erreur fatale : Impossible d'initialiser la base de données");
 
     let options = eframe::NativeOptions::default();
-    eframe::run_native("Foot Manager Rust", options, Box::new(|_cc| Box::new(MyApp::default())))
+    eframe::run_native("Foot Manager Rust", options, Box::new(move |_cc| Box::new(MyApp::new(db.conn.clone()))))
 }
