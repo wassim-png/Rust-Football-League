@@ -1,4 +1,5 @@
 pub enum Ecran {
+    Accueil,
     Selection,
     MenuPrincipal,
     Composition,

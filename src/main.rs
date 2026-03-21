@@ -2,9 +2,11 @@
 mod models; // Déclare l'existence de models.rs
 mod app;
 mod selection_club;
+pub mod page;
 mod database;
 use database:: Database;
 use std::sync::Arc;
+
 
 use app::MyApp;
 fn main() -> eframe::Result<()> {
@@ -13,5 +15,12 @@ fn main() -> eframe::Result<()> {
    .expect("Erreur fatale : Impossible d'initialiser la base de données");
 
     let options = eframe::NativeOptions::default();
-    eframe::run_native("Foot Manager Rust", options, Box::new(move |_cc| Box::new(MyApp::new(db.conn.clone()))))
+    eframe::run_native("Foot Manager Rust", options, 
+    Box::new(move |cc| {
+        // AJOUTE CETTE LIGNE ABSOLUMENT :
+        egui_extras::install_image_loaders(&cc.egui_ctx); 
+
+        Box::new(MyApp::new(db.conn.clone()))
+    }),
+)
 }

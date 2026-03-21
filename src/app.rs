@@ -3,6 +3,8 @@ use rusqlite::Connection;
 use crate::models::{Club , Ecran};
 use crate::selection_club::businessLogic::ClubFacade;
 use std::sync::Arc;
+use crate::page::accueil;
+
 
 
 
@@ -24,7 +26,7 @@ impl MyApp {
         });
 
         Self {
-            ecran_actuel: Ecran::Selection,
+            ecran_actuel: Ecran::Accueil,
             equipe_choisie: None,
             liste_equipes: equipes,
             facade,
@@ -36,6 +38,10 @@ impl eframe::App for MyApp{
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.ecran_actuel {
+
+                Ecran ::Accueil =>{
+                    accueil::render(ui, &mut self.ecran_actuel);
+                }
 
                 Ecran::Selection => {
                     ui.heading("Sélectionnez votre club");
