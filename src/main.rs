@@ -1,9 +1,10 @@
 
-mod models; // Déclare l'existence de models.rs
+mod models;
 mod app;
 mod selection_club;
 pub mod page;
 mod database;
+mod mercato;
 use database:: Database;
 use std::sync::Arc;
 

@@ -7,6 +7,7 @@ tokio = { version = "1", features = ["full"] }
 
 [dependencies]
 csv = "1.4.0"
+rand = "0.8"
 eframe = "0.26.2"
 rusqlite = { version = "0.39.0", features = ["bundled"] }
 serde = { version = "1.0.228", features = ["derive"] }

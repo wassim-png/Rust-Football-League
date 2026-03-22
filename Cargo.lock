@@ -1375,6 +1375,7 @@ dependencies = [
  "eframe",
  "egui_extras",
  "image",
+ "rand",
  "rusqlite",
  "serde",
 ]
