@@ -3,7 +3,10 @@ use egui::{Ui, RichText, Color32, FontId, Frame, Stroke};
 use crate::models::{Club, Ecran};
 
 pub fn render(ui: &mut Ui, clubs: &[Club], equipe_choisie: &mut Option<Club>, ecran_actuel: &mut Ecran) {
-   
+    egui::Image::new("file://assets/pelouse.jpg")
+        .max_size(ui.available_size()) 
+        .paint_at(ui, ui.max_rect());
+
     ui.vertical_centered(|ui| {
         ui.add_space(30.0);
         ui.label(
