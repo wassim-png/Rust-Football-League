@@ -2,6 +2,7 @@ use eframe::egui;
 use rusqlite::Connection;
 use crate::models::{Club , Ecran};
 use crate::selection_club::businessLogic::ClubFacade;
+use crate::selection_club::ui::ecran_selection;
 use std::sync::Arc;
 use crate::page::accueil;
 
@@ -24,6 +25,8 @@ impl MyApp {
             println!("Erreur lors de la récupération des clubs : {:?}", e);
             vec![]
         });
+         println!("Nombre de clubs chargés : {}", equipes.len());
+        
 
         Self {
             ecran_actuel: Ecran::Accueil,
@@ -31,6 +34,7 @@ impl MyApp {
             liste_equipes: equipes,
             facade,
         }
+       
     }
 }
 
@@ -43,15 +47,10 @@ impl eframe::App for MyApp{
                     accueil::render(ui, &mut self.ecran_actuel);
                 }
 
-                Ecran::Selection => {
-                    ui.heading("Sélectionnez votre club");
-                    for eq in &self.liste_equipes  {
-                        if ui.button(&eq.nom).clicked() {
-                            self.equipe_choisie = Some(eq.clone());
-                            self.ecran_actuel = Ecran::MenuPrincipal;
-                        }
-                    }
-                }
+              Ecran::Selection => { 
+               
+                ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
+            }
 
                 Ecran::MenuPrincipal => {
                     if let Some(eq) = &self.equipe_choisie {

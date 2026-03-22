@@ -15,5 +15,6 @@ pub struct Club {
     pub reputation: i32,          
     pub budget_eur: i64,          
     pub revenu_par_journee_eur: i64,
-    pub avantage_domicile: i32,    
+    pub avantage_domicile: i32, 
+    pub url_logo: String   
 }

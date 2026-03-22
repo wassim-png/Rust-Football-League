@@ -11,7 +11,8 @@ impl ClubDAO for SqliteClubDAO {
 
     fn get_all_clubs(&self) -> Result<Vec<Club>> {
             // 1. On prépare la requête SQL
-            let mut stmt = self.conn.prepare("SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee_eur, avantage_domicile FROM clubs"
+            let mut stmt = self.conn.prepare("SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee_eur, avantage_domicile, url_logo FROM clubs c
+            INNER JOIN info_club i on i.club_id = c.id ORDER BY nom ASC"
     )?;
 
             // 2. On mappe chaque ligne (row) vers une instance de la struct Club
@@ -23,7 +24,8 @@ impl ClubDAO for SqliteClubDAO {
                     reputation: row.get(3)?,
                     budget_eur: row.get(4)?,
                     revenu_par_journee_eur: row.get(5)?,
-                    avantage_domicile: row.get(6)?
+                    avantage_domicile: row.get(6)?,
+                    url_logo: row.get(7)?
                 })
             })?;
 
@@ -50,7 +52,8 @@ impl ClubDAO for SqliteClubDAO {
                     reputation: row.get(3)?,
                     budget_eur: row.get(4)?,
                     revenu_par_journee_eur: row.get(5)?,
-                    avantage_domicile: row.get(6)?
+                    avantage_domicile: row.get(6)?,
+                    url_logo: row.get(7)?
                 })
             },
         )
