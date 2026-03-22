@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS joueurs (
 
   fin_contrat         TEXT,
 
-  FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE RESTRICT
+  FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET NULL
 );
 
 
@@ -270,13 +270,7 @@ CREATE TABLE IF NOT EXISTS evenement_matchs (
 
 
 
-CREATE TABLE IF NOT EXISTS joueur_libre (
-  id                    INTEGER PRIMARY KEY AUTOINCREMENT,
-  joueur_id             INTEGER NOT NULL UNIQUE,
-  
-  
-  FOREIGN KEY (joueur_id) REFERENCES joueurs(id) ON DELETE CASCADE
-);
+
 
 CREATE TABLE IF NOT EXISTS transferts (
   id                           INTEGER PRIMARY KEY AUTOINCREMENT,
