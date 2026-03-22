@@ -3,13 +3,13 @@ use egui::{Ui, Color32, RichText, FontId, Vec2, Stroke};
 use crate::models::Ecran;
 
 pub fn render(ui: &mut Ui, ecran_actuel: &mut Ecran) {
-    // 1. L'IMAGE DE FOND (Dessinée en premier pour être derrière)
+   
     egui::Image::new("file://assets/wenger.jpg")
         .maintain_aspect_ratio(false)
         .max_size(ui.available_size()) 
         .paint_at(ui, ui.max_rect());
 
-    // 2. LE CONTENU PAR-DESSUS (Centré)
+
     ui.vertical_centered(|ui| {
          ui.label(
             RichText::new("RUST FOOTBALL LEAGUE")

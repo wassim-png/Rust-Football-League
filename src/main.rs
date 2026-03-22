@@ -15,7 +15,7 @@ fn main() -> eframe::Result<()> {
    .expect("Erreur fatale : Impossible d'initialiser la base de données");
 
     let options = eframe::NativeOptions::default();
-    eframe::run_native("Foot Manager Rust", options, 
+    eframe::run_native("Rust Football League", options, 
     Box::new(move |cc| {
         // AJOUTE CETTE LIGNE ABSOLUMENT :
         egui_extras::install_image_loaders(&cc.egui_ctx); 
