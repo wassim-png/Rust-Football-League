@@ -18,3 +18,18 @@ pub struct Club {
     pub avantage_domicile: i32, 
     pub url_logo: String   
 }
+
+
+#[derive(Debug, Clone)]
+pub struct InfosClub {
+    pub club_id: Option<i32>,  
+    pub nom : String,
+    pub nom_stade: String,        
+    pub stade_capacite: i32,
+    pub reputation : i32,
+    pub avantage domicile : i32,
+    pub revenu_par_journee : i64,
+    pub url_logo: String,          
+    pub url_stade: String   
+}
+

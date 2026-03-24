@@ -135,6 +135,11 @@ CREATE TABLE IF NOT EXISTS joueurs (
   FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS joueurs_libres (
+  joueur_id INTEGER PRIMARY KEY,
+  
+  FOREIGN KEY (joueur_id) REFERENCES joueurs(id) ON DELETE CASCADE
+);
 
 
 CREATE TABLE IF NOT EXISTS attributs_joueur_saison (
