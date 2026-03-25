@@ -68,6 +68,9 @@ CREATE TABLE IF NOT EXISTS clubs (
   -- Argent (simple)
   budget_eur             INTEGER NOT NULL DEFAULT 0 CHECK (budget_eur >= 0),
   revenu_par_journee_eur INTEGER NOT NULL DEFAULT 500000 CHECK (revenu_par_journee_eur >= 0),
+  points INTEGER DEFAULT 0,
+  but_marque INTEGER DEFAULT 0,
+  but_encaisse INTEGER DEFAULT 0,
 
    
   avantage_domicile      INTEGER NOT NULL DEFAULT 5 CHECK (avantage_domicile BETWEEN 0 AND 30)
@@ -135,6 +138,11 @@ CREATE TABLE IF NOT EXISTS joueurs (
   FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS joueurs_libres (
+  joueur_id INTEGER PRIMARY KEY,
+  
+  FOREIGN KEY (joueur_id) REFERENCES joueurs(id) ON DELETE CASCADE
+);
 
 
 CREATE TABLE IF NOT EXISTS attributs_joueur_saison (

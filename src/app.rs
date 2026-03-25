@@ -3,6 +3,7 @@ use rusqlite::Connection;
 use crate::models::{Club , Ecran};
 use crate::selection_club::businessLogic::ClubFacade;
 use crate::selection_club::ui::ecran_selection;
+use crate::infos_club::ui::ecran_infos;
 use std::sync::Arc;
 use crate::page::accueil;
 
@@ -14,8 +15,7 @@ pub struct MyApp {
     pub ecran_actuel: Ecran,
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>, 
-    pub facade: ClubFacade,   
-}
+    pub facade: ClubFacade,   }
 
 impl MyApp {
     pub fn new(conn:  Arc<Connection>) -> Self {
@@ -57,18 +57,17 @@ impl eframe::App for MyApp{
                         ui.heading(format!("Manager de : {}", eq.nom));
                         if ui.button(" Infos Club").clicked() { self.ecran_actuel = Ecran::InfosClub; }
                         if ui.button(" Composition").clicked() { self.ecran_actuel = Ecran::Composition; }
+                       
                     }
                 }
 
-
-                Ecran::InfosClub => {
-                    if let Some(eq) = &self.equipe_choisie {
-                        ui.heading("Détails du Club");
-                        ui.label(format!("Nom : {}", eq.nom));
-                        ui.label(format!("Budget : {} M€", eq.budget_eur));
-                        if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
-                    }
+                Ecran::InfosClub =>{
+                     ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
                 }
+
+
+             
+
 
                 Ecran::Composition => {
                     ui.heading("Ma Composition");
