@@ -27,8 +27,8 @@ pub struct InfosClub {
     pub nom_stade: String,        
     pub stade_capacite: i32,
     pub reputation : i32,
-    pub avantage domicile : i32,
-    pub revenu_par_journee : i64,
+    pub avantage_domicile : i32,
+    pub revenu_par_journee_eur : i64,
     pub url_logo: String,          
     pub url_stade: String   
 }

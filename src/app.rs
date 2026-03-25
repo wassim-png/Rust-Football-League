@@ -3,6 +3,7 @@ use rusqlite::Connection;
 use crate::models::{Club , Ecran};
 use crate::selection_club::businessLogic::ClubFacade;
 use crate::selection_club::ui::ecran_selection;
+use crate::infos_club::ui::ecran_infos;
 use std::sync::Arc;
 use crate::page::accueil;
 
@@ -15,6 +16,7 @@ pub struct MyApp {
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>, 
     pub facade: ClubFacade,   
+    pub info_club_actuel: Option<InfosClub>,
 }
 
 impl MyApp {
@@ -33,6 +35,7 @@ impl MyApp {
             equipe_choisie: None,
             liste_equipes: equipes,
             facade,
+            info_club_actuel: None,
         }
        
     }
@@ -57,18 +60,23 @@ impl eframe::App for MyApp{
                         ui.heading(format!("Manager de : {}", eq.nom));
                         if ui.button(" Infos Club").clicked() { self.ecran_actuel = Ecran::InfosClub; }
                         if ui.button(" Composition").clicked() { self.ecran_actuel = Ecran::Composition; }
+                        if ui.button(" Infos Club").clicked() { 
+                            // On interroge la base de données une seule fois
+                            match self.InfosClubfacade.(eq.id) { // ou eq.club_id selon ta struct
+                                Ok(infos) => self.info_club_actuel = Some(infos),
+                                Err(e) => println!("Erreur DB InfosClub : {:?}", e),
+                            }
+                           
+                        }
                     }
                 }
 
 
                 Ecran::InfosClub => {
-                    if let Some(eq) = &self.equipe_choisie {
-                        ui.heading("Détails du Club");
-                        ui.label(format!("Nom : {}", eq.nom));
-                        ui.label(format!("Budget : {} M€", eq.budget_eur));
-                        if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
-                    }
+                  ecran_infos::render(ui,  infos_club, &mut self.equipe_choisie);
+                   if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
                 }
+
 
                 Ecran::Composition => {
                     ui.heading("Ma Composition");

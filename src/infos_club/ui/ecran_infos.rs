@@ -1,15 +1,13 @@
 
 
 use eframe::egui;
-use egui::{Ui, Color32, RichText, FontId, Vec2, Stroke, Image};
-use crate::models::{Ecran, InfosClub}; 
+use egui::{Ui, Color32, RichText, FontId, Vec2};
+use crate::models::{ Club, InfosClub}; 
 
-pub fn render_info_club(
+pub fn render(
     ui: &mut Ui, 
-    ecran_actuel: &mut Ecran, 
-    info_club: &InfosClub, 
-    reputation :&str,
-    nom_club: &str 
+    equipe_choisie: &Club,
+    info_club: &InfosClub
 ) {
     // 1. L'IMAGE DE FOND (Le stade du club en arrière-plan)
     // Assure-toi que info_club.url_stade contienne bien "file://..." 
@@ -25,7 +23,7 @@ pub fn render_info_club(
 
         // Nom du club avec fond semi-transparent pour la lisibilité
         ui.label(
-            RichText::new(nom_club)
+            RichText::new(equipe_choisie.nom.clone())
                 .font(FontId::proportional(50.0)) 
                 .strong()
                 .color(Color32::WHITE) 
@@ -66,20 +64,7 @@ pub fn render_info_club(
         // On pousse le bouton vers le bas
         ui.add_space(ui.available_height() / 2.0 - 50.0);
 
-        // Bouton de retour
-        let bouton_retour = egui::Button::new(
-            RichText::new("RETOUR")
-                .font(FontId::proportional(25.0))
-                .strong()
-                .color(Color32::WHITE)
-        )
-        .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 180)) // Noir transparent
-        .stroke(Stroke::new(2.0, Color32::RED))
-        .rounding(10.0)
-        .min_size(Vec2::new(200.0, 60.0));
-
-        if ui.add(bouton_retour).clicked() {
-            *ecran_actuel = Ecran::Selection; // Ou Ecran::Menu selon ton Enum
-        }
+       
+       
     });
 }
