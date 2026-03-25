@@ -75,7 +75,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
                 });
             });
             ui.label(
-                RichText::new("Mercato d'Été  ·  1 Juillet → 31 Août")
+                RichText::new("Mercato d'Été  ·  1 Juillet  -> 31 Août")
                     .font(FontId::proportional(12.0))
                     .color(Color32::GRAY),
             );

@@ -36,7 +36,7 @@ impl MyApp {
         let facade = ClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn.clone());
         let facade_infos_club = InfosClubFacade::new(conn.clone());
-        let mercato_facade = MercatoFacade::new(conn);
+        let mercato_facade = MercatoFacade::new(conn.clone());
 
         let equipes = facade.get_all().unwrap_or_else(|e| {
             println!("Erreur lors de la récupération des clubs : {:?}", e);
