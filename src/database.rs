@@ -1,82 +1,71 @@
 use rusqlite::{Connection, Result};
-use serde::Deserialize;
 use std::fs;
 use std::sync::Arc;
+use std::process::Command;
 
 pub struct Database {
     pub conn: Arc<Connection>,
 }
 
-#[derive(Deserialize)]
-struct JoueurLibreRow {
-    #[allow(dead_code)]
-    id: i32,
-    nom: String,
-    age: i32,
-    numero: i32,
-    poste: String,
-    pied: String,
-    potentiel: i32,
-    reputation: i32,
-    valeur_marche_eur: i64,
-    salaire_semaine_eur: i64,
-    fin_contrat: Option<String>,
-    #[allow(dead_code)]
-    nationalite: Option<String>,
-}
 
-impl Database {
+impl Database{
     pub fn new(db_path: &str) -> Result<Self> {
+         Self::init_db(db_path).expect("Failed to initialize database");
         let conn = Connection::open(db_path)?;
-
+         
+        // Read the schema file
         let schema = fs::read_to_string("db/schema.sql").expect("Failed to read schema.sql");
+       
+        // Execute the schema to create tables
         conn.execute_batch(&schema)?;
+        
         println!("Database initialized successfully with schema.");
-
-        seed_joueurs_libres(&conn);
-
         Ok(Self {
-            conn: Arc::new(conn),
+            conn: Arc::new(conn), 
         })
     }
+
+
+
+ fn init_db(db_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+   
+    
+    let output = Command::new("bash")
+        .arg("-c")
+        .arg(r#"
+rm -f db/simulation.db
+sqlite3 db/simulation.db < db/schema.sql
+
+sqlite3 db/simulation.db <<'EOFSQL'
+.mode csv
+.import --skip 1 db/data/competitions.csv competitions
+.import --skip 1 db/data/info_club.csv info_club
+.import --skip 1 db/data/joueurs.csv joueurs
+.import --skip 1 db/data/saisons.csv saisons
+.import --skip 1 db/data/clubs.csv clubs
+.import --skip 1 db/data/saison_club.csv saison_club
+.import --skip 1 db/data/etat_club_saison.csv etat_club_saison
+.import --skip 1 db/data/primes_classement_saison.csv primes_classement_saison
+.import --skip 1 db/data/stats_joueurs.csv attributs_joueur_saison
+.import --skip 1 db/data/stats_gardiens.csv attributs_gardien_saison
+INSERT INTO joueurs_libres (joueur_id) VALUES 
+(396), (397), (398), (399), (400), 
+(401), (402), (403), (404), (405), 
+(406), (407), (408), (409), (410), 
+(411), (412), (413), (414);
+EOFSQL
+"#)
+        .output()?;
+
+    if output.status.success() {
+        println!("Base de données initialisée avec succès !");
+    } else {
+        let error = String::from_utf8_lossy(&output.stderr);
+        eprintln!("Erreur d'initialisation : {}", error);
+        return Err(error.into());
+    }
+
+    Ok(())
 }
 
-/// Insère les joueurs libres (club_id = NULL) depuis le CSV si aucun n'existe encore.
-fn seed_joueurs_libres(conn: &Connection) {
-    let count: i64 = conn
-        .query_row("SELECT COUNT(*) FROM joueurs WHERE club_id IS NULL", [], |r| r.get(0))
-        .unwrap_or(0);
-
-    if count > 0 {
-        return;
-    }
-
-    let mut rdr = match csv::Reader::from_path("db/data/joueurs_libres.csv") {
-        Ok(r) => r,
-        Err(e) => {
-            println!("Impossible de lire joueurs_libres.csv : {}", e);
-            return;
-        }
-    };
-
-    let mut nb = 0;
-    for result in rdr.deserialize::<JoueurLibreRow>() {
-        match result {
-            Ok(j) => {
-                let res = conn.execute(
-                    "INSERT INTO joueurs (club_id, nom, age, numero, poste, pied, potentiel,
-                                         reputation, valeur_marche_eur, salaire_semaine_eur, fin_contrat)
-                     VALUES (NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
-                    rusqlite::params![
-                        j.nom, j.age, j.numero, j.poste, j.pied,
-                        j.potentiel, j.reputation, j.valeur_marche_eur,
-                        j.salaire_semaine_eur, j.fin_contrat
-                    ],
-                );
-                if res.is_ok() { nb += 1; }
-            }
-            Err(e) => println!("Erreur ligne CSV joueurs_libres : {}", e),
-        }
-    }
-    println!("Joueurs libres seedés : {}", nb);
 }
