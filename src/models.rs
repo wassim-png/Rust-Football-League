@@ -24,7 +24,12 @@ pub struct Club {
     pub budget_eur: i64,
     pub revenu_par_journee_eur: i64,
     pub avantage_domicile: i32, 
-    pub url_logo: String   
+    pub url_logo: String,
+    pub points: i32,
+    pub buts_marques: i32,
+    pub buts_encaisses: i32,
+
+
 }
 
 

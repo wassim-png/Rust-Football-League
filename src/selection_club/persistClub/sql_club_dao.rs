@@ -11,7 +11,9 @@ impl ClubDAO for SqliteClubDAO {
 
     fn get_all_clubs(&self) -> Result<Vec<Club>> {
             // 1. On prépare la requête SQL
-            let mut stmt = self.conn.prepare("SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee_eur, avantage_domicile, url_logo FROM clubs c
+            let mut stmt = self.conn.prepare("SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee_eur, 
+            avantage_domicile, url_logo, 
+            points, buts_marques, buts_encaisses FROM clubs c
             INNER JOIN info_club i on i.club_id = c.id ORDER BY nom ASC"
     )?;
 
@@ -25,7 +27,10 @@ impl ClubDAO for SqliteClubDAO {
                     budget_eur: row.get(4)?,
                     revenu_par_journee_eur: row.get(5)?,
                     avantage_domicile: row.get(6)?,
-                    url_logo: row.get(7)?
+                    url_logo: row.get(7)?,
+                    points: row.get(8)?,
+                    buts_marques: row.get(9)?,
+                    buts_encaisses: row.get(10)?
                 })
             })?;
 
@@ -40,7 +45,8 @@ impl ClubDAO for SqliteClubDAO {
 
          fn get_club_by_id(&self, id: i32) -> rusqlite::Result<Club> {
         self.conn.query_row(
-            "SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee, avantage_domicile
+            "SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee, avantage_domicile,
+            points, buts_marques, buts_encaisse
              FROM clubs WHERE id = ?",
             [id], 
             |row: &Row| {
@@ -53,7 +59,10 @@ impl ClubDAO for SqliteClubDAO {
                     budget_eur: row.get(4)?,
                     revenu_par_journee_eur: row.get(5)?,
                     avantage_domicile: row.get(6)?,
-                    url_logo: row.get(7)?
+                    url_logo: row.get(7)?,
+                    points: row.get(8)?,
+                    buts_marques: row.get(9)?,
+                    buts_encaisses: row.get(10)?
                 })
             },
         )
