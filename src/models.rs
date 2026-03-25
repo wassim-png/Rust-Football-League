@@ -12,6 +12,7 @@ pub enum Ecran {
 pub enum OngletMercato {
     JoueursDisponibles,
     OffresRecues,
+    MesJoueurs,
 }
 
 #[derive(Debug, Clone)]
@@ -41,7 +42,9 @@ pub struct Joueur {
 
 #[derive(Clone)]
 pub struct OffreTransfert {
+    pub joueur_id: i32,
     pub joueur_nom: String,
+    pub club_acheteur_id: i32,
     pub club_acheteur: String,
     pub montant_eur: i64,
 }
@@ -49,6 +52,7 @@ pub struct OffreTransfert {
 pub struct EtatMercato {
     pub onglet: OngletMercato,
     pub tous_joueurs: Vec<Joueur>,
+    pub mes_joueurs: Vec<Joueur>,
     pub offres_recues: Vec<OffreTransfert>,
     pub donnees_chargees: bool,
     pub recherche: String,
@@ -58,6 +62,10 @@ pub struct EtatMercato {
     /// Index dans tous_joueurs du joueur sélectionné pour recrutement/offre
     pub joueur_selectionne: Option<usize>,
     pub offre_montant: f64,
+    /// (joueur_id, club_id) à persister en DB après recrutement/achat
+    pub action_recrutement: Option<(i32, i32)>,
+    /// (joueur_id, Option<nouveau_club_id>) — None = libéré sur le marché
+    pub action_vente: Option<(i32, Option<i32>)>,
 }
 
 impl Default for EtatMercato {
@@ -65,6 +73,7 @@ impl Default for EtatMercato {
         Self {
             onglet: OngletMercato::JoueursDisponibles,
             tous_joueurs: vec![],
+            mes_joueurs: vec![],
             offres_recues: vec![],
             donnees_chargees: false,
             recherche: String::new(),
@@ -72,6 +81,8 @@ impl Default for EtatMercato {
             message: None,
             joueur_selectionne: None,
             offre_montant: 0.0,
+            action_recrutement: None,
+            action_vente: None,
         }
     }
 }

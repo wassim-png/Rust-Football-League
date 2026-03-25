@@ -67,10 +67,10 @@ impl MercatoDAO for SqlMercatoDAO {
         }
 
         let mut stmt = self.conn.prepare(
-            "SELECT nom FROM clubs WHERE id != ?1 ORDER BY id",
+            "SELECT id, nom FROM clubs WHERE id != ?1 ORDER BY id",
         )?;
-        let autres_clubs: Vec<String> = stmt
-            .query_map([mon_club_id], |row| row.get::<_, String>(0))?
+        let autres_clubs: Vec<(i32, String)> = stmt
+            .query_map([mon_club_id], |row| Ok((row.get::<_, i32>(0)?, row.get::<_, String>(1)?)))?
             .filter_map(|r| r.ok())
             .collect();
 
@@ -85,16 +85,34 @@ impl MercatoDAO for SqlMercatoDAO {
         let offres = joueurs_cibles
             .iter()
             .filter_map(|j| {
-                let club = autres_clubs.choose(&mut rng)?;
+                let (club_id, club_nom) = autres_clubs.choose(&mut rng)?;
                 let multiplicateur = rng.gen_range(0.90_f64..1.30_f64);
                 Some(OffreTransfert {
+                    joueur_id: j.id,
                     joueur_nom: j.nom.clone(),
-                    club_acheteur: club.clone(),
+                    club_acheteur_id: *club_id,
+                    club_acheteur: club_nom.clone(),
                     montant_eur: (j.valeur_marche_eur as f64 * multiplicateur) as i64,
                 })
             })
             .collect();
 
         Ok(offres)
+    }
+
+    fn recruter_joueur(&self, joueur_id: i32, club_id: i32) -> Result<()> {
+        self.conn.execute(
+            "UPDATE joueurs SET club_id = ?1 WHERE id = ?2",
+            [club_id, joueur_id],
+        )?;
+        Ok(())
+    }
+
+    fn vendre_joueur(&self, joueur_id: i32, nouveau_club_id: Option<i32>) -> Result<()> {
+        self.conn.execute(
+            "UPDATE joueurs SET club_id = ?1 WHERE id = ?2",
+            rusqlite::params![nouveau_club_id, joueur_id],
+        )?;
+        Ok(())
     }
 }

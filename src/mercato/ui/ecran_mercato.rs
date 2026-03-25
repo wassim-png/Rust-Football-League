@@ -80,6 +80,10 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
             etat.onglet = OngletMercato::OffresRecues;
             etat.message = None;
         });
+        tab_btn(ui, "  Mes Joueurs  ", etat.onglet == OngletMercato::MesJoueurs, || {
+            etat.onglet = OngletMercato::MesJoueurs;
+            etat.message = None;
+        });
     });
 
     ui.painter().hline(
@@ -106,6 +110,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
     match etat.onglet {
         OngletMercato::JoueursDisponibles => render_joueurs(ui, etat),
         OngletMercato::OffresRecues => render_offres_recues(ui, equipe, etat),
+        OngletMercato::MesJoueurs => render_mes_joueurs(ui, equipe, etat),
     }
 
     // --- Modales ---
@@ -421,6 +426,9 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
         let offre = etat.offres_recues.remove(idx);
         if accepter {
             equipe.budget_eur += offre.montant_eur;
+            // Retirer de mes_joueurs + déclencher MAJ DB
+            etat.mes_joueurs.retain(|j| j.id != offre.joueur_id);
+            etat.action_vente = Some((offre.joueur_id, Some(offre.club_acheteur_id)));
             etat.message = Some(format!(
                 "✓ {} vendu à {} pour {} — budget : {}",
                 offre.joueur_nom, offre.club_acheteur,
@@ -432,6 +440,84 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
                 offre.club_acheteur, offre.joueur_nom
             ));
         }
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// Onglet : mes joueurs (vente au marché)
+// ──────────────────────────────────────────────────────────
+
+fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
+    if etat.mes_joueurs.is_empty() {
+        ui.add_space(30.0);
+        ui.label(RichText::new("Aucun joueur dans votre effectif.").color(Color32::GRAY).font(FontId::proportional(15.0)));
+        return;
+    }
+
+    ui.label(
+        RichText::new("Vendre un joueur au marché : il devient libre et vous récupérez sa valeur marchande.")
+            .color(Color32::GRAY)
+            .font(FontId::proportional(12.0)),
+    );
+    ui.add_space(8.0);
+
+    let mut vente: Option<usize> = None;
+
+    ScrollArea::vertical().id_source("scroll_mes_joueurs").show(ui, |ui| {
+        for (i, j) in etat.mes_joueurs.iter().enumerate() {
+            Frame::none()
+                .fill(FOND_CARTE)
+                .stroke(Stroke::new(1.0, Color32::from_rgb(55, 55, 75)))
+                .rounding(8.0)
+                .inner_margin(10.0)
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        ui.vertical(|ui| {
+                            ui.horizontal(|ui| {
+                                ui.label(
+                                    RichText::new(&j.nom)
+                                        .font(FontId::proportional(15.0))
+                                        .color(Color32::WHITE)
+                                        .strong(),
+                                );
+                                badge_poste(ui, &j.poste);
+                            });
+                            ui.label(
+                                RichText::new(format!(
+                                    "{} ans  ·  {}  ·  Valeur : {}",
+                                    j.age, etoiles(j.reputation), fmt_eur(j.valeur_marche_eur)
+                                ))
+                                .color(Color32::GRAY)
+                                .font(FontId::proportional(12.0)),
+                            );
+                        });
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            let btn = egui::Button::new(
+                                RichText::new(format!("Vendre  {}", fmt_eur(j.valeur_marche_eur)))
+                                    .color(Color32::WHITE)
+                                    .font(FontId::proportional(13.0)),
+                            )
+                            .fill(ROUGE_VIF)
+                            .stroke(Stroke::NONE)
+                            .rounding(6.0);
+                            if ui.add(btn).clicked() {
+                                vente = Some(i);
+                            }
+                        });
+                    });
+                });
+            ui.add_space(4.0);
+        }
+    });
+
+    if let Some(i) = vente {
+        let j = etat.mes_joueurs.remove(i);
+        equipe.budget_eur += j.valeur_marche_eur;
+        etat.action_vente = Some((j.id, None)); // None = libéré sur le marché
+        etat.message = Some(format!(
+            "✓ {} vendu au marché pour {} — budget : {}",
+            j.nom, fmt_eur(j.valeur_marche_eur), fmt_eur(equipe.budget_eur)
+        ));
     }
 }
 
@@ -495,6 +581,8 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato) {
                         .rounding(6.0);
                     if ui.add_enabled(peut_payer, ok).clicked() {
                         equipe.budget_eur -= cout;
+                        etat.tous_joueurs.remove(idx);
+                        etat.action_recrutement = Some((joueur.id, equipe.id.unwrap_or(0)));
                         etat.message = Some(format!(
                             "✓ {} recruté pour {} — budget restant : {}",
                             joueur.nom, fmt_eur(cout), fmt_eur(equipe.budget_eur)
@@ -557,6 +645,8 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato) {
                         let montant = etat.offre_montant as i64;
                         if etat.offre_montant >= valeur * seuil {
                             equipe.budget_eur -= montant;
+                            etat.tous_joueurs.remove(idx);
+                            etat.action_recrutement = Some((joueur.id, equipe.id.unwrap_or(0)));
                             etat.message = Some(format!(
                                 "✓ {} rejoint votre club pour {} — budget restant : {}",
                                 joueur.nom, fmt_eur(montant), fmt_eur(equipe.budget_eur)

@@ -89,6 +89,9 @@ impl eframe::App for MyApp {
                         self.mercato.tous_joueurs = self.mercato_facade
                             .get_tous_joueurs_disponibles(club_id)
                             .unwrap_or_else(|e| { println!("Erreur joueurs : {:?}", e); vec![] });
+                        self.mercato.mes_joueurs = self.mercato_facade
+                            .get_joueurs_mon_club(club_id)
+                            .unwrap_or_else(|e| { println!("Erreur mes joueurs : {:?}", e); vec![] });
                         self.mercato.offres_recues = self.mercato_facade
                             .generer_offres_ia(club_id)
                             .unwrap_or_else(|e| { println!("Erreur offres IA : {:?}", e); vec![] });
@@ -97,6 +100,18 @@ impl eframe::App for MyApp {
                     // Field splitting : emprunts mutables sur des champs distincts
                     if let Some(ref mut eq) = self.equipe_choisie {
                         ecran_mercato::render(ctx, ui, eq, &mut self.mercato, &mut self.ecran_actuel);
+                    }
+                    // Persister le recrutement en DB après le render
+                    if let Some((joueur_id, club_id)) = self.mercato.action_recrutement.take() {
+                        if let Err(e) = self.mercato_facade.recruter_joueur(joueur_id, club_id) {
+                            println!("Erreur DB recrutement : {:?}", e);
+                        }
+                    }
+                    // Persister la vente en DB après le render
+                    if let Some((joueur_id, nouveau_club_id)) = self.mercato.action_vente.take() {
+                        if let Err(e) = self.mercato_facade.vendre_joueur(joueur_id, nouveau_club_id) {
+                            println!("Erreur DB vente : {:?}", e);
+                        }
                     }
                 }
             }
