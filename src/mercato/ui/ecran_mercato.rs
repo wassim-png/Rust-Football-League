@@ -8,6 +8,24 @@ const VERT: Color32 = Color32::from_rgb(50, 180, 80);
 const ROUGE_VIF: Color32 = Color32::from_rgb(200, 50, 50);
 const BLEU: Color32 = Color32::from_rgb(40, 100, 200);
 
+fn ordre_poste(poste: &str) -> u8 {
+    match poste {
+        "GARDIEN" => 0,
+        "DEFENSE" => 1,
+        "MILIEU"  => 2,
+        "ATTAQUE" => 3,
+        _         => 4,
+    }
+}
+
+fn trier_mes_joueurs(joueurs: &mut Vec<crate::models::Joueur>) {
+    joueurs.sort_by(|a, b| {
+        ordre_poste(&a.poste)
+            .cmp(&ordre_poste(&b.poste))
+            .then(b.reputation.cmp(&a.reputation))
+    });
+}
+
 fn etoiles(rep: i32) -> String {
     let n = ((rep as f32 / 100.0) * 5.0).round() as usize;
     format!("{}{}", "★".repeat(n.min(5)), "☆".repeat(5 - n.min(5)))
@@ -426,7 +444,11 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
         let offre = etat.offres_recues.remove(idx);
         if accepter {
             equipe.budget_eur += offre.montant_eur;
-            // Retirer de mes_joueurs + supprimer toutes les autres offres pour ce joueur
+            // Réinsérer dans tous_joueurs avec le nouveau club avant de retirer
+            if let Some(mut joueur) = etat.mes_joueurs.iter().find(|j| j.id == offre.joueur_id).cloned() {
+                joueur.club_nom = Some(offre.club_acheteur.clone());
+                etat.tous_joueurs.push(joueur);
+            }
             etat.mes_joueurs.retain(|j| j.id != offre.joueur_id);
             etat.offres_recues.retain(|o| o.joueur_id != offre.joueur_id);
             etat.action_vente = Some((offre.joueur_id, Some(offre.club_acheteur_id)));
@@ -512,11 +534,14 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
     });
 
     if let Some(i) = vente {
-        let j = etat.mes_joueurs.remove(i);
+        let mut j = etat.mes_joueurs.remove(i);
         equipe.budget_eur += j.valeur_marche_eur;
         etat.action_vente = Some((j.id, None)); // None = libéré sur le marché
         // Supprimer toute offre en attente pour ce joueur
         etat.offres_recues.retain(|o| o.joueur_id != j.id);
+        // Réinsérer comme joueur libre dans la liste
+        j.club_nom = None;
+        etat.tous_joueurs.push(j.clone());
         etat.message = Some(format!(
             "✓ {} vendu au marché pour {} — budget : {}",
             j.nom, fmt_eur(j.valeur_marche_eur), fmt_eur(equipe.budget_eur)
@@ -585,6 +610,11 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato) {
                     if ui.add_enabled(peut_payer, ok).clicked() {
                         equipe.budget_eur -= cout;
                         etat.tous_joueurs.remove(idx);
+                        // Ajouter immédiatement dans mes joueurs + retrier
+                        let mut joueur_recrute = joueur.clone();
+                        joueur_recrute.club_nom = Some(equipe.nom.clone());
+                        etat.mes_joueurs.push(joueur_recrute);
+                        trier_mes_joueurs(&mut etat.mes_joueurs);
                         etat.action_recrutement = Some((joueur.id, equipe.id.unwrap_or(0)));
                         etat.message = Some(format!(
                             "✓ {} recruté pour {} — budget restant : {}",
@@ -649,6 +679,11 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato) {
                         if etat.offre_montant >= valeur * seuil {
                             equipe.budget_eur -= montant;
                             etat.tous_joueurs.remove(idx);
+                            // Ajouter immédiatement dans mes joueurs + retrier
+                            let mut joueur_recrute = joueur.clone();
+                            joueur_recrute.club_nom = Some(equipe.nom.clone());
+                            etat.mes_joueurs.push(joueur_recrute);
+                            trier_mes_joueurs(&mut etat.mes_joueurs);
                             etat.action_recrutement = Some((joueur.id, equipe.id.unwrap_or(0)));
                             etat.message = Some(format!(
                                 "✓ {} rejoint votre club pour {} — budget restant : {}",
