@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS clubs (
   buts_encaisses INTEGER DEFAULT 0,
 
    
-  avantage_domicile      INTEGER NOT NULL DEFAULT 5 CHECK (avantage_domicile BETWEEN 0 AND 30)
+  avantage_domicile      INTEGER NOT NULL DEFAULT 50 CHECK (avantage_domicile BETWEEN 0 AND 100)
 );
 
 

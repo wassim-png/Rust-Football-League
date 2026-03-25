@@ -1,14 +1,20 @@
 use eframe::egui;
 use rusqlite::Connection;
-use crate::models::{Club, Ecran, EtatMercato};
+use crate::models::{Club, Ecran, EtatMercato, InfosClub};
 use crate::selection_club::businessLogic::ClubFacade;
 use crate::selection_club::ui::ecran_selection;
 use crate::infos_club::ui::ecran_infos;
 use crate::mercato::businessLogic::mercato_facade::MercatoFacade;
 use crate::mercato::ui::ecran_mercato;
+use crate::infos_club::businessLogic::infos_club_facade::InfosClubFacade;
 use std::sync::Arc;
 use crate::page::accueil;
 use crate::page::menu_principal;
+use crate::app::egui::RichText;
+use crate::app::egui::Vec2;
+use crate::app::egui::Stroke;
+use crate::app::egui::Color32;
+use crate::app::egui::FontId;
 
 pub struct MyApp {
     pub ecran_actuel: Ecran,
@@ -17,11 +23,14 @@ pub struct MyApp {
     pub facade: ClubFacade,
     pub mercato_facade: MercatoFacade,
     pub mercato: EtatMercato,
+    pub info_club_actuel: Option<InfosClub>,
+    pub facade_infos_club: InfosClubFacade,
 }
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
         let facade = ClubFacade::new(conn.clone());
+        let facade_infos_club = InfosClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn);
 
         let equipes = facade.get_all().unwrap_or_else(|e| {
@@ -37,9 +46,14 @@ impl MyApp {
             facade,
             mercato_facade,
             mercato: EtatMercato::default(),
+            info_club_actuel: None,
+            facade_infos_club
         }
+
     }
 }
+
+
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
@@ -56,11 +70,49 @@ impl eframe::App for MyApp {
                 Ecran::MenuPrincipal => {
                     if let Some(ref eq) = self.equipe_choisie {
                         menu_principal::render(ui, eq, &mut self.ecran_actuel);
+                    
+                    
+                    if let Some(ref eq) = self.equipe_choisie {
+                       
+                        menu_principal::render(ui, eq, &mut self.ecran_actuel);
+
+                      
+                        if matches!(self.ecran_actuel, Ecran::InfosClub) {
+                            
+                            match self.facade_infos_club.obtenir_infos_club(eq.id.unwrap_or(0)) { 
+                                Ok(infos) => {
+                                    println!("✅ BDD succès : infos récupérées !");
+                                    self.info_club_actuel = Some(infos);
+                                },
+                                Err(e) => {
+                                    println!("❌ Erreur BDD : {:?}", e);
+                                    // En cas d'erreur, on annule le changement d'écran
+                                    self.ecran_actuel = Ecran::MenuPrincipal; 
+                                }
+                            }
+                        }
+                    
                     }
                 }
+                }
 
-                Ecran::InfosClub => {
-                    ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
+
+               Ecran::InfosClub => {
+                
+                    if let (Some(equipe), Some(infos)) = (&self.equipe_choisie, &self.info_club_actuel) {
+                        ecran_infos::render(ui, equipe, infos);
+                    } else {
+                        ui.heading("Erreur : Données du club introuvables.");
+                    }
+
+                   egui::Area::new("bouton_retour_infos")
+                        .fixed_pos(egui::pos2(20.0, 20.0)) 
+                        .show(ui.ctx(), |ui| {
+                           
+                            if ui.button(egui::RichText::new("⬅ Retour").size(18.0)).clicked() { 
+                                self.ecran_actuel = Ecran::MenuPrincipal; 
+                            }
+                        });
                 }
 
                 Ecran::Composition => {
@@ -74,6 +126,7 @@ impl eframe::App for MyApp {
                     ui.label("On affiche ses attributs");
                     if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
                 }
+
 
                 Ecran::Calendrier => {
                     ui.heading("Calendrier");
@@ -93,6 +146,9 @@ impl eframe::App for MyApp {
                     if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
                 }
 
+                                 
+
+
                 Ecran::Mercato => {
                     if !self.mercato.donnees_chargees {
                         let club_id = self.equipe_choisie.as_ref().and_then(|c| c.id).unwrap_or(0);
@@ -111,13 +167,15 @@ impl eframe::App for MyApp {
                     if let Some(ref mut eq) = self.equipe_choisie {
                         ecran_mercato::render(ctx, ui, eq, &mut self.mercato, &mut self.ecran_actuel);
                     }
+
                     // Persister le recrutement en DB après le render
                     if let Some((joueur_id, club_id)) = self.mercato.action_recrutement.take() {
                         if let Err(e) = self.mercato_facade.recruter_joueur(joueur_id, club_id) {
                             println!("Erreur DB recrutement : {:?}", e);
                         }
                     }
-                    // Persister la vente en DB après le render
+
+                   
                     if let Some((joueur_id, nouveau_club_id)) = self.mercato.action_vente.take() {
                         if let Err(e) = self.mercato_facade.vendre_joueur(joueur_id, nouveau_club_id) {
                             println!("Erreur DB vente : {:?}", e);

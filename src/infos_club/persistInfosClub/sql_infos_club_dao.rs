@@ -10,10 +10,20 @@ pub struct SqliteInfosClubDAO{
 impl InfosClubDAO for SqliteInfosClubDAO {
     fn get_infos_by_club(&self, id: i32) -> Result<InfosClub> {
             
-            self.conn.query_row("SELECT club_id, nom, nom_stade, stade_capacite, reputation, avantage_domicile, 
-            revenu_par_journee, url_logo, url_stade from infos_club FROM club 
-
-            INNER JOIN info_club i ON c.id = i.club_id WHERE c.id = ?",
+            self.conn.query_row("SELECT 
+                c.id, 
+                c.nom, 
+                i.nom_stade, 
+                i.stade_capacite, 
+                c.reputation, 
+                c.avantage_domicile, 
+                c.revenu_par_journee_eur, 
+                i.url_logo, 
+                i.url_stade,
+                i.nom_meilleur_buteur
+            FROM clubs c
+            INNER JOIN info_club i ON c.id = i.club_id 
+            WHERE c.id = ?1",
             [id],
              |row: &Row| {
             
@@ -26,7 +36,8 @@ impl InfosClubDAO for SqliteInfosClubDAO {
                     avantage_domicile: row.get(5)?,
                     revenu_par_journee_eur: row.get(6)?,
                     url_logo: row.get(7)?,
-                    url_stade: row.get(8)?
+                    url_stade: row.get(8)?,
+                    nom_meilleur_buteur: row.get(9)?
                 })
             },
         )
