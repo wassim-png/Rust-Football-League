@@ -1,7 +1,7 @@
 use eframe::egui;
 use rusqlite::Connection;
 use crate::models::{Club , Ecran};
-use crate::selection_club::businessLogic::ClubFacade;
+use crate::selection_club::business_logic::ClubFacade;
 use crate::selection_club::ui::ecran_selection;
 use std::sync::Arc;
 use crate::page::accueil;
@@ -14,6 +14,7 @@ pub struct MyApp {
     pub ecran_actuel: Ecran,
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>, 
+    #[allow(dead_code)]
     pub facade: ClubFacade,   
 }
 

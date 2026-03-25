@@ -4,9 +4,7 @@ mod app;
 mod selection_club;
 pub mod page;
 mod database;
-use database:: Database;
-use std::sync::Arc;
-
+use database::Database;
 
 use app::MyApp;
 fn main() -> eframe::Result<()> {

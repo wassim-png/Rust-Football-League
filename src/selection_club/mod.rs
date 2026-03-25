@@ -1,3 +1,3 @@
-pub mod businessLogic;
-pub mod persistClub;
+pub mod business_logic;
+pub mod persist_club;
 pub mod ui;

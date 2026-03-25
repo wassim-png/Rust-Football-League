@@ -1,8 +1,8 @@
 use rusqlite::Connection;
 use crate::models::Club;
 use std::sync::Arc;
-use crate::selection_club::persistClub::sql_club_dao::SqliteClubDAO;
-use crate::selection_club::persistClub::club_dao::ClubDAO; 
+use crate::selection_club::persist_club::sql_club_dao::SqliteClubDAO;
+use crate::selection_club::persist_club::club_dao::ClubDAO; 
 
 pub struct ClubManager {
     
