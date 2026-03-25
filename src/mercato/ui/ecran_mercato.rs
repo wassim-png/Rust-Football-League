@@ -426,8 +426,9 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
         let offre = etat.offres_recues.remove(idx);
         if accepter {
             equipe.budget_eur += offre.montant_eur;
-            // Retirer de mes_joueurs + déclencher MAJ DB
+            // Retirer de mes_joueurs + supprimer toutes les autres offres pour ce joueur
             etat.mes_joueurs.retain(|j| j.id != offre.joueur_id);
+            etat.offres_recues.retain(|o| o.joueur_id != offre.joueur_id);
             etat.action_vente = Some((offre.joueur_id, Some(offre.club_acheteur_id)));
             etat.message = Some(format!(
                 "✓ {} vendu à {} pour {} — budget : {}",
@@ -514,6 +515,8 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
         let j = etat.mes_joueurs.remove(i);
         equipe.budget_eur += j.valeur_marche_eur;
         etat.action_vente = Some((j.id, None)); // None = libéré sur le marché
+        // Supprimer toute offre en attente pour ce joueur
+        etat.offres_recues.retain(|o| o.joueur_id != j.id);
         etat.message = Some(format!(
             "✓ {} vendu au marché pour {} — budget : {}",
             j.nom, fmt_eur(j.valeur_marche_eur), fmt_eur(equipe.budget_eur)
