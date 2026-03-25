@@ -15,9 +15,7 @@ pub struct MyApp {
     pub ecran_actuel: Ecran,
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>, 
-    pub facade: ClubFacade,   
-    pub info_club_actuel: Option<InfosClub>,
-}
+    pub facade: ClubFacade,   }
 
 impl MyApp {
     pub fn new(conn:  Arc<Connection>) -> Self {
@@ -35,7 +33,6 @@ impl MyApp {
             equipe_choisie: None,
             liste_equipes: equipes,
             facade,
-            info_club_actuel: None,
         }
        
     }
@@ -60,22 +57,16 @@ impl eframe::App for MyApp{
                         ui.heading(format!("Manager de : {}", eq.nom));
                         if ui.button(" Infos Club").clicked() { self.ecran_actuel = Ecran::InfosClub; }
                         if ui.button(" Composition").clicked() { self.ecran_actuel = Ecran::Composition; }
-                        if ui.button(" Infos Club").clicked() { 
-                            // On interroge la base de données une seule fois
-                            match self.InfosClubfacade.(eq.id) { // ou eq.club_id selon ta struct
-                                Ok(infos) => self.info_club_actuel = Some(infos),
-                                Err(e) => println!("Erreur DB InfosClub : {:?}", e),
-                            }
-                           
-                        }
+                       
                     }
                 }
 
-
-                Ecran::InfosClub => {
-                  ecran_infos::render(ui,  infos_club, &mut self.equipe_choisie);
-                   if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                Ecran::InfosClub =>{
+                     ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
                 }
+
+
+             
 
 
                 Ecran::Composition => {
