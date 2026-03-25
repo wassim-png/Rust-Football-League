@@ -2,6 +2,7 @@
 mod models; // Déclare l'existence de models.rs
 mod app;
 mod selection_club;
+mod composition;
 pub mod page;
 mod database;
 use database::Database;

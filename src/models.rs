@@ -19,3 +19,17 @@ pub struct Club {
     pub avantage_domicile: i32, 
     pub url_logo: String   
 }
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct Joueur {
+    pub id: i32,
+    pub club_id: i32,
+    pub nom: String,
+    pub age: i32,
+    pub numero: i32,
+    pub poste: String,
+    pub note_actuelle: i32,
+    pub forme: i32,
+    pub nationalite: String,
+}
