@@ -8,11 +8,12 @@ use crate::mercato::businessLogic::mercato_facade::MercatoFacade;
 use crate::mercato::ui::ecran_mercato;
 use std::sync::Arc;
 use crate::page::accueil;
+use crate::page::menu_principal;
 
 pub struct MyApp {
     pub ecran_actuel: Ecran,
     pub equipe_choisie: Option<Club>,
-    pub liste_equipes: Vec<Club>, 
+    pub liste_equipes: Vec<Club>,
     pub facade: ClubFacade,
     pub mercato_facade: MercatoFacade,
     pub mercato: EtatMercato,
@@ -53,22 +54,14 @@ impl eframe::App for MyApp {
                 }
 
                 Ecran::MenuPrincipal => {
-                    if let Some(eq) = &self.equipe_choisie {
-                        ui.heading(format!("Manager de : {}", eq.nom));
-                        if ui.button(" Infos Club").clicked() { self.ecran_actuel = Ecran::InfosClub; }
-                        if ui.button(" Composition").clicked() { self.ecran_actuel = Ecran::Composition; }
-                       
-                        if ui.button(" Marché des Transferts").clicked() {
-                            self.ecran_actuel = Ecran::Mercato;
-                        }
+                    if let Some(ref eq) = self.equipe_choisie {
+                        menu_principal::render(ui, eq, &mut self.ecran_actuel);
                     }
                 }
 
-                Ecran::InfosClub =>{
-                     ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
+                Ecran::InfosClub => {
+                    ecran_selection::render(ui, &self.liste_equipes, &mut self.equipe_choisie, &mut self.ecran_actuel);
                 }
-
-
 
                 Ecran::Composition => {
                     ui.heading("Ma Composition");
@@ -79,6 +72,24 @@ impl eframe::App for MyApp {
                 Ecran::DetailsJoueur => {
                     ui.heading("Détail du joueur ");
                     ui.label("On affiche ses attributs");
+                    if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                }
+
+                Ecran::Calendrier => {
+                    ui.heading("Calendrier");
+                    ui.label("Les matchs de la saison s'afficheront ici...");
+                    if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                }
+
+                Ecran::Classement => {
+                    ui.heading("Classement Ligue 1");
+                    ui.label("La table du championnat s'affichera ici...");
+                    if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                }
+
+                Ecran::ProchainMatch => {
+                    ui.heading("Prochain Match");
+                    ui.label("La simulation du prochain match s'affichera ici...");
                     if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
                 }
 

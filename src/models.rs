@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum Ecran {
     Accueil,
     Selection,
@@ -6,6 +7,9 @@ pub enum Ecran {
     InfosClub,
     DetailsJoueur,
     Mercato,
+    Calendrier,
+    Classement,
+    ProchainMatch,
 }
 
 #[derive(PartialEq, Clone)]
