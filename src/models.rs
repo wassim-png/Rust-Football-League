@@ -48,6 +48,7 @@ pub struct InfosClub {
     pub revenu_par_journee_eur : i64,
     pub url_logo: String,          
     pub url_stade: String,
+    pub nom_meilleur_buteur: String
 }
 
 #[derive(Debug, Clone)]

@@ -12,24 +12,38 @@ struct CarteMenu {
 }
 
 pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran) {
-    // Fond pelouse avec overlay sombre
-    egui::Image::new("file://assets/pelouse.jpg")
+    let rect_ecran = ui.max_rect();
+    
+   egui::Image::new("file://assets/pelouse.jpg")
         .maintain_aspect_ratio(false)
         .max_size(ui.available_size())
         .paint_at(ui, ui.max_rect());
 
-    ui.painter().rect_filled(
-        ui.max_rect(),
+   ui.painter().rect_filled(
+        rect_ecran,
         0.0,
-        Color32::from_rgba_unmultiplied(0, 0, 0, 165),
+        Color32::from_rgba_unmultiplied(50, 50, 0, 165),
     );
 
-    render_header(ui, club);
-    ui.add_space(28.0);
+    // 2. PLACEMENT ABSOLU DU BANDEAU (TOUT EN HAUT)
+    // On crée une boîte de 95px de haut qui commence tout en haut de l'écran (rect_ecran.min)
+    let header_rect = egui::Rect::from_min_size(
+        rect_ecran.min,
+        Vec2::new(rect_ecran.width(), 95.0),
+    );
+ui.allocate_ui_at_rect(header_rect, |ui| {
+        render_header(ui, club);
+    });
+
+    // 3. ON DESCEND LE CURSEUR POUR LES CARTES
+    // Comme le bandeau a été dessiné "hors du flux", on doit pousser le curseur vers le bas
+    // pour que les cartes ne se dessinent pas en dessous du bandeau.
+    // 95 (taille du bandeau) + 40 (marge) = 135.0
+    ui.add_space(135.0);
 
     let cartes: Vec<CarteMenu> = vec![
         CarteMenu {
-            icon: "🏟",
+            icon: "🏢",
             titre: "Infos Club",
             sous_titre: "Stade & finances",
             cible: Ecran::InfosClub,
@@ -134,62 +148,60 @@ fn carte_menu(ui: &mut Ui, carte: &CarteMenu) -> bool {
 }
 
 fn render_header(ui: &mut Ui, club: &Club) {
-    // Bandeau semi-transparent
-    let header_rect = egui::Rect::from_min_size(
-        ui.cursor().min,
-        Vec2::new(ui.available_width(), 95.0),
-    );
-    ui.painter().rect_filled(
-        header_rect,
-        0.0,
-        Color32::from_rgba_unmultiplied(0, 0, 0, 130),
-    );
+    // On utilise egui::Frame pour gérer le fond noir semi-transparent automatiquement
+    egui::Frame::none()
+        .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 130))
+        .inner_margin(egui::Margin::symmetric(20.0, 15.0)) // Marges internes
+        .show(ui, |ui| {
+            
+            // On fixe la hauteur minimale de ce bandeau
+            ui.set_min_height(90.0);
 
-    ui.horizontal(|ui| {
-        ui.add_space(18.0);
+            ui.horizontal(|ui| {
+                // Attention ici à ton chemin d'image. J'ai enlevé le "." qui traînait
+                let logo_path = format!("file:/{}", club.url_logo); 
+                
+                ui.add(
+                    egui::Image::new(&logo_path)
+                        .fit_to_exact_size(Vec2::new(75.0, 75.0))
+                        .rounding(6.0),
+                );
 
-        let logo_path = format!("file://.{}", club.url_logo);
-        ui.add(
-            egui::Image::new(&logo_path)
-                .fit_to_exact_size(Vec2::new(75.0, 75.0))
-                .rounding(6.0),
-        );
+                ui.add_space(20.0);
 
-        ui.add_space(18.0);
+                ui.vertical(|ui| {
+                    ui.add_space(10.0); // Pour centrer le texte verticalement par rapport au logo
+                    ui.label(
+                        RichText::new(&club.nom)
+                            .font(FontId::proportional(32.0))
+                            .strong()
+                            .color(Color32::WHITE),
+                    );
+                    ui.label(
+                        RichText::new(format!("Budget : {} M€", club.budget_eur / 1_000_000))
+                            .font(FontId::proportional(17.0))
+                            .color(Color32::GOLD),
+                    );
+                });
 
-        ui.vertical(|ui| {
-            ui.add_space(10.0);
-            ui.label(
-                RichText::new(&club.nom)
-                    .font(FontId::proportional(32.0))
-                    .strong()
-                    .color(Color32::WHITE),
-            );
-            ui.label(
-                RichText::new(format!("Budget : {} M€", club.budget_eur / 1_000_000))
-                    .font(FontId::proportional(17.0))
-                    .color(Color32::GOLD),
-            );
+                // --- Étoiles de réputation à droite ---
+                let nb_etoiles: usize = match club.reputation {
+                    90..=100 => 5,
+                    70..=89 => 4,
+                    60..=69 => 3,
+                    40..=59 => 2,
+                    20..=39 => 1,
+                    _ => 0,
+                };
+                let etoiles = format!("{}{}", "★".repeat(nb_etoiles), "☆".repeat(5 - nb_etoiles));
+
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    ui.label(
+                        RichText::new(etoiles)
+                            .font(FontId::proportional(24.0))
+                            .color(Color32::GOLD),
+                    );
+                });
+            });
         });
-
-        // Réputation à droite
-        let nb_etoiles: usize = match club.reputation {
-            90..=100 => 5,
-            70..=89 => 4,
-            60..=69 => 3,
-            40..=59 => 2,
-            20..=39 => 1,
-            _ => 0,
-        };
-        let etoiles = format!("{}{}", "★".repeat(nb_etoiles), "☆".repeat(5 - nb_etoiles));
-
-        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-            ui.add_space(18.0);
-            ui.label(
-                RichText::new(etoiles)
-                    .font(FontId::proportional(24.0))
-                    .color(Color32::GOLD),
-            );
-        });
-    });
 }
