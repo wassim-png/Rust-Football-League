@@ -1,11 +1,13 @@
 use eframe::egui;
 use rusqlite::Connection;
-use crate::models::{Club, Ecran, EtatMercato};
+use crate::models::{Club, Ecran, EtatMercato, EtatCalendrier};
 use crate::selection_club::businessLogic::ClubFacade;
 use crate::selection_club::ui::ecran_selection;
 use crate::infos_club::ui::ecran_infos;
 use crate::mercato::businessLogic::mercato_facade::MercatoFacade;
 use crate::mercato::ui::ecran_mercato;
+use crate::calendrier::businessLogic::calendrier_facade::CalendrierFacade;
+use crate::calendrier::ui::ecran_calendrier;
 use std::sync::Arc;
 use crate::page::accueil;
 use crate::page::menu_principal;
@@ -17,12 +19,14 @@ pub struct MyApp {
     pub facade: ClubFacade,
     pub mercato_facade: MercatoFacade,
     pub mercato: EtatMercato,
+    pub calendrier_facade: CalendrierFacade,
+    pub calendrier: EtatCalendrier,
 }
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
         let facade = ClubFacade::new(conn.clone());
-        let mercato_facade = MercatoFacade::new(conn);
+        let mercato_facade = MercatoFacade::new(conn.clone());
 
         let equipes = facade.get_all().unwrap_or_else(|e| {
             println!("Erreur lors de la récupération des clubs : {:?}", e);
@@ -37,6 +41,8 @@ impl MyApp {
             facade,
             mercato_facade,
             mercato: EtatMercato::default(),
+            calendrier_facade: CalendrierFacade::new(conn),
+            calendrier: EtatCalendrier::default(),
         }
     }
 }
@@ -76,9 +82,15 @@ impl eframe::App for MyApp {
                 }
 
                 Ecran::Calendrier => {
-                    ui.heading("Calendrier");
-                    ui.label("Les matchs de la saison s'afficheront ici...");
-                    if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                    if !self.calendrier.donnees_chargees {
+                        self.calendrier.tous_matchs = self.calendrier_facade
+                            .init_et_get_matchs()
+                            .unwrap_or_else(|e| { println!("Erreur calendrier : {:?}", e); vec![] });
+                        self.calendrier.nb_journees = 34;
+                        self.calendrier.donnees_chargees = true;
+                    }
+                    let club_id = self.equipe_choisie.as_ref().and_then(|c| c.id).unwrap_or(0);
+                    ecran_calendrier::render(ui, &mut self.calendrier, club_id, &mut self.ecran_actuel);
                 }
 
                 Ecran::Classement => {

@@ -6,6 +6,7 @@ mod infos_club;
 pub mod page;
 mod database;
 mod mercato;
+mod calendrier;
 use database:: Database;
 
 

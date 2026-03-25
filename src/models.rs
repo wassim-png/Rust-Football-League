@@ -72,6 +72,39 @@ pub struct OffreTransfert {
     pub montant_eur: i64,
 }
 
+#[derive(Debug, Clone)]
+pub struct Match {
+    pub id: i32,
+    pub journee: i32,
+    pub club_domicile_id: i32,
+    pub club_domicile_nom: String,
+    pub club_domicile_logo: String,
+    pub club_exterieur_id: i32,
+    pub club_exterieur_nom: String,
+    pub club_exterieur_logo: String,
+    pub date_coup_envoi: Option<String>,
+    pub buts_domicile: Option<i32>,
+    pub buts_exterieur: Option<i32>,
+}
+
+pub struct EtatCalendrier {
+    pub tous_matchs: Vec<Match>,
+    pub journee_selectionnee: i32,
+    pub nb_journees: i32,
+    pub donnees_chargees: bool,
+}
+
+impl Default for EtatCalendrier {
+    fn default() -> Self {
+        Self {
+            tous_matchs: vec![],
+            journee_selectionnee: 1,
+            nb_journees: 34,
+            donnees_chargees: false,
+        }
+    }
+}
+
 pub struct EtatMercato {
     pub onglet: OngletMercato,
     pub tous_joueurs: Vec<Joueur>,
