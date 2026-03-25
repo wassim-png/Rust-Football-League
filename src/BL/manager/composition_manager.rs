@@ -130,9 +130,9 @@ impl CompositionManager {
     fn note_joueur(&self, joueur: &JoueurComposition, poste_attendu: &Poste) -> f32 {
         if &joueur.poste_reel == poste_attendu {
             joueur.note_generale
-        } else {
-            joueur.note_generale * (1.0 - CompositionRules::MALUS_HORS_POSTE)
-        }
+        // } else {
+        //     joueur.note_generale * (1.0 - CompositionRules::MALUS_HORS_POSTE)
+        // }
     }
 
     // =========================
