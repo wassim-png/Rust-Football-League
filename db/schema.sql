@@ -26,24 +26,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS competitions (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
   nom              TEXT NOT NULL UNIQUE,
-  type_competition TEXT NOT NULL CHECK (type_competition IN ('championnat', 'coupe')),
-
-  -- Règles (simple)
-  nb_equipes       INTEGER CHECK (nb_equipes IS NULL OR nb_equipes >= 2),
- 
-
-  -- Championnat uniquement (NULL autorisés si coupe)
-  points_victoire  INTEGER CHECK (points_victoire IS NULL OR points_victoire >= 0),
-  points_nul       INTEGER CHECK (points_nul IS NULL OR points_nul >= 0),
-  points_defaite   INTEGER CHECK (points_defaite IS NULL OR points_defaite >= 0),
-
-  CHECK (
-    (type_competition <> 'championnat')
-    OR (nb_equipes IS NOT NULL
-        AND points_victoire IS NOT NULL
-        AND points_nul IS NOT NULL
-        AND points_defaite IS NOT NULL)
-  )
+  nb_equipes       INTEGER CHECK (nb_equipes IS NULL OR nb_equipes >= 2)
 );
 
 CREATE TABLE IF NOT EXISTS saisons (
@@ -68,6 +51,9 @@ CREATE TABLE IF NOT EXISTS clubs (
   -- Argent (simple)
   budget_eur             INTEGER NOT NULL DEFAULT 0 CHECK (budget_eur >= 0),
   revenu_par_journee_eur INTEGER NOT NULL DEFAULT 500000 CHECK (revenu_par_journee_eur >= 0),
+  points INTEGER DEFAULT 0,
+  but_marque INTEGER DEFAULT 0,
+  but_encaisse INTEGER DEFAULT 0,
 
    
   avantage_domicile      INTEGER NOT NULL DEFAULT 5 CHECK (avantage_domicile BETWEEN 0 AND 30)

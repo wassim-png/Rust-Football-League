@@ -1,2 +1,2 @@
-pub mod club_dao;     // Si tu as gardé une interface/trait
+pub mod club_dao;    
 pub mod sql_club_dao;
