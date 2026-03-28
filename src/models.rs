@@ -88,6 +88,8 @@ pub struct Match {
     pub buts_exterieur: Option<i32>,
 }
 
+
+
 pub struct EtatCalendrier {
     pub tous_matchs: Vec<Match>,
     pub journee_selectionnee: i32,
