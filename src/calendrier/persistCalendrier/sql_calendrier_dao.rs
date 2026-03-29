@@ -84,6 +84,20 @@ impl SqlCalendrierDAO {
 }
 
 impl CalendrierDAO for SqlCalendrierDAO {
+    fn get_saison_id(&self) -> Result<i32> {
+        self.conn.query_row(
+            "SELECT id FROM saisons LIMIT 1",
+            [],
+            |row| row.get(0),
+        )
+    }
+
+    fn get_club_ids(&self) -> Result<Vec<i32>> {
+        let mut stmt = self.conn.prepare("SELECT id FROM clubs ORDER BY id")?;
+        let iter = stmt.query_map([], |row| row.get(0))?;
+        iter.collect()
+    }
+
     fn calendrier_existe(&self, saison_id: i32) -> Result<bool> {
         let count: i64 = self.conn.query_row(
             "SELECT COUNT(*) FROM matchs WHERE saison_id = ?1",
