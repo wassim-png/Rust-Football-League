@@ -6,7 +6,7 @@ use crate::models::{ Club, InfosClub};
 
 pub fn render(
     ui: &mut Ui, 
-    equipe_choisie: &Club, // ou ta structure d'équipe
+    equipe_choisie: &Club, 
     info_club: &InfosClub
 ) {
     let rect = ui.max_rect();

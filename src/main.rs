@@ -3,6 +3,7 @@ mod models;
 mod app;
 mod selection_club;
 mod infos_club;
+mod prochain_match;
 pub mod page;
 mod database;
 mod mercato;
