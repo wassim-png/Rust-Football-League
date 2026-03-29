@@ -1,6 +1,6 @@
 use eframe::egui;
 use egui::{Ui, Color32, RichText, FontId, Vec2, Stroke};
-use crate::models::{Club, Ecran};
+use crate::models::{Club, Ecran, Match};
 
 struct CarteMenu {
     icon: &'static str,
@@ -11,7 +11,7 @@ struct CarteMenu {
     couleur_hover: Color32,
 }
 
-pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran) {
+pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game : &Option<Match>) {
     let rect_ecran = ui.max_rect();
     
    egui::Image::new("file://assets/pelouse.jpg")
@@ -34,6 +34,82 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran) {
 ui.allocate_ui_at_rect(header_rect, |ui| {
         render_header(ui, club);
     });
+
+    egui::Frame::none()
+            .fill(egui::Color32::from_rgba_unmultiplied(30, 30, 30, 220)) // Fond gris très foncé, presque opaque
+            .rounding(15.0) // Bords bien arrondis
+            .stroke(egui::Stroke::new(1.0, egui::Color32::GRAY)) // Petite bordure grise
+            .inner_margin(egui::Margin::symmetric(50.0, 20.0)) // Marge interne (Largeur, Hauteur)
+            .show(ui, |ui| {
+                
+                match next_game {
+                Some(m) => {
+                    // 1. LE TITRE AVEC LE NUMÉRO DE LA JOURNÉE
+                    ui.label(
+                        egui::RichText::new(format!("⚽ PROCHAIN MATCH - Journée {}", m.journee))
+                            .font(egui::FontId::proportional(20.0))
+                            .color(egui::Color32::LIGHT_BLUE)
+                    );
+                    
+                    ui.add_space(20.0);
+                    
+                    // 2. L'AFFICHE (Logos et Noms sur la même ligne)
+                    ui.horizontal(|ui| {
+                        
+                        // --- ÉQUIPE DOMICILE ---
+                        let chemin_logo_dom = format!("file:/{}", m.club_domicile_logo);
+                        ui.add(egui::Image::new(&chemin_logo_dom).fit_to_exact_size(egui::vec2(50.0, 50.0)));
+                        
+                        ui.label(
+                            egui::RichText::new(&m.club_domicile_nom)
+                                .font(egui::FontId::proportional(30.0))
+                                .strong()
+                                .color(egui::Color32::WHITE)
+                        );
+                        
+                        // --- LE "VS" AU MILIEU ---
+                        ui.label(
+                            egui::RichText::new("  VS  ")
+                                .font(egui::FontId::proportional(20.0))
+                                .color(egui::Color32::GRAY)
+                        );
+                        
+                        // --- ÉQUIPE EXTÉRIEURE ---
+                        ui.label(
+                            egui::RichText::new(&m.club_exterieur_nom)
+                                .font(egui::FontId::proportional(30.0))
+                                .strong()
+                                .color(egui::Color32::WHITE)
+                        );
+                        
+                        let chemin_logo_ext = format!("file:/{}", m.club_exterieur_logo);
+                        ui.add(egui::Image::new(&chemin_logo_ext).fit_to_exact_size(egui::vec2(50.0, 50.0)));
+                    });
+
+                    ui.add_space(15.0);
+
+                    // 3. LA DATE (Comme c'est un Option<String>, on fait un "if let")
+                    if let Some(date) = &m.date_coup_envoi {
+                        ui.label(
+                            egui::RichText::new(format!("📅 Coup d'envoi : {}", date))
+                                .font(egui::FontId::proportional(18.0))
+                                .color(egui::Color32::GRAY)
+                        );
+                    }
+                }
+                None => {
+                    // S'il n'y a pas de match programmé (ex: fin de saison)
+                    ui.add_space(20.0);
+                    ui.label(
+                        egui::RichText::new("Aucun match au calendrier")
+                            .font(egui::FontId::proportional(25.0))
+                            .color(egui::Color32::GRAY)
+                    );
+                    ui.add_space(20.0);
+                }
+            }
+        });
+            
 
     // 3. ON DESCEND LE CURSEUR POUR LES CARTES
     // Comme le bandeau a été dessiné "hors du flux", on doit pousser le curseur vers le bas

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use rusqlite::{Connection, Result};
 use crate::models::{Match};
-use crate::prochain_match::businessLogic::NextGameManager;
+use crate::prochain_match::businessLogic::next_game_manager::NextGameManager;
 
 
 pub struct NextGameFacade {
@@ -14,7 +14,7 @@ impl NextGameFacade {
             manager: NextGameManager::new(conn),
         }
     }
-    pub fn get_next_game(&self, mon_club_id: i32) -> rusqlite::Result<Vec<Joueur>> {
+    pub fn get_next_game(&self, mon_club_id: i32) -> rusqlite::Result<Match> {
         self.manager.get_next_game(mon_club_id)
     }
 

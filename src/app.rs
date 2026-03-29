@@ -1,7 +1,8 @@
 use eframe::egui;
 use rusqlite::Connection;
-use crate::models::{Club, Ecran, EtatMercato, EtatCalendrier, InfosClub};
+use crate::models::{Club, Ecran, EtatMercato, EtatCalendrier, InfosClub, Match};
 use crate::selection_club::businessLogic::ClubFacade;
+use crate::prochain_match::businessLogic::next_game_facade::NextGameFacade;
 use crate::selection_club::ui::ecran_selection;
 use crate::infos_club::ui::ecran_infos;
 use crate::mercato::businessLogic::mercato_facade::MercatoFacade;
@@ -18,23 +19,28 @@ use crate::app::egui::Stroke;
 use crate::app::egui::Color32;
 use crate::app::egui::FontId;
 
+
 pub struct MyApp {
     pub ecran_actuel: Ecran,
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>,
     pub facade: ClubFacade,
     pub mercato_facade: MercatoFacade,
+    pub next_game_facade : NextGameFacade,
     pub mercato: EtatMercato,
     pub calendrier_facade: CalendrierFacade,
     pub calendrier: EtatCalendrier,
     pub info_club_actuel: Option<InfosClub>,
     pub facade_infos_club: InfosClubFacade,
+    pub prochain_match: Option<Match>,
+    pub match_deja_charge: bool,
 }
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
         let facade = ClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn.clone());
+        let next_game_facade = NextGameFacade::new(conn.clone());
         let facade_infos_club = InfosClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn.clone());
 
@@ -50,12 +56,14 @@ impl MyApp {
             liste_equipes: equipes,
             facade,
             mercato_facade,
+            next_game_facade,
             mercato: EtatMercato::default(),
             calendrier_facade: CalendrierFacade::new(conn),
             calendrier: EtatCalendrier::default(),
             info_club_actuel: None,
-            facade_infos_club
-        }
+            facade_infos_club,
+            prochain_match: None,
+        match_deja_charge: false        }
 
     }
 }
@@ -75,13 +83,22 @@ impl eframe::App for MyApp {
                 }
 
                 Ecran::MenuPrincipal => {
-                    if let Some(ref eq) = self.equipe_choisie {
-                        menu_principal::render(ui, eq, &mut self.ecran_actuel);
+                        
                     
                     
                     if let Some(ref eq) = self.equipe_choisie {
-                       
-                        menu_principal::render(ui, eq, &mut self.ecran_actuel);
+                        if !self.match_deja_charge {
+                            let club_id = eq.id.unwrap_or(0);
+                            self.prochain_match = self.next_game_facade.get_next_game(club_id).ok();
+                            
+                            
+                            self.match_deja_charge = true;
+                            println!("📊 DEBUG : Résultat de la BDD : {:?}", self.prochain_match); 
+
+
+                        }
+                        
+                            menu_principal::render(ui, eq, &mut self.ecran_actuel, &self.prochain_match);
 
                       
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
@@ -96,7 +113,7 @@ impl eframe::App for MyApp {
                                     // En cas d'erreur, on annule le changement d'écran
                                     self.ecran_actuel = Ecran::MenuPrincipal; 
                                 }
-                            }
+                            
                         }
                     
                     }
