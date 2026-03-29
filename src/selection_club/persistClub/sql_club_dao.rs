@@ -3,11 +3,11 @@ use rusqlite::{Connection, Result, Row};
 use crate::models::Club;
 use crate::selection_club::persistClub::club_dao::ClubDAO;
 
-pub struct SqliteClubDAO{
+pub struct SqlClubDAO{
     pub conn: Arc<Connection>,
 }
 
-impl ClubDAO for SqliteClubDAO {
+impl ClubDAO for SqlClubDAO {
 
     fn get_all_clubs(&self) -> Result<Vec<Club>> {
             // 1. On prépare la requête SQL

@@ -3,11 +3,11 @@ use rusqlite::{Connection, Result, Row};
 use crate::infos_club::persistInfosClub::infos_club_dao::InfosClubDAO;
 use crate::models::InfosClub;
 
-pub struct SqliteInfosClubDAO{
+pub struct SqlInfosClubDAO{
     pub conn: Arc<Connection>,
 }
 
-impl InfosClubDAO for SqliteInfosClubDAO {
+impl InfosClubDAO for SqlInfosClubDAO {
     fn get_infos_by_club(&self, id: i32) -> Result<InfosClub> {
             
             self.conn.query_row("SELECT 

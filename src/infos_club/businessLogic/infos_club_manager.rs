@@ -1,20 +1,22 @@
 use rusqlite::Connection;
 
 use std::sync::Arc;
-use crate::infos_club::persistInfosClub::sql_infos_club_dao::SqliteInfosClubDAO;
+use crate::infos_club::persistInfosClub::sql_infos_club_dao::SqlInfosClubDAO;
 use crate::infos_club::persistInfosClub::infos_club_dao::InfosClubDAO;
 use crate::models::InfosClub;
 
 pub struct InfosClubManager {
     
-    dao: SqliteInfosClubDAO, 
+    dao: Box<dyn InfosClubDAO>, 
+
 }
+
 
 impl InfosClubManager {
     pub fn new(conn:Arc<Connection>) -> Self {
         Self {
            
-            dao: SqliteInfosClubDAO { conn },
+            dao: Box::new(SqlInfosClubDAO { conn }),
         }
     }
 
