@@ -36,7 +36,23 @@ impl MyApp {
         let facade = ClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn.clone());
         let facade_infos_club = InfosClubFacade::new(conn.clone());
-        let mercato_facade = MercatoFacade::new(conn.clone());
+        let calendrier_facade = CalendrierFacade::new(conn.clone());
+        let mut calendrier = EtatCalendrier::default();
+
+        match calendrier_facade.init_et_get_matchs() {
+            Ok(matchs) => {
+                calendrier.nb_journees = matchs.iter().map(|m| m.journee).max().unwrap_or(34);
+                calendrier.tous_matchs = matchs;
+                calendrier.donnees_chargees = true;
+                println!(
+                    "Calendrier préchargé au démarrage ({} matchs).",
+                    calendrier.tous_matchs.len()
+                );
+            }
+            Err(e) => {
+                println!("Erreur préchargement calendrier : {:?}", e);
+            }
+        }
 
         let equipes = facade.get_all().unwrap_or_else(|e| {
             println!("Erreur lors de la récupération des clubs : {:?}", e);
@@ -51,8 +67,8 @@ impl MyApp {
             facade,
             mercato_facade,
             mercato: EtatMercato::default(),
-            calendrier_facade: CalendrierFacade::new(conn),
-            calendrier: EtatCalendrier::default(),
+            calendrier_facade,
+            calendrier,
             info_club_actuel: None,
             facade_infos_club
         }
