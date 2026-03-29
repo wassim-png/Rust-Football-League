@@ -15,8 +15,8 @@ impl NextGameManager {
         }
     }
 
-    pub fn get_next_game(&self, club_id: i32) -> rusqlite::Result<Match> {
-        self.dao.find_next_game_by_club_id(club_id)
+    pub fn get_next_game(&self, club_id: i32, journee: i32) -> rusqlite::Result<Match> {
+        self.dao.find_next_game_by_club_id(club_id, journee)
     }
 
 }

@@ -14,8 +14,8 @@ impl NextGameFacade {
             manager: NextGameManager::new(conn),
         }
     }
-    pub fn get_next_game(&self, mon_club_id: i32) -> rusqlite::Result<Match> {
-        self.manager.get_next_game(mon_club_id)
+    pub fn get_next_game(&self, mon_club_id: i32, journee: i32) -> rusqlite::Result<Match> {
+        self.manager.get_next_game(mon_club_id, journee)
     }
 
 }

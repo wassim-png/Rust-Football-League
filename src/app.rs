@@ -34,6 +34,8 @@ pub struct MyApp {
     pub facade_infos_club: InfosClubFacade,
     pub prochain_match: Option<Match>,
     pub match_deja_charge: bool,
+
+    pub journee_actuelle: i32,
 }
 
 impl MyApp {
@@ -44,6 +46,7 @@ impl MyApp {
         let facade_infos_club = InfosClubFacade::new(conn.clone());
         let calendrier_facade = CalendrierFacade::new(conn.clone());
         let mut calendrier = EtatCalendrier::default();
+
 
         match calendrier_facade.init_et_get_matchs() {
             Ok(matchs) => {
@@ -79,6 +82,7 @@ impl MyApp {
             info_club_actuel: None,
             facade_infos_club,
             prochain_match: None,
+            journee_actuelle: 1,
         match_deja_charge: false        }
 
     }
@@ -103,18 +107,15 @@ impl eframe::App for MyApp {
                     
                     
                     if let Some(ref eq) = self.equipe_choisie {
-                        if !self.match_deja_charge {
-                            let club_id = eq.id.unwrap_or(0);
-                            self.prochain_match = self.next_game_facade.get_next_game(club_id).ok();
-                            
-                            
-                            self.match_deja_charge = true;
-                            println!("📊 DEBUG : Résultat de la BDD : {:?}", self.prochain_match); 
+                     if !self.match_deja_charge {
 
-
-                        }
+                        let club_id = eq.id.unwrap_or(0);
+    
+                        self.prochain_match= self.next_game_facade.get_next_game(club_id, self.journee_actuelle).ok();
+                        self.match_deja_charge = true;
+                    }
                         
-                            menu_principal::render(ui, eq, &mut self.ecran_actuel, &self.prochain_match);
+                        menu_principal::render(ui, eq, &mut self.ecran_actuel, &self.prochain_match);
 
                       
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
@@ -209,7 +210,7 @@ impl eframe::App for MyApp {
                             .unwrap_or_else(|e| { println!("Erreur offres IA : {:?}", e); vec![] });
                         self.mercato.donnees_chargees = true;
                     }
-                    // Field splitting : emprunts mutables sur des champs distincts
+                    
                     if let Some(ref mut eq) = self.equipe_choisie {
                         ecran_mercato::render(ctx, ui, eq, &mut self.mercato, &mut self.ecran_actuel);
                     }
