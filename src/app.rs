@@ -35,6 +35,8 @@ pub struct MyApp {
     pub prochain_match: Option<Match>,
     pub match_deja_charge: bool,
 
+    pub matchs_du_jour: Option<Vec<Match>>,
+
     pub journee_actuelle: i32,
 }
 
@@ -83,6 +85,7 @@ impl MyApp {
             facade_infos_club,
             prochain_match: None,
             journee_actuelle: 1,
+            matchs_du_jour: None,
         match_deja_charge: false        }
 
     }
@@ -110,6 +113,8 @@ impl eframe::App for MyApp {
                      if !self.match_deja_charge {
 
                         let club_id = eq.id.unwrap_or(0);
+                        self.matchs_du_jour = self.calendrier_facade.get_tous_matchs_par_journee(1, self.journee_actuelle).ok();
+                        println!("{:#?}", self.matchs_du_jour);
     
                         self.prochain_match= self.next_game_facade.get_next_game(club_id, self.journee_actuelle).ok();
                         self.match_deja_charge = true;

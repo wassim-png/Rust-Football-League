@@ -17,4 +17,8 @@ impl CalendrierFacade {
     pub fn init_et_get_matchs(&self) -> Result<Vec<Match>> {
         self.manager.init_et_get_matchs()
     }
+
+    pub fn get_tous_matchs_par_journee(&self, saison_id: i32, journee: i32)-> Result<Vec<Match>> {
+        self.manager.get_tous_matchs_par_journee(saison_id, journee)
+    }
 }

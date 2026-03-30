@@ -158,4 +158,45 @@ impl CalendrierDAO for SqlCalendrierDAO {
         }
         Ok(matchs)
     }
+
+
+     fn get_tous_matchs_par_journee(&self, saison_id: i32, journee: i32) -> Result<Vec<Match>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT m.id, m.journee,
+                    m.club_domicile_id,  cd.nom,  id_info.url_logo,
+                    m.club_exterieur_id, ce.nom,  ie_info.url_logo,
+                    m.date_coup_envoi,
+                    r.buts_domicile, r.buts_exterieur
+             FROM matchs m
+             JOIN clubs cd       ON cd.id       = m.club_domicile_id
+             JOIN clubs ce       ON ce.id       = m.club_exterieur_id
+             JOIN info_club id_info ON id_info.club_id = m.club_domicile_id
+             JOIN info_club ie_info ON ie_info.club_id = m.club_exterieur_id
+             LEFT JOIN resultats_matchs r ON r.match_id = m.id
+             WHERE m.saison_id = ?1 AND m.journee = ?2
+             ORDER BY m.journee, m.id",
+        )?;
+
+        let iter = stmt.query_map(params![saison_id, journee], |row| {
+            Ok(Match {
+                id: row.get(0)?,
+                journee: row.get(1)?,
+                club_domicile_id: row.get(2)?,
+                club_domicile_nom: row.get(3)?,
+                club_domicile_logo: row.get(4)?,
+                club_exterieur_id: row.get(5)?,
+                club_exterieur_nom: row.get(6)?,
+                club_exterieur_logo: row.get(7)?,
+                date_coup_envoi: row.get(8)?,
+                buts_domicile: row.get(9)?,
+                buts_exterieur: row.get(10)?,
+            })
+        })?;
+
+        let mut matchs = Vec::new();
+        for m in iter {
+            matchs.push(m?);
+        }
+        Ok(matchs)
+    }
 }
