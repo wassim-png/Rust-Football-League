@@ -83,8 +83,7 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
             _        => 0,
         };
 
-        let etoiles_pleines = "★".repeat(nb_etoiles);
-        let etoiles_vides = "☆".repeat(5 - nb_etoiles);
+        let etoiles = format!("{}{}", "★".repeat(nb_etoiles), "☆".repeat(5 - nb_etoiles));
     
 
 

@@ -8,6 +8,7 @@ pub mod page;
 mod database;
 mod mercato;
 mod calendrier;
+mod composition;
 use database:: Database;
 
 
