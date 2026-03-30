@@ -30,6 +30,9 @@ impl MercatoDAO for SqlMercatoDAO {
                 valeur_marche_eur: row.get(5)?,
                 salaire_semaine_eur: row.get(6)?,
                 club_nom: row.get(7)?,
+                note_actuelle: None,
+                forme: None,
+                nationalite: None,
             })
         })?;
         iter.collect()
@@ -54,6 +57,9 @@ impl MercatoDAO for SqlMercatoDAO {
                 valeur_marche_eur: row.get(5)?,
                 salaire_semaine_eur: row.get(6)?,
                 club_nom: row.get(7)?,
+                note_actuelle: None,
+                forme: None,
+                nationalite: None,
             })
         })?;
         iter.collect()

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::sync::OnceLock;
 
-use crate::config::composition_rules::CompositionRules;
+use crate::simulation::config::composition_rules::CompositionRules;
 use crate::models::{CompositionMatch, Joueur};
 
 pub struct CompositionManager;
@@ -37,7 +37,7 @@ impl CompositionManager {
             return 0.0;
         }
 
-        let somme: f32 = joueurs.iter().map(|j| j.note).sum();
+        let somme: f32 = joueurs.iter().map(|j| j.note_actuelle).sum();
         somme / joueurs.len() as f32
     }
 
@@ -101,7 +101,7 @@ impl CompositionManager {
                 _ => 0.0,
             };
 
-            somme += joueur.note * poids;
+            somme += joueur.note_actuelle * poids;
             total_poids += poids;
         }
 

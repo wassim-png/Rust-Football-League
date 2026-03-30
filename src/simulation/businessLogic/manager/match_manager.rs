@@ -1,34 +1,35 @@
 use std::sync::OnceLock;
 
 use rand::Rng;
-
-use crate::config::match_rules::MatchRules;
-use crate::dao::club_dao::ClubDao;
-use crate::dao::composition_dao::CompositionDao;
-use crate::dao::match_dao::MatchDao;
-use crate::model::club::Club;
-use crate::model::composition_match::CompositionMatch;
-use crate::model::poste::Poste;
-use crate::model::resultat_match::ResultatSimulationMatch;
-use crate::sqlitedao::sqlite_club_dao::SqliteClubDao;
-use crate::sqlitedao::sqlite_composition_dao::SqliteCompositionDao;
-use crate::sqlitedao::sqlite_match_dao::SqliteMatchDao;
+use std::sync::Arc;
+use crate::simulation::config::match_rules::MatchRules;
+use crate::simulation::persistSimulation::dao::club_dao::ClubDao;
+use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
+use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
+use crate::models::club::Club;
+use crate::models::composition_match::CompositionMatch;
+use crate::models::poste::Poste;
+use crate::models::ResultatSimulationMatch;
+use crate::simulation::persistSimulation::sqlitedao::sqlite_club_dao::SqliteClubDao;
+use crate::simulation::persistSimulation::sqlitedao::sqlite_composition_dao::SqliteCompositionDao;
+use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
+use crate::selection_club::persist_club::club_dao::ClubDAO;
 
 pub struct MatchManager {
-    match_dao: SqliteMatchDao,
-    composition_dao: SqliteCompositionDao,
-    club_dao: SqliteClubDao,
+    match_dao:  Box<dyn MatchDao>,
+    composition_dao: Box<dyn CompositionDAO>,
+    club_dao: Box<dyn ClubDAO>,
 }
 
-static INSTANCE: OnceLock<MatchManager> = OnceLock::new();
+
+
+
 
 impl MatchManager {
-    pub fn get_instance() -> &'static MatchManager {
-        INSTANCE.get_or_init(|| MatchManager {
-            match_dao: SqliteMatchDao::new(),
-            composition_dao: SqliteCompositionDao::new(),
-            club_dao: SqliteClubDao::new(),
-        })
+   pub fn new(conn: Arc<Connection>, ) -> Self {
+        Self {
+            dao: Box::new(SqlNextGameDAO { conn }),
+        }
     }
 
     pub fn calculer_note_globale(&self, equipe: &CompositionMatch) -> f32 {

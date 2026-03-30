@@ -47,7 +47,7 @@ impl JoueurDAO for SqliteJoueurDAO {
                 age: row.get(2)?,
                 poste: row.get(3)?,
                 reputation: row.get(4)?,
-                note: row.get(5)?,
+                note_actuelle: row.get(5)?,
                 forme: row.get(6)?,
                 nationalite: row.get(7)?,
                 valeur_marche_eur: row.get(8)?,

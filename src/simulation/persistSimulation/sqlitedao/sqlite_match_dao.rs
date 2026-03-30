@@ -1,24 +1,23 @@
 use rusqlite::params;
+use std::sync::Arc;
+use rusqlite::{Connection, Result};
+use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
 
-use crate::dao::match_dao::MatchDao;
-use crate::db::db_connection::DbConnection;
-use crate::model::match::Match;
-use crate::model::resultat_match::ResultatSimulationMatch;
+use crate::models::Match;
+use crate::models::ResultatSimulationMatch;
 
-pub struct SqliteMatchDao;
-
-impl SqliteMatchDao {
-    pub fn new() -> Self {
-        Self
-    }
+pub struct SqliteMatchDao{
+     pub conn: Arc<Connection>,
 }
+
+
+ 
 
 impl MatchDao for SqliteMatchDao {
     fn find_match_by_id(&self, match_id: i32) -> Result<Option<Match>, String> {
-        let connection = DbConnection::get_connection()
-            .map_err(|e| format!("Erreur connexion SQLite : {}", e))?;
+       
 
-        let mut stmt = connection
+        let mut stmt = self.conn
             .prepare(
                 "
                 SELECT id, saison_id, journee, club_domicile_id, club_exterieur_id, date_coup_envoi
@@ -52,10 +51,9 @@ impl MatchDao for SqliteMatchDao {
     }
 
     fn save_resultat_match(&self, resultat: &ResultatSimulationMatch) -> Result<(), String> {
-        let connection = DbConnection::get_connection()
-            .map_err(|e| format!("Erreur connexion SQLite : {}", e))?;
+         
 
-        connection
+       let mut stmt = self.conn
             .execute(
                 "
                 INSERT INTO resultats_matchs (match_id, buts_domicile, buts_exterieur)
@@ -75,3 +73,4 @@ impl MatchDao for SqliteMatchDao {
         Ok(())
     }
 }
+

@@ -42,7 +42,8 @@ pub fn render(
     slot_actif: &mut Option<usize>,
     ecran_actuel: &mut Ecran,
     nom_club: &str,
-) {
+)->bool {
+    let mut composition_validee = false;
     let panel_rect = ui.max_rect();
 
     egui::Image::new("file://assets/pelouse.jpg")
@@ -162,12 +163,12 @@ pub fn render(
             .enumerate()
             .filter(|(i, s)| s.is_some() && *i != active_slot)
             .filter_map(|(_, s)| s.as_ref())
-            .filter_map(|j| j.id)
+            .filter_map(|j| Some(j.id))
             .collect();
 
         let joueurs_disponibles: Vec<&Joueur> = joueurs
             .iter()
-            .filter(|j| j.poste == poste_requis && !deja_pris_ids.contains(&j.id.unwrap_or(-1)))
+            .filter(|j| j.poste == poste_requis && !deja_pris_ids.contains(&j.id))
             .collect();
 
         egui::SidePanel::right("selection_joueur")
@@ -219,10 +220,10 @@ pub fn render(
                         }
 
                         for joueur in &joueurs_disponibles {
-                            let joueur_id = joueur.id.unwrap_or(-1);
+                            let joueur_id = joueur.id;
                             let est_actuel = composition[active_slot]
                                 .as_ref()
-                                .and_then(|j| j.id)
+                                .and_then(|j| Some(j.id))
                                 == Some(joueur_id);
 
                             let bg = if est_actuel {
@@ -347,8 +348,11 @@ pub fn render(
             let response = ui.add(btn_valider);
             if peut_valider && response.clicked() {
                 *slot_actif = None;
+                composition_validee = true;
                 println!("Composition validée !");
             }
         });
     });
+
+    return composition_validee
 }

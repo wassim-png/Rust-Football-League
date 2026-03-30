@@ -1,4 +1,4 @@
-use crate::model::composition_match::CompositionMatch;
+use crate::models::CompositionMatch;
 
 pub trait CompositionDao {
     fn find_by_match_and_club(

@@ -1,5 +1,5 @@
-use crate::model::match::Match;
-use crate::model::resultat_match::ResultatSimulationMatch;
+use crate::models::Match;
+use crate::models::ResultatSimulationMatch;
 
 pub trait MatchDao {
     fn find_match_by_id(&self, match_id: i32) -> Result<Option<Match>, String>;

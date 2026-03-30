@@ -9,6 +9,7 @@ mod database;
 mod mercato;
 mod calendrier;
 mod composition;
+mod simulation;
 use database:: Database;
 
 

@@ -60,13 +60,13 @@ pub struct Joueur {
     pub poste: String,
     pub reputation: i32,
 
-    pub note: f32,
-    pub forme: f32,
-    pub nationalite: String,
+    pub note_actuelle: Option<i32>, 
+    pub forme: Option<i32>,
+    pub nationalite: Option<String>,
 
     pub valeur_marche_eur: i64,
     pub salaire_semaine_eur: i64,
-    /// None = joueur libre, Some(nom) = joueur sous contrat
+    
     pub club_nom: Option<String>,
 }
 
@@ -94,6 +94,8 @@ pub struct Match {
     pub buts_domicile: Option<i32>,
     pub buts_exterieur: Option<i32>,
 }
+
+
 
 
 
@@ -161,4 +163,12 @@ pub struct CompositionMatch {
     pub note_collectif: f32,
     pub forme_generale: f32,
     pub finition: f32,
+}
+
+#[derive(Debug, Clone)]
+pub struct ResultatSimulationMatch {
+    pub match_id: i32,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub vainqueur_id: Option<i32>,
 }
