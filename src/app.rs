@@ -3,7 +3,7 @@ use rusqlite::Connection;
 use std::sync::Arc;
 
 use crate::models::{
-    Club, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,
+    Club, CompositionMatch, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,
 };
 
 use crate::selection_club::business_logic::ClubFacade;
@@ -20,6 +20,7 @@ use crate::mercato::ui::ecran_mercato;
 use crate::calendrier::businessLogic::calendrier_facade::CalendrierFacade;
 use crate::calendrier::ui::ecran_calendrier;
 
+use crate::composition::business_logic::composition_manager::CompositionManager;
 use crate::composition::ui::ecran_composition;
 
 use crate::page::accueil;
@@ -48,6 +49,8 @@ pub struct MyApp {
     pub joueurs_club: Vec<Joueur>,
     pub composition: [Option<Joueur>; 11],
     pub slot_actif: Option<usize>,
+
+    pub composition_match_actuelle: Option<CompositionMatch>,
 }
 
 impl MyApp {
@@ -105,6 +108,8 @@ impl MyApp {
             joueurs_club: vec![],
             composition: std::array::from_fn(|_| None),
             slot_actif: None,
+
+            composition_match_actuelle: None,
         }
     }
 
@@ -222,7 +227,7 @@ impl eframe::App for MyApp {
                         .map(|c| c.nom.clone())
                         .unwrap_or_default();
 
-                    ecran_composition::render(
+                    let composition_validee = ecran_composition::render(
                         ui,
                         &self.joueurs_club,
                         &mut self.composition,
@@ -230,6 +235,30 @@ impl eframe::App for MyApp {
                         &mut self.ecran_actuel,
                         &nom_club,
                     );
+
+                    if composition_validee {
+                        if let (Some(club), Some(prochain_match)) =
+                            (&self.equipe_choisie, &self.prochain_match)
+                        {
+                            let joueurs_selectionnes: Vec<Joueur> = self
+                                .composition
+                                .iter()
+                                .filter_map(|slot| slot.clone())
+                                .collect();
+
+                            let composition_match = CompositionManager::get_instance()
+                                .creer_composition_match(
+                                    prochain_match.id,
+                                    club.id.unwrap_or(0),
+                                    &joueurs_selectionnes,
+                                );
+
+                            println!("Composition créée : {:#?}", composition_match);
+
+                            self.composition_match_actuelle = Some(composition_match);
+                            self.ecran_actuel = Ecran::MenuPrincipal;
+                        }
+                    }
                 }
 
                 Ecran::DetailsJoueur => {

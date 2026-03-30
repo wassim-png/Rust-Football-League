@@ -2,8 +2,7 @@ use std::collections::HashSet;
 use std::sync::OnceLock;
 
 use crate::config::composition_rules::CompositionRules;
-use crate::model::composition_match::CompositionMatch;
-use crate::models::Joueur;
+use crate::models::{CompositionMatch, Joueur};
 
 pub struct CompositionManager;
 
@@ -30,42 +29,66 @@ impl CompositionManager {
         }
     }
 
+    // =========================
+    // NOTE GENERALE
+    // =========================
     fn calculer_note_generale(&self, joueurs: &[Joueur]) -> f32 {
         if joueurs.is_empty() {
             return 0.0;
         }
 
-        let somme: f32 = joueurs.iter().map(|j| j.reputation as f32).sum();
+        let somme: f32 = joueurs.iter().map(|j| j.note).sum();
         somme / joueurs.len() as f32
     }
 
+    // =========================
+    // FORME GENERALE
+    // =========================
     fn calculer_forme_generale(&self, joueurs: &[Joueur]) -> f32 {
         if joueurs.is_empty() {
             return 0.0;
         }
 
-        // temporaire : forme = réputation
-        let somme: f32 = joueurs.iter().map(|j| j.reputation as f32).sum();
+        let somme: f32 = joueurs.iter().map(|j| j.forme).sum();
         somme / joueurs.len() as f32
     }
 
+    // =========================
+    // COLLECTIF
+    // =========================
     fn calculer_note_collectif(&self, joueurs: &[Joueur]) -> f32 {
         if joueurs.is_empty() {
             return 0.0;
         }
 
-        // ⚠️ temporaire si tu n'as pas nationalité
-        let base = CompositionRules::BASE_COLLECTIF;
-        let bonus = joueurs.len() as f32 * 2.0;
+        let mut nationalites = HashSet::new();
+        let mut nb_fr = 0;
 
-        (base + bonus).clamp(0.0, CompositionRules::MAX_COLLECTIF)
-    }
+        for joueur in joueurs {
+            nationalites.insert(joueur.nationalite.clone());
 
-    fn calculer_finition(&self, joueurs: &[Joueur]) -> f32 {
-        if joueurs.is_empty() {
-            return 0.0;
+            if joueur.nationalite == "FR" {
+                nb_fr += 1;
+            }
         }
 
+        let nb_nationalites = nationalites.len() as f32;
+        let base = CompositionRules::BASE_COLLECTIF;
+
+        let bonus_cohesion =
+            (joueurs.len() as f32 - nb_nationalites) * CompositionRules::BONUS_COHESION_PAR_JOUEUR;
+
+        let bonus_fr = nb_fr as f32 * CompositionRules::BONUS_FRANCAIS;
+
+        let note = base + bonus_cohesion + bonus_fr;
+
+        note.clamp(0.0, CompositionRules::MAX_COLLECTIF)
+    }
+
+    // =========================
+    // FINITION
+    // =========================
+    fn calculer_finition(&self, joueurs: &[Joueur]) -> f32 {
         let mut somme = 0.0;
         let mut total_poids = 0.0;
 
@@ -75,10 +98,10 @@ impl CompositionManager {
                 "DEFENSE" => CompositionRules::POIDS_DEFENSE,
                 "MILIEU" => CompositionRules::POIDS_MILIEU,
                 "ATTAQUE" => CompositionRules::POIDS_ATTAQUE,
-                _ => 1.0,
+                _ => 0.0,
             };
 
-            somme += joueur.reputation as f32 * poids;
+            somme += joueur.note * poids;
             total_poids += poids;
         }
 

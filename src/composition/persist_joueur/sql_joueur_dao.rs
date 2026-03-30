@@ -17,11 +17,16 @@ impl JoueurDAO for SqliteJoueurDAO {
                 j.age,
                 j.poste,
                 j.reputation,
+                COALESCE(a.note_actuelle, g.note_actuelle, j.reputation) as note,
+                COALESCE(a.forme, g.forme, 100) as forme,
+                COALESCE(a.nationalite, g.nationalite, 'FR') as nationalite,
                 j.valeur_marche_eur,
                 j.salaire_semaine_eur,
                 c.nom
             FROM joueurs j
             JOIN clubs c ON j.club_id = c.id
+            LEFT JOIN attributs_joueur_saison a ON a.joueur_id = j.id AND j.poste <> 'GARDIEN'
+            LEFT JOIN attributs_gardien_saison g ON g.joueur_id = j.id AND j.poste = 'GARDIEN'
             WHERE j.club_id = ?
             ORDER BY
                 CASE j.poste
@@ -31,7 +36,7 @@ impl JoueurDAO for SqliteJoueurDAO {
                     WHEN 'ATTAQUE' THEN 4
                     ELSE 5
                 END,
-                j.reputation DESC
+                note DESC
             "
         )?;
 
@@ -42,9 +47,12 @@ impl JoueurDAO for SqliteJoueurDAO {
                 age: row.get(2)?,
                 poste: row.get(3)?,
                 reputation: row.get(4)?,
-                valeur_marche_eur: row.get(5)?,
-                salaire_semaine_eur: row.get(6)?,
-                club_nom: row.get(7)?,
+                note: row.get(5)?,
+                forme: row.get(6)?,
+                nationalite: row.get(7)?,
+                valeur_marche_eur: row.get(8)?,
+                salaire_semaine_eur: row.get(9)?,
+                club_nom: row.get(10)?,
             })
         })?;
 

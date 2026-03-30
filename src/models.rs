@@ -59,11 +59,17 @@ pub struct Joueur {
     pub age: i32,
     pub poste: String,
     pub reputation: i32,
+
+    pub note: f32,
+    pub forme: f32,
+    pub nationalite: String,
+
     pub valeur_marche_eur: i64,
     pub salaire_semaine_eur: i64,
     /// None = joueur libre, Some(nom) = joueur sous contrat
     pub club_nom: Option<String>,
 }
+
 
 #[derive(Clone)]
 pub struct OffreTransfert {
