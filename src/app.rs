@@ -46,7 +46,7 @@ pub struct MyApp {
     pub journee_actuelle: i32,
 
     pub joueurs_club: Vec<Joueur>,
-    pub composition: [Option<usize>; 11],
+    pub composition: [Option<Joueur>; 11],
     pub slot_actif: Option<usize>,
 }
 
@@ -103,13 +103,13 @@ impl MyApp {
             journee_actuelle: 1,
 
             joueurs_club: vec![],
-            composition: [None; 11],
+            composition: std::array::from_fn(|_| None),
             slot_actif: None,
         }
     }
 
     fn reset_composition_state(&mut self) {
-        self.composition = [None; 11];
+        self.composition = std::array::from_fn(|_| None);
         self.slot_actif = None;
     }
 

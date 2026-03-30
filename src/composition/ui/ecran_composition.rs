@@ -38,7 +38,7 @@ fn couleur_note(note: i32) -> Color32 {
 pub fn render(
     ui: &mut Ui,
     joueurs: &[Joueur],
-    composition: &mut [Option<usize>; 11],
+    composition: &mut [Option<Joueur>; 11],
     slot_actif: &mut Option<usize>,
     ecran_actuel: &mut Ecran,
     nom_club: &str,
@@ -110,9 +110,7 @@ pub fn render(
         ui.painter()
             .circle(center, radius, fill, Stroke::new(2.5, stroke_col));
 
-        if let Some(joueur_idx) = composition[slot_idx] {
-            let joueur = &joueurs[joueur_idx];
-
+        if let Some(joueur) = &composition[slot_idx] {
             let nom_court = if joueur.nom.len() > 10 {
                 format!("{}.", &joueur.nom[..9])
             } else {
@@ -159,17 +157,17 @@ pub fn render(
     if let Some(active_slot) = *slot_actif {
         let (_, _, poste_requis, label) = FORMATION_433[active_slot];
 
-        let deja_pris: Vec<usize> = composition
+        let deja_pris_ids: Vec<i32> = composition
             .iter()
             .enumerate()
             .filter(|(i, s)| s.is_some() && *i != active_slot)
-            .map(|(_, s)| s.unwrap())
+            .filter_map(|(_, s)| s.as_ref())
+            .filter_map(|j| j.id)
             .collect();
 
-        let joueurs_disponibles: Vec<(usize, &Joueur)> = joueurs
+        let joueurs_disponibles: Vec<&Joueur> = joueurs
             .iter()
-            .enumerate()
-            .filter(|(idx, j)| j.poste == poste_requis && !deja_pris.contains(idx))
+            .filter(|j| j.poste == poste_requis && !deja_pris_ids.contains(&j.id.unwrap_or(-1)))
             .collect();
 
         egui::SidePanel::right("selection_joueur")
@@ -220,8 +218,13 @@ pub fn render(
                             );
                         }
 
-                        for (idx, joueur) in &joueurs_disponibles {
-                            let est_actuel = composition[active_slot] == Some(*idx);
+                        for joueur in &joueurs_disponibles {
+                            let joueur_id = joueur.id.unwrap_or(-1);
+                            let est_actuel = composition[active_slot]
+                                .as_ref()
+                                .and_then(|j| j.id)
+                                == Some(joueur_id);
+
                             let bg = if est_actuel {
                                 Color32::from_rgba_unmultiplied(46, 125, 50, 180)
                             } else {
@@ -271,12 +274,12 @@ pub fn render(
 
                                     let response = ui.interact(
                                         ui.min_rect(),
-                                        ui.id().with(format!("joueur_{}", idx)),
+                                        ui.id().with(format!("joueur_{}", joueur_id)),
                                         egui::Sense::click(),
                                     );
 
                                     if response.clicked() {
-                                        composition[active_slot] = Some(*idx);
+                                        composition[active_slot] = Some((*joueur).clone());
                                         *slot_actif = None;
                                     }
                                 });
