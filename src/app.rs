@@ -115,7 +115,7 @@ impl eframe::App for MyApp {
                         self.match_deja_charge = true;
                     }
                         
-                        menu_principal::render(ui, eq, &mut self.ecran_actuel, &self.prochain_match);
+                        menu_principal::render(ui, eq, &mut self.ecran_actuel, &self.prochain_match, &self.liste_equipes, self.journee_actuelle);
 
                       
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
