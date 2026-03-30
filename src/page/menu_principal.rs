@@ -11,7 +11,7 @@ struct CarteMenu {
     couleur_hover: Color32,
 }
 
-pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game : &Option<Match>) {
+pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game : &Option<Match>, classement :&Vec<Club>, journee_actuelle: i32) {
     let rect_ecran = ui.max_rect();
     
    egui::Image::new("file://assets/pelouse.jpg")
@@ -109,6 +109,8 @@ ui.allocate_ui_at_rect(header_rect, |ui| {
                 }
             }
         });
+
+        afficher_classement(ui, classement, journee_actuelle);
             
 
     // 3. ON DESCEND LE CURSEUR POUR LES CARTES
@@ -280,4 +282,105 @@ fn render_header(ui: &mut Ui, club: &Club) {
                 });
             });
         });
+    }
+
+
+
+    pub fn afficher_classement(ui: &mut egui::Ui, classement: &Vec<Club>, journee_actuelle: i32) {
+    
+    // 🌟 On centre tout le bloc et on bloque la largeur à 450 pixels maximum
+    ui.vertical_centered(|ui| {
+        ui.set_max_width(450.0);
+
+        // --- 1. LE RECTANGLE CONTENEUR ---
+        egui::Frame::none()
+            .fill(egui::Color32::from_gray(30))
+            .rounding(10.0)
+            .inner_margin(10.0)
+            .stroke(egui::Stroke::new(1.0, egui::Color32::from_gray(60)))
+            .show(ui, |ui| {
+                
+                ui.heading("Classement Ligue 1");
+                ui.add_space(10.0);
+
+                // --- 2. L'EN-TÊTE ---
+                ui.horizontal(|ui| {
+                    ui.set_min_height(25.0);
+                    ui.add_sized([30.0, 20.0], egui::Label::new(egui::RichText::new("Pos").strong()));
+                    ui.add_sized([40.0, 20.0], egui::Label::new(egui::RichText::new("Logo").strong()));
+                    ui.add_sized([150.0, 20.0], egui::Label::new(egui::RichText::new("Club").strong()));
+                    ui.add_sized([35.0, 20.0], egui::Label::new(egui::RichText::new("MJ").strong()));
+                    ui.add_sized([35.0, 20.0], egui::Label::new(egui::RichText::new("DB").strong()));
+                    ui.add_sized([40.0, 20.0], egui::Label::new(egui::RichText::new("Pts").strong()));
+                });
+                
+                ui.separator();
+
+                // --- 3. LES DONNÉES ---
+                egui::ScrollArea::vertical()
+                    .max_height(300.0)
+                    .show(ui, |ui| {
+                        
+                        for (index, ligne) in classement.iter().enumerate() {
+                            ui.horizontal(|ui| {
+                                ui.set_min_height(35.0);
+
+                                // A. Position (Calculée via l'index : 0 devient 1er)
+                                let position = index + 1;
+                                let pos_text = egui::RichText::new(position.to_string());
+                                let pos_text = if position <= 3 { 
+                                    pos_text.color(egui::Color32::GREEN) // Podium en vert
+                                } else if position >= 16 { 
+                                    pos_text.color(egui::Color32::RED) // Relégation en rouge
+                                } else { 
+                                    pos_text 
+                                };
+                                ui.add_sized([30.0, 30.0], egui::Label::new(pos_text));
+
+                                // B. Logo
+                                let chemin_logo = format!("file:/{}", ligne.url_logo);
+                                ui.add_sized([40.0, 30.0], egui::Image::new(&chemin_logo).fit_to_exact_size(egui::vec2(25.0, 25.0)));
+
+                                // C. Club
+                                ui.add_sized([150.0, 30.0], egui::Label::new(egui::RichText::new(&ligne.nom_court).strong()));
+
+                                // D. Matchs Joués (Journée actuelle moins 1)
+                                let mj = if journee_actuelle > 1 { journee_actuelle - 1 } else { 0 };
+                                ui.add_sized([35.0, 30.0], egui::Label::new(mj.to_string()));
+
+                                // E. Différence de buts
+                                let db = ligne.buts_marques - ligne.buts_encaisses;
+                                let db_text = egui::RichText::new(format!("{:+} ", db));
+                                
+                                let db_text = if db > 0 { 
+                                    db_text.color(egui::Color32::from_rgb(0, 180, 0)) 
+                                } else if db < 0 { 
+                                    db_text.color(egui::Color32::from_rgb(220, 0, 0)) 
+                                } else { 
+                                    db_text 
+                                };
+                                
+                                ui.add_sized([35.0, 30.0], egui::Label::new(db_text));
+
+                                // F. Points
+                                ui.add_sized([40.0, 30.0], egui::Label::new(
+                                    egui::RichText::new(ligne.points.to_string())
+                                        .font(egui::FontId::proportional(18.0))
+                                        .strong()
+                                        .color(egui::Color32::LIGHT_BLUE)
+                                ));
+                            });
+                            
+                            // Ligne de séparation sauf pour le dernier
+                            if index < classement.len() - 1 {
+                                 ui.separator();
+                            }
+                        }
+                    });
+            });
+    });
 }
+
+        
+
+
