@@ -1,15 +1,28 @@
-mod model;
-mod dao;
-mod sqlitedao;
-mod db;
-mod manager;
-mod facade;
-mod controller;
-mod frame;
 
-use frame::match_frame::MatchFrame;
+mod models;
+mod app;
+mod selection_club;
+mod infos_club;
+mod prochain_match;
+pub mod page;
+mod database;
+mod mercato;
+mod calendrier;
+use database:: Database;
 
-fn main() {
-    let frame = MatchFrame::new();
-    frame.lancer();
+
+use app::MyApp;
+fn main() -> eframe::Result<()> {
+    // Initialize the database before starting the GUI
+   let db = Database::new("db/simulation.db")
+   .expect("Erreur fatale : Impossible d'initialiser la base de données");
+
+    let options = eframe::NativeOptions::default();
+    eframe::run_native("Rust Football League", options, 
+    Box::new(move |cc| {  
+        egui_extras::install_image_loaders(&cc.egui_ctx); 
+
+        Box::new(MyApp::new(db.conn.clone()))
+    }),
+)
 }
