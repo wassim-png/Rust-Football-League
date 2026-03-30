@@ -113,11 +113,7 @@ ui.allocate_ui_at_rect(header_rect, |ui| {
         afficher_classement(ui, classement, journee_actuelle);
             
 
-    // 3. ON DESCEND LE CURSEUR POUR LES CARTES
-    // Comme le bandeau a été dessiné "hors du flux", on doit pousser le curseur vers le bas
-    // pour que les cartes ne se dessinent pas en dessous du bandeau.
-    // 95 (taille du bandeau) + 40 (marge) = 135.0
-    ui.add_space(135.0);
+    ui.add_space(20.0);
 
     let cartes: Vec<CarteMenu> = vec![
         CarteMenu {
