@@ -42,9 +42,9 @@ pub struct MyApp {
     pub info_club_actuel: Option<InfosClub>,
     pub prochain_match: Option<Match>,
     pub match_deja_charge: bool,
+    pub matchs_du_jour: Option<Vec<Match>>,
     pub journee_actuelle: i32,
 
-    // État écran composition
     pub joueurs_club: Vec<Joueur>,
     pub composition: [Option<usize>; 11],
     pub slot_actif: Option<usize>,
@@ -99,6 +99,7 @@ impl MyApp {
             info_club_actuel: None,
             prochain_match: None,
             match_deja_charge: false,
+            matchs_du_jour: None,
             journee_actuelle: 1,
 
             joueurs_club: vec![],
@@ -113,9 +114,6 @@ impl MyApp {
     }
 
     fn charger_joueurs_pour_composition(&mut self, club_id: i32) {
-        // Version safe avec ce qu’on connaît déjà :
-        // on réutilise les joueurs du club depuis le mercato.
-        // Si plus tard tu as une JoueurFacade dédiée, tu pourras remplacer ça ici.
         self.joueurs_club = self
             .mercato_facade
             .get_joueurs_mon_club(club_id)
@@ -153,12 +151,21 @@ impl eframe::App for MyApp {
 
                 Ecran::MenuPrincipal => {
                     if let Some(ref eq) = self.equipe_choisie {
+                        let club_id = eq.id.unwrap_or(0);
+
                         if !self.match_deja_charge {
-                            let club_id = eq.id.unwrap_or(0);
                             self.prochain_match = self
                                 .next_game_facade
                                 .get_next_game(club_id, self.journee_actuelle)
                                 .ok();
+
+                            self.matchs_du_jour = self
+                                .calendrier_facade
+                                .get_tous_matchs_par_journee(1, self.journee_actuelle)
+                                .ok();
+
+                            println!("{:#?}", self.matchs_du_jour);
+
                             self.match_deja_charge = true;
                         }
 
@@ -172,7 +179,7 @@ impl eframe::App for MyApp {
                         );
 
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
-                            match self.facade_infos_club.obtenir_infos_club(eq.id.unwrap_or(0)) {
+                            match self.facade_infos_club.obtenir_infos_club(club_id) {
                                 Ok(infos) => {
                                     println!("✅ BDD succès : infos récupérées !");
                                     self.info_club_actuel = Some(infos);
@@ -185,7 +192,6 @@ impl eframe::App for MyApp {
                         }
 
                         if matches!(self.ecran_actuel, Ecran::Composition) {
-                            let club_id = eq.id.unwrap_or(0);
                             self.charger_joueurs_pour_composition(club_id);
                         }
                     }
