@@ -26,4 +26,8 @@ impl CalendrierManager {
 
         self.dao.get_tous_matchs(saison_id)
     }
+
+    pub fn get_tous_matchs_par_journee(&self, saison_id: i32, journee: i32) -> Result<Vec<Match>>{
+        self.dao.get_tous_matchs_par_journee(saison_id, journee)
+    }
 }
