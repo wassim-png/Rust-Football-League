@@ -20,6 +20,7 @@ pub enum OngletMercato {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Club {
     pub id: Option<i32>,
     pub nom: String,

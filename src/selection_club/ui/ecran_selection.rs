@@ -75,13 +75,18 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
 
     let nb_etoiles: usize = match club.reputation {
         90..=100 => 5,
-        70..=89  => 4,
-        60..=69  => 3,
-        40..=59  => 2,
-        20..=39  => 1,
-        _        => 0,
-    };
-    let etoiles = format!("{}{}", "★".repeat(nb_etoiles), "☆".repeat(5 - nb_etoiles));
+            70..=89  => 4,
+            60..=69  => 3,
+            50..=59  => 2,
+            30..=49  => 2,
+            10..=29  => 1,
+            _        => 0,
+        };
+
+        let etoiles_pleines = "★".repeat(nb_etoiles);
+        let etoiles_vides = "☆".repeat(5 - nb_etoiles);
+    
+
 
     Frame::none()
         .fill(bg_color)

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use rusqlite::{Connection, Result, Row}; 
 use crate::models::Club;
-use crate::selection_club::persistClub::club_dao::ClubDAO;
+use crate::selection_club::persist_club::club_dao::ClubDAO;
 
 pub struct SqlClubDAO{
     pub conn: Arc<Connection>,

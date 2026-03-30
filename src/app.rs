@@ -91,6 +91,7 @@ impl MyApp {
 
 
 impl eframe::App for MyApp {
+impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.ecran_actuel {
@@ -156,10 +157,18 @@ impl eframe::App for MyApp {
                         });
                 }
 
-                Ecran::Composition => {
-                    ui.heading("Ma Composition");
-                    ui.label("Ici s'affichera la liste des joueurs...");
-                    if ui.button("⬅ Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+                 Ecran::Composition => {
+                    let nom_club = self.equipe_choisie.as_ref()
+                        .map(|c| c.nom.clone())
+                        .unwrap_or_default();
+                    ecran_composition::render(
+                        ui,
+                        &self.joueurs_club,
+                        &mut self.composition,
+                        &mut self.slot_actif,
+                        &mut self.ecran_actuel,
+                        &nom_club,
+                    );
                 }
 
                 Ecran::DetailsJoueur => {
@@ -233,3 +242,4 @@ impl eframe::App for MyApp {
         });
     }
 }
+

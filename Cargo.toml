@@ -2,8 +2,6 @@
 name = "football_simulation"
 version = "0.1.0"
 edition = "2024"
-sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite", "macros"] }
-tokio = { version = "1", features = ["full"] }
 
 [dependencies]
 csv = "1.4.0"
