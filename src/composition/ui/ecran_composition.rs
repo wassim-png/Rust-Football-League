@@ -299,6 +299,16 @@ pub fn render(
                                                         .font(FontId::proportional(12.0))
                                                         .color(Color32::LIGHT_GRAY),
                                                 );
+
+                                                // Nationalité avec drapeau
+                                                if let Some(nat) = &joueur.nationalite {
+                                                    let flag_path = drapeau_pays(nat);
+                                                    ui.add(
+                                                        egui::Image::new(flag_path)
+                                                            .fit_to_exact_size(egui::vec2(20.0, 14.0))
+                                                            .rounding(2.0),
+                                                    );
+                                                }
                                             },
                                         );
                                     });
@@ -427,4 +437,73 @@ pub fn render(
     });
 
     return composition_validee
+}
+
+fn drapeau_pays(pays: &str) -> String {
+    let fichier = match pays {
+        "France" => "france",
+        "Bresil" => "bresil",
+        "Portugal" => "portugal",
+        "Maroc" => "maroc",
+        "Espagne" => "espagne",
+        "Angleterre" => "angleterre",
+        "Allemagne" => "allemagne",
+        "Argentine" => "argentine",
+        "Senegal" => "senegal",
+        "Pays-Bas" => "pays-bas",
+        "Belgique" => "belgique",
+        "Cote d'Ivoire" => "cote_divoire",
+        "Algerie" => "algerie",
+        "Cameroun" => "cameroun",
+        "Canada" => "canada",
+        "Suisse" => "suisse",
+        "Danemark" => "danemark",
+        "Croatie" => "croatie",
+        "Colombie" => "colombie",
+        "Norvege" => "norvege",
+        "Pologne" => "pologne",
+        "Suede" => "suede",
+        "Tunisie" => "tunisie",
+        "Egypte" => "egypte",
+        "Ghana" => "ghana",
+        "Nigeria" => "nigeria",
+        "Mali" => "mali",
+        "Guinee" => "guinee",
+        "Russie" => "russie",
+        "Japon" => "japon",
+        "Coree du Sud" => "coree_du_sud",
+        "Etats-Unis" => "etats-unis",
+        "Uruguay" => "uruguay",
+        "Equateur" => "equateur",
+        "Chili" => "chili",
+        "Slovaquie" => "slovaquie",
+        "Slovenie" => "slovenie",
+        "Autriche" => "autriche",
+        "Serbie" => "serbie",
+        "Turquie" => "turquie",
+        "Georgie" => "georgie",
+        "Kosovo" => "kosovo",
+        "Roumanie" => "roumanie",
+        "Hongrie" => "hongrie",
+        "Finlande" => "finlande",
+        "Angola" => "angola",
+        "RD Congo" => "rd_congo",
+        "Centrafrique" => "centrafrique",
+        "Burundi" => "burundi",
+        "Gabon" => "gabon",
+        "Benin" => "benin",
+        "Gambie" => "gambie",
+        "Madagascar" => "madagascar",
+        "Zimbabwe" => "zimbabwe",
+        "Haiti" => "haiti",
+        "Panama" => "panama",
+        "Venezuela" => "venezuela",
+        "Bosnie" => "bosnie",
+        "Australie" => "australie",
+        "Guinee-Bissau" => "guinee-bissau",
+        "Ouzbekistan" => "ouzbekistan",
+        "Pays de Galles" => "pays_de_galles",
+        _ => "france",
+    };
+    format!("file://assets/flags/{}.png", fichier)
 }
