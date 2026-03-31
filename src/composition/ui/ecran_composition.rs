@@ -40,6 +40,7 @@ pub fn render(
     joueurs: &[Joueur],
     composition: &mut [Option<Joueur>; 11],
     slot_actif: &mut Option<usize>,
+    capitaine_slot: &mut Option<usize>,
     ecran_actuel: &mut Ecran,
     nom_club: &str,
 )->bool {
@@ -133,6 +134,19 @@ pub fn render(
                 FontId::proportional(10.0),
                 Color32::WHITE,
             );
+
+            // Badge capitaine ©
+            if *capitaine_slot == Some(slot_idx) {
+                let badge_pos = Pos2::new(center.x + radius * 0.65, center.y - radius * 0.65);
+                ui.painter().circle_filled(badge_pos, 10.0, Color32::from_rgb(255, 215, 0));
+                ui.painter().text(
+                    badge_pos,
+                    Align2::CENTER_CENTER,
+                    "C",
+                    FontId::proportional(11.0),
+                    Color32::BLACK,
+                );
+            }
         } else {
             ui.painter().text(
                 center,
@@ -325,6 +339,48 @@ pub fn render(
             if ui.add(btn_retour).clicked() {
                 *slot_actif = None;
                 *ecran_actuel = Ecran::MenuPrincipal;
+            }
+
+            ui.add_space(15.0);
+
+            // Bouton capitaine
+            let joueurs_places: Vec<(usize, &Joueur)> = composition
+                .iter()
+                .enumerate()
+                .filter_map(|(i, s)| s.as_ref().map(|j| (i, j)))
+                .collect();
+
+            if !joueurs_places.is_empty() {
+                let capitaine_label = if let Some(cap_idx) = *capitaine_slot {
+                    if let Some(j) = &composition[cap_idx] {
+                        format!("👑 {}", j.nom)
+                    } else {
+                        "👑 Capitaine".to_string()
+                    }
+                } else {
+                    "👑 Capitaine".to_string()
+                };
+
+                egui::ComboBox::from_id_source("choix_capitaine")
+                    .selected_text(
+                        RichText::new(&capitaine_label)
+                            .font(FontId::proportional(14.0))
+                            .color(Color32::from_rgb(255, 215, 0)),
+                    )
+                    .width(180.0)
+                    .show_ui(ui, |ui| {
+                        for (slot_idx, joueur) in &joueurs_places {
+                            let est_capitaine = *capitaine_slot == Some(*slot_idx);
+                            let label = if est_capitaine {
+                                format!("👑 {}", joueur.nom)
+                            } else {
+                                joueur.nom.clone()
+                            };
+                            if ui.selectable_label(est_capitaine, &label).clicked() {
+                                *capitaine_slot = Some(*slot_idx);
+                            }
+                        }
+                    });
             }
 
             ui.add_space(15.0);
