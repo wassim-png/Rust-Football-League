@@ -1,8 +1,12 @@
 use rand::Rng;
 use rusqlite::Connection;
+use std::collections::HashMap;
 use std::sync::Arc;
 
-use crate::models::{Club, CompositionMatch, ResultatSimulationMatch};
+use crate::composition::business_logic::composition_manager::CompositionManager;
+use crate::models::{
+    Club, CompositionMatch, Joueur, Match, ResultatMatchJournee, ResultatSimulationMatch,
+};
 use crate::selection_club::persist_club::club_dao::ClubDAO;
 use crate::selection_club::persist_club::sql_club_dao::SqlClubDAO;
 use crate::simulation::config::match_rules::MatchRules;
@@ -185,5 +189,136 @@ impl MatchManager {
         self.club_dao.update_club(club_exterieur);
 
         Ok(resultat)
+    }
+
+    fn choisir_11_meilleurs(&self, joueurs: &[Joueur]) -> Vec<Joueur> {
+        let mut joueurs_tries = joueurs.to_vec();
+
+        joueurs_tries.sort_by(|a, b| {
+            let note_b = b.note_actuelle.unwrap_or(0);
+            let note_a = a.note_actuelle.unwrap_or(0);
+            note_b.cmp(&note_a)
+        });
+
+        joueurs_tries.into_iter().take(11).collect()
+    }
+
+    pub fn simuler_journee(
+        &self,
+        matchs: &[Match],
+        club_utilisateur_id: i32,
+        composition_utilisateur: &CompositionMatch,
+        clubs: &[Club],
+        joueurs_par_club: &HashMap<i32, Vec<Joueur>>,
+    ) -> Result<Vec<ResultatMatchJournee>, String> {
+        let composition_manager = CompositionManager::new();
+        let mut resultats = Vec::new();
+
+        for m in matchs {
+            let club_dom = clubs
+                .iter()
+                .find(|c| c.id == Some(m.club_domicile_id))
+                .cloned()
+                .ok_or_else(|| {
+                    format!(
+                        "Club domicile introuvable pour le match {}",
+                        m.id
+                    )
+                })?;
+
+            let club_ext = clubs
+                .iter()
+                .find(|c| c.id == Some(m.club_exterieur_id))
+                .cloned()
+                .ok_or_else(|| {
+                    format!(
+                        "Club extérieur introuvable pour le match {}",
+                        m.id
+                    )
+                })?;
+
+            let mut club_dom_sim = club_dom.clone();
+            let mut club_ext_sim = club_ext.clone();
+
+            let mut compo_dom = if m.club_domicile_id == club_utilisateur_id {
+                composition_utilisateur.clone()
+            } else {
+                let joueurs_dom = joueurs_par_club
+                    .get(&m.club_domicile_id)
+                    .ok_or_else(|| {
+                        format!(
+                            "Joueurs domicile introuvables pour le club {}",
+                            m.club_domicile_id
+                        )
+                    })?;
+
+                let meilleurs_dom = self.choisir_11_meilleurs(joueurs_dom);
+
+                if meilleurs_dom.len() < 11 {
+                    return Err(format!(
+                        "Le club {} n'a pas assez de joueurs pour simuler le match {}",
+                        m.club_domicile_id, m.id
+                    ));
+                }
+
+                composition_manager.creer_composition_match(
+                    m.id,
+                    m.club_domicile_id,
+                    &meilleurs_dom,
+                )
+            };
+
+            let mut compo_ext = if m.club_exterieur_id == club_utilisateur_id {
+                composition_utilisateur.clone()
+            } else {
+                let joueurs_ext = joueurs_par_club
+                    .get(&m.club_exterieur_id)
+                    .ok_or_else(|| {
+                        format!(
+                            "Joueurs extérieurs introuvables pour le club {}",
+                            m.club_exterieur_id
+                        )
+                    })?;
+
+                let meilleurs_ext = self.choisir_11_meilleurs(joueurs_ext);
+
+                if meilleurs_ext.len() < 11 {
+                    return Err(format!(
+                        "Le club {} n'a pas assez de joueurs pour simuler le match {}",
+                        m.club_exterieur_id, m.id
+                    ));
+                }
+
+                composition_manager.creer_composition_match(
+                    m.id,
+                    m.club_exterieur_id,
+                    &meilleurs_ext,
+                )
+            };
+
+            let resultat = self.simuler_match(
+                m.id,
+                &mut compo_dom,
+                &mut compo_ext,
+                &mut club_dom_sim,
+                &mut club_ext_sim,
+            );
+
+            resultats.push(ResultatMatchJournee {
+                match_id: m.id,
+                club_domicile_id: m.club_domicile_id,
+                club_exterieur_id: m.club_exterieur_id,
+                nom_domicile: club_dom.nom.clone(),
+                nom_exterieur: club_ext.nom.clone(),
+                buts_domicile: resultat.buts_domicile,
+                buts_exterieur: resultat.buts_exterieur,
+                est_match_utilisateur: m.club_domicile_id == club_utilisateur_id
+                    || m.club_exterieur_id == club_utilisateur_id,
+            });
+        }
+
+        resultats.sort_by_key(|r| if r.est_match_utilisateur { 0 } else { 1 });
+
+        Ok(resultats)
     }
 }

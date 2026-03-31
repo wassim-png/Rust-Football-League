@@ -1,9 +1,11 @@
 use eframe::egui;
 use rusqlite::Connection;
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use crate::models::{
-    Club, CompositionMatch, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,ResultatMatchJournee,
+    Club, CompositionMatch, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,
+    ResultatMatchJournee,
 };
 
 use crate::selection_club::business_logic::ClubFacade;
@@ -23,6 +25,8 @@ use crate::calendrier::ui::ecran_calendrier;
 use crate::composition::business_logic::composition_facade::CompositionFacade;
 use crate::composition::ui::ecran_composition;
 
+use crate::simulation::businessLogic::facade::match_facade::MatchFacade;
+
 use crate::page::accueil;
 use crate::page::menu_principal;
 
@@ -37,6 +41,7 @@ pub struct MyApp {
     pub calendrier_facade: CalendrierFacade,
     pub facade_infos_club: InfosClubFacade,
     pub composition_facade: CompositionFacade,
+    pub match_facade: MatchFacade,
 
     pub mercato: EtatMercato,
     pub calendrier: EtatCalendrier,
@@ -56,7 +61,7 @@ pub struct MyApp {
     pub resultats_journee: Option<Vec<ResultatMatchJournee>>,
     pub simulation_deja_faite: bool,
     pub message_simulation: Option<String>,
-    }
+}
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
@@ -65,10 +70,8 @@ impl MyApp {
         let next_game_facade = NextGameFacade::new(conn.clone());
         let facade_infos_club = InfosClubFacade::new(conn.clone());
         let calendrier_facade = CalendrierFacade::new(conn.clone());
-        let composition_facade= CompositionFacade::new(conn.clone());
-        resultats_journee: None,
-        simulation_deja_faite: false,
-        message_simulation: None,
+        let composition_facade = CompositionFacade::new(conn.clone());
+        let match_facade = MatchFacade::new(conn.clone());
 
         let mut calendrier = EtatCalendrier::default();
 
@@ -105,6 +108,7 @@ impl MyApp {
             calendrier_facade,
             facade_infos_club,
             composition_facade,
+            match_facade,
 
             mercato: EtatMercato::default(),
             calendrier,
@@ -120,12 +124,22 @@ impl MyApp {
             slot_actif: None,
 
             composition_match_actuelle: None,
+
+            resultats_journee: None,
+            simulation_deja_faite: false,
+            message_simulation: None,
         }
     }
 
     fn reset_composition_state(&mut self) {
         self.composition = std::array::from_fn(|_| None);
         self.slot_actif = None;
+    }
+
+    fn reset_simulation_state(&mut self) {
+        self.resultats_journee = None;
+        self.simulation_deja_faite = false;
+        self.message_simulation = None;
     }
 
     fn charger_joueurs_pour_composition(&mut self, club_id: i32) {
@@ -144,6 +158,30 @@ impl MyApp {
             self.joueurs_club.len(),
             club_id
         );
+    }
+
+    fn construire_joueurs_par_club(&self, matchs: &[Match]) -> HashMap<i32, Vec<Joueur>> {
+        let mut joueurs_par_club = HashMap::new();
+
+        for m in matchs {
+            let ids = [m.club_domicile_id, m.club_exterieur_id];
+
+            for club_id in ids {
+                if !joueurs_par_club.contains_key(&club_id) {
+                    let joueurs = self
+                        .mercato_facade
+                        .get_joueurs_mon_club(club_id)
+                        .unwrap_or_else(|e| {
+                            println!("Erreur chargement joueurs club {} : {:?}", club_id, e);
+                            vec![]
+                        });
+
+                    joueurs_par_club.insert(club_id, joueurs);
+                }
+            }
+        }
+
+        joueurs_par_club
     }
 }
 
@@ -179,10 +217,12 @@ impl eframe::App for MyApp {
                                 .get_tous_matchs_par_journee(1, self.journee_actuelle)
                                 .ok();
 
-                            println!("{:#?}", self.matchs_du_jour);
+                            println!("Matchs du jour chargés : {:#?}", self.matchs_du_jour);
 
                             self.match_deja_charge = true;
                         }
+
+                        let ancien_ecran = self.ecran_actuel.clone();
 
                         menu_principal::render(
                             ui,
@@ -192,6 +232,12 @@ impl eframe::App for MyApp {
                             &self.liste_equipes,
                             self.journee_actuelle,
                         );
+
+                        if !matches!(ancien_ecran, Ecran::ProchainMatch)
+                            && matches!(self.ecran_actuel, Ecran::ProchainMatch)
+                        {
+                            self.reset_simulation_state();
+                        }
 
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
                             match self.facade_infos_club.obtenir_infos_club(club_id) {
@@ -256,11 +302,12 @@ impl eframe::App for MyApp {
                                 .filter_map(|slot| slot.clone())
                                 .collect();
 
-                            let composition_match = self.composition_facade.creer_composition_match(
-                                prochain_match.id,
-                                club.id.unwrap_or(0),
-                                &joueurs_selectionnes,
-                            );
+                            let composition_match =
+                                self.composition_facade.creer_composition_match(
+                                    prochain_match.id,
+                                    club.id.unwrap_or(0),
+                                    &joueurs_selectionnes,
+                                );
 
                             println!("Composition créée : {:#?}", composition_match);
 
@@ -311,8 +358,80 @@ impl eframe::App for MyApp {
                 }
 
                 Ecran::ProchainMatch => {
-                    ui.heading("Prochain Match");
-                    ui.label("La simulation du prochain match s'affichera ici...");
+                    if !self.simulation_deja_faite {
+                        if self.composition_match_actuelle.is_none() {
+                            self.message_simulation = Some(
+                                "Vous devez valider votre composition avant de lancer la simulation."
+                                    .to_string(),
+                            );
+                        } else if self.matchs_du_jour.is_none() {
+                            self.message_simulation =
+                                Some("Aucun match de la journée n'est chargé.".to_string());
+                        } else if self.equipe_choisie.is_none() {
+                            self.message_simulation = Some("Aucune équipe choisie.".to_string());
+                        } else {
+                            let composition_utilisateur =
+                                self.composition_match_actuelle.clone().unwrap();
+
+                            let club_utilisateur_id = self
+                                .equipe_choisie
+                                .as_ref()
+                                .and_then(|c| c.id)
+                                .unwrap_or(0);
+
+                            let matchs = self.matchs_du_jour.clone().unwrap_or_default();
+                            let joueurs_par_club = self.construire_joueurs_par_club(&matchs);
+
+                            match self.match_facade.simuler_journee(
+                                &matchs,
+                                club_utilisateur_id,
+                                &composition_utilisateur,
+                                &self.liste_equipes,
+                                &joueurs_par_club,
+                            ) {
+                                Ok(resultats) => {
+                                    self.resultats_journee = Some(resultats);
+                                    self.message_simulation = None;
+                                }
+                                Err(e) => {
+                                    self.resultats_journee = None;
+                                    self.message_simulation =
+                                        Some(format!("Erreur simulation : {}", e));
+                                }
+                            }
+                        }
+
+                        self.simulation_deja_faite = true;
+                    }
+
+                    ui.heading("Résultats de la journée");
+                    ui.add_space(10.0);
+
+                    if let Some(message) = &self.message_simulation {
+                        ui.label(message);
+                        ui.add_space(10.0);
+                    }
+
+                    if let Some(resultats) = &self.resultats_journee {
+                        for resultat in resultats {
+                            ui.group(|ui| {
+                                if resultat.est_match_utilisateur {
+                                    ui.heading("Votre match");
+                                }
+
+                                ui.label(format!(
+                                    "{} {} - {} {}",
+                                    resultat.nom_domicile,
+                                    resultat.buts_domicile,
+                                    resultat.buts_exterieur,
+                                    resultat.nom_exterieur
+                                ));
+                            });
+
+                            ui.add_space(8.0);
+                        }
+                    }
+
                     if ui.button("⬅ Retour").clicked() {
                         self.ecran_actuel = Ecran::MenuPrincipal;
                     }
