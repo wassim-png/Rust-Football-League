@@ -1,5 +1,6 @@
 use std::sync::OnceLock;
 use std::sync::Arc;
+use rusqlite::Connection;
 use crate::simulation::businessLogic::manager::match_manager::MatchManager;
 use crate::models::ResultatSimulationMatch;
 

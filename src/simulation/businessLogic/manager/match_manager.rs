@@ -1,23 +1,21 @@
 use std::sync::OnceLock;
-
+use rusqlite::Connection;
 use rand::Rng;
 use std::sync::Arc;
 use crate::simulation::config::match_rules::MatchRules;
-use crate::simulation::persistSimulation::dao::club_dao::ClubDao;
 use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
 use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
-use crate::models::club::Club;
-use crate::models::composition_match::CompositionMatch;
+use crate::models::Club;
+use crate::models::CompositionMatch;
 use crate::models::poste::Poste;
 use crate::models::ResultatSimulationMatch;
-use crate::simulation::persistSimulation::sqlitedao::sqlite_club_dao::SqliteClubDao;
-use crate::simulation::persistSimulation::sqlitedao::sqlite_composition_dao::SqliteCompositionDao;
 use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
 use crate::selection_club::persist_club::club_dao::ClubDAO;
-
+use crate::selection_club::persist_club::sqlite_club_dao::SqliteClubDao;
+"""use crate::::sqlite_composition_dao::SqliteCompositionDao;"""
 pub struct MatchManager {
     match_dao:  Box<dyn MatchDao>,
-    composition_dao: Box<dyn CompositionDAO>,
+    composition_dao: Box<dyn CompositionDao>,
     club_dao: Box<dyn ClubDAO>,
 }
 
@@ -28,7 +26,7 @@ pub struct MatchManager {
 impl MatchManager {
    pub fn new(conn: Arc<Connection>, ) -> Self {
         Self {
-            dao: Box::new(SqlNextGameDAO { conn }),
+            dao: Box::new(SqliteMatchDao { conn }),
         }
     }
 
@@ -221,5 +219,40 @@ impl MatchManager {
         self.club_dao.update_club(&club_exterieur)?;
 
         Ok(resultat)
+    }
+
+    pub fn update_club(&self, club: &Club) -> rusqlite::Result<()> {
+  
+        let id = club.id.expect("Erreur : Impossible de mettre à jour un club sans ID !");
+
+        self.conn.execute(
+            "UPDATE clubs SET 
+                nom = ?1,
+                nom_court = ?2,
+                reputation = ?3,
+                budget_eur = ?4,
+                revenu_par_journee_eur = ?5,
+                avantage_domicile = ?6,
+                url_logo = ?7,
+                points = ?8,
+                buts_marques = ?9,
+                buts_encaisses = ?10
+            WHERE id = ?11",
+            params![
+                club.nom,
+                club.nom_court,
+                club.reputation,
+                club.budget_eur,
+                club.revenu_par_journee_eur,
+                club.avantage_domicile,
+                club.url_logo,
+                club.points,
+                club.buts_marques,
+                club.buts_encaisses,
+                id 
+            ],
+        )?;
+
+        Ok(())
     }
 }

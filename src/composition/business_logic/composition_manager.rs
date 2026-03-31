@@ -37,7 +37,11 @@ impl CompositionManager {
             return 0.0;
         }
 
-        let somme: f32 = joueurs.iter().map(|j| j.note_actuelle).sum();
+        let somme: f32 = joueurs
+    .iter()
+    .filter_map(|j| j.note_actuelle) 
+    .map(|note| note as f32)         
+    .sum();
         somme / joueurs.len() as f32
     }
 
@@ -49,7 +53,11 @@ impl CompositionManager {
             return 0.0;
         }
 
-        let somme: f32 = joueurs.iter().map(|j| j.forme).sum();
+        let somme: f32 = joueurs
+            .iter()
+            .filter_map(|j| j.forme)     
+            .map(|forme| forme as f32)   
+            .sum();
         somme / joueurs.len() as f32
     }
 
@@ -67,7 +75,7 @@ impl CompositionManager {
         for joueur in joueurs {
             nationalites.insert(joueur.nationalite.clone());
 
-            if joueur.nationalite == "FR" {
+            if joueur.nationalite == Some("France".to_string()) {
                 nb_fr += 1;
             }
         }
@@ -93,6 +101,7 @@ impl CompositionManager {
         let mut total_poids = 0.0;
 
         for joueur in joueurs {
+            if let Some(note) = joueur.note_actuelle {
             let poids = match joueur.poste.as_str() {
                 "GARDIEN" => CompositionRules::POIDS_GARDIEN,
                 "DEFENSE" => CompositionRules::POIDS_DEFENSE,
@@ -101,9 +110,9 @@ impl CompositionManager {
                 _ => 0.0,
             };
 
-            somme += joueur.note_actuelle * poids;
+            somme += (note as f32) * poids;
             total_poids += poids;
-        }
+        }}
 
         if total_poids == 0.0 {
             return 0.0;
