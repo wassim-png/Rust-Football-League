@@ -20,6 +20,7 @@ pub enum OngletMercato {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Club {
     pub id: Option<i32>,
     pub nom: String,
@@ -51,6 +52,14 @@ pub struct InfosClub {
     pub nom_meilleur_buteur: String
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Poste {
+    Gardien,
+    Defense,
+    Milieu,
+    Attaque,
+}
+
 #[derive(Debug, Clone)]
 pub struct Joueur {
     pub id: i32,
@@ -58,11 +67,17 @@ pub struct Joueur {
     pub age: i32,
     pub poste: String,
     pub reputation: i32,
+
+    pub note_actuelle: Option<i32>, 
+    pub forme: Option<i32>,
+    pub nationalite: Option<String>,
+
     pub valeur_marche_eur: i64,
     pub salaire_semaine_eur: i64,
-    /// None = joueur libre, Some(nom) = joueur sous contrat
+    
     pub club_nom: Option<String>,
 }
+
 
 #[derive(Clone)]
 pub struct OffreTransfert {
@@ -87,6 +102,8 @@ pub struct Match {
     pub buts_domicile: Option<i32>,
     pub buts_exterieur: Option<i32>,
 }
+
+
 
 
 
@@ -144,4 +161,35 @@ impl Default for EtatMercato {
             action_vente: None,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct CompositionMatch {
+    pub match_id: i32,
+    pub club_id: i32,
+    pub note_generale: f32,
+    pub note_collectif: f32,
+    pub forme_generale: f32,
+    pub finition: f32,
+    pub joueurs: Vec<Joueur>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ResultatSimulationMatch {
+    pub match_id: i32,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub vainqueur_id: Option<i32>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ResultatMatchJournee {
+    pub match_id: i32,
+    pub club_domicile_id: i32,
+    pub club_exterieur_id: i32,
+    pub nom_domicile: String,
+    pub nom_exterieur: String,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub est_match_utilisateur: bool,
 }

@@ -30,34 +30,59 @@ impl MercatoDAO for SqlMercatoDAO {
                 valeur_marche_eur: row.get(5)?,
                 salaire_semaine_eur: row.get(6)?,
                 club_nom: row.get(7)?,
+                note_actuelle: None,
+                forme: None,
+                nationalite: None,
             })
         })?;
         iter.collect()
     }
 
     /// Joueurs de notre propre club (pour générer des offres IA)
-    fn get_joueurs_mon_club(&self, mon_club_id: i32) -> Result<Vec<Joueur>> {
-        let mut stmt = self.conn.prepare(
-            "SELECT j.id, j.nom, j.age, j.poste, j.reputation,
-                    j.valeur_marche_eur, j.salaire_semaine_eur, c.nom
-             FROM joueurs j
-             INNER JOIN clubs c ON c.id = j.club_id
-             WHERE j.club_id = ?1",
-        )?;
-        let iter = stmt.query_map([mon_club_id], |row| {
-            Ok(Joueur {
-                id: row.get(0)?,
-                nom: row.get(1)?,
-                age: row.get(2)?,
-                poste: row.get(3)?,
-                reputation: row.get(4)?,
-                valeur_marche_eur: row.get(5)?,
-                salaire_semaine_eur: row.get(6)?,
-                club_nom: row.get(7)?,
-            })
-        })?;
-        iter.collect()
-    }
+   fn get_joueurs_mon_club(&self, mon_club_id: i32) -> Result<Vec<Joueur>> {
+    let mut stmt = self.conn.prepare(
+        "SELECT 
+            j.id, 
+            j.nom, 
+            j.age, 
+            j.poste, 
+            j.reputation,
+            -- Note : On prend celle du joueur, sinon du gardien, sinon la réputation
+            COALESCE(a.note_actuelle, g.note_actuelle, j.reputation) as note,
+            -- Forme : On prend celle du joueur, sinon du gardien, sinon 100 par défaut
+            COALESCE(a.forme, g.forme, 100) as forme,
+            -- Nationalité : On prend celle du joueur, sinon du gardien, sinon '??'
+            COALESCE(a.nationalite, g.nationalite, '??') as nat,
+            j.valeur_marche_eur, 
+            j.salaire_semaine_eur, 
+            c.nom
+         FROM joueurs j
+         INNER JOIN clubs c ON c.id = j.club_id
+         -- Jointures cruciales pour récupérer les stats de saison
+         LEFT JOIN attributs_joueur_saison a ON a.joueur_id = j.id
+         LEFT JOIN attributs_gardien_saison g ON g.joueur_id = j.id
+         WHERE j.club_id = ?1",
+    )?;
+
+    let iter = stmt.query_map([mon_club_id], |row| {
+        Ok(Joueur {
+            id: row.get(0)?,
+            nom: row.get(1)?,
+            age: row.get(2)?,
+            poste: row.get(3)?,
+            reputation: row.get(4)?,
+           
+            note_actuelle: Some(row.get(5)?),
+            forme: Some(row.get(6)?),
+            nationalite: Some(row.get(7)?),
+            valeur_marche_eur: row.get(8)?,
+            salaire_semaine_eur: row.get(9)?,
+            club_nom: row.get(10)?,
+        })
+    })?;
+
+    iter.collect()
+}
 
     /// Génère 1 à 3 offres aléatoires de clubs adverses pour nos joueurs
     fn generer_offres_ia(&self, mon_club_id: i32) -> Result<Vec<OffreTransfert>> {
