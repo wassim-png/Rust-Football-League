@@ -17,4 +17,8 @@ impl ClubFacade {
     pub fn get_all(&self) -> rusqlite::Result<Vec<Club>> {
         self.manager.obtenir_tous_les_clubs()
     }
+
+    pub fn get_all_clubs_by_points(&self) -> rusqlite::Result<Vec<Club>> {
+        self.manager.obtenir_tous_les_clubs_par_points()
+    }
 }

@@ -19,4 +19,10 @@ impl ClubManager {
     pub fn obtenir_tous_les_clubs(&self) -> rusqlite::Result<Vec<Club>> {
         self.dao.get_all_clubs()
     }
+
+    pub fn obtenir_tous_les_clubs_par_points(&self) ->rusqlite::Result<Vec<Club>> {
+        self.dao.get_all_clubs_by_points()
+    }
+
+    
 }

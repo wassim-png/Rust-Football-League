@@ -35,11 +35,11 @@ pub struct MyApp {
     pub equipe_choisie: Option<Club>,
     pub liste_equipes: Vec<Club>,
 
-    pub facade: ClubFacade,
+    pub club_facade: ClubFacade,
     pub mercato_facade: MercatoFacade,
     pub next_game_facade: NextGameFacade,
     pub calendrier_facade: CalendrierFacade,
-    pub facade_infos_club: InfosClubFacade,
+    pub infos_club_facade: InfosClubFacade,
     pub composition_facade: CompositionFacade,
     pub match_facade: MatchFacade,
 
@@ -65,10 +65,10 @@ pub struct MyApp {
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
-        let facade = ClubFacade::new(conn.clone());
+        let club_facade = ClubFacade::new(conn.clone());
         let mercato_facade = MercatoFacade::new(conn.clone());
         let next_game_facade = NextGameFacade::new(conn.clone());
-        let facade_infos_club = InfosClubFacade::new(conn.clone());
+        let infos_club_facade = InfosClubFacade::new(conn.clone());
         let calendrier_facade = CalendrierFacade::new(conn.clone());
         let composition_facade = CompositionFacade::new(conn.clone());
         let match_facade = MatchFacade::new(conn.clone());
@@ -90,7 +90,7 @@ impl MyApp {
             }
         }
 
-        let equipes = facade.get_all().unwrap_or_else(|e| {
+        let  equipes = club_facade.get_all().unwrap_or_else(|e| {
             println!("Erreur lors de la récupération des clubs : {:?}", e);
             vec![]
         });
@@ -102,11 +102,11 @@ impl MyApp {
             equipe_choisie: None,
             liste_equipes: equipes,
 
-            facade,
+            club_facade,
             mercato_facade,
             next_game_facade,
             calendrier_facade,
-            facade_infos_club,
+            infos_club_facade,
             composition_facade,
             match_facade,
 
@@ -141,6 +141,10 @@ impl MyApp {
         self.resultats_journee = None;
         self.simulation_deja_faite = false;
         self.message_simulation = None;
+        self.liste_equipes = self.club_facade.get_all_clubs_by_points().unwrap_or_else(|e| {
+            println!("Erreur lors de la récupération des clubs : {:?}", e);
+            vec![]
+        });
     }
 
     fn charger_joueurs_pour_composition(&mut self, club_id: i32) {
@@ -269,7 +273,7 @@ impl eframe::App for MyApp {
                         }
 
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
-                            match self.facade_infos_club.obtenir_infos_club(club_id) {
+                            match self.infos_club_facade.obtenir_infos_club(club_id) {
                                 Ok(infos) => {
                                     println!("✅ BDD succès : infos récupérées !");
                                     self.info_club_actuel = Some(infos);

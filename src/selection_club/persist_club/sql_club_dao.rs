@@ -43,6 +43,42 @@ impl ClubDAO for SqlClubDAO {
             Ok(clubs)
         }
 
+
+        fn get_all_clubs_by_points(&self) -> Result<Vec<Club>> {
+           
+            let mut stmt = self.conn.prepare("SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee_eur, 
+            avantage_domicile, url_logo, 
+            points, buts_marques, buts_encaisses FROM clubs c
+            INNER JOIN info_club i on i.club_id = c.id ORDER BY c.points DESC,
+            (c.buts_marques - c.buts_encaisses) DESC, 
+        c.buts_marques DESC"
+    )?;
+
+            
+            let club_iter = stmt.query_map([], |row: &Row| {
+                Ok(Club {
+                    id: row.get(0)?,
+                    nom: row.get(1)?,
+                    nom_court: row.get(2)?,
+                    reputation: row.get(3)?,
+                    budget_eur: row.get(4)?,
+                    revenu_par_journee_eur: row.get(5)?,
+                    avantage_domicile: row.get(6)?,
+                    url_logo: row.get(7)?,
+                    points: row.get(8)?,
+                    buts_marques: row.get(9)?,
+                    buts_encaisses: row.get(10)?
+                })
+            })?;
+
+            let mut clubs = Vec::new();
+            for club in club_iter {
+                clubs.push(club?);
+            }
+
+            Ok(clubs)
+        }
+
          fn get_club_by_id(&self, id: i32) -> rusqlite::Result<Club> {
         self.conn.query_row(
             "SELECT id, nom, nom_court, reputation, budget_eur, revenu_par_journee, avantage_domicile,
