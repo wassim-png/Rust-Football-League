@@ -108,7 +108,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
 
     // --- Message feedback ---
     if let Some(msg) = &etat.message.clone() {
-        let color = if msg.contains('✓') { VERT } else { ROUGE_VIF };
+        let color = if msg.contains("OK") { VERT } else { ROUGE_VIF };
         Frame::none()
             .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 120))
             .rounding(6.0)
@@ -406,7 +406,7 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
                         });
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             let btn_refus = egui::Button::new(
-                                RichText::new("✗  Refuser")
+                                RichText::new(" Refuser")
                                     .color(Color32::WHITE)
                                     .font(FontId::proportional(13.0)),
                             )
@@ -418,7 +418,7 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
                             }
                             ui.add_space(8.0);
                             let btn_accept = egui::Button::new(
-                                RichText::new("✓  Accepter")
+                                RichText::new("  Accepter")
                                     .color(Color32::WHITE)
                                     .font(FontId::proportional(13.0)),
                             )
@@ -448,7 +448,7 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
             etat.offres_recues.retain(|o| o.joueur_id != offre.joueur_id);
             etat.action_vente = Some((offre.joueur_id, Some(offre.club_acheteur_id)));
             etat.message = Some(format!(
-                "✓ {} vendu à {} pour {} — budget : {}",
+                "{} vendu à {} pour {} — budget : {}",
                 offre.joueur_nom, offre.club_acheteur,
                 fmt_eur(offre.montant_eur), fmt_eur(equipe.budget_eur)
             ));
@@ -538,7 +538,7 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
         j.club_nom = None;
         etat.tous_joueurs.push(j.clone());
         etat.message = Some(format!(
-            "✓ {} vendu au marché pour {} — budget : {}",
+            "{} libéré de son contrat pour {} — budget : {}",
             j.nom, fmt_eur(j.valeur_marche_eur), fmt_eur(equipe.budget_eur)
         ));
     }
