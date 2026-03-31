@@ -131,6 +131,7 @@ impl MyApp {
         }
     }
 
+
     fn reset_composition_state(&mut self) {
         self.composition = std::array::from_fn(|_| None);
         self.slot_actif = None;
@@ -183,6 +184,32 @@ impl MyApp {
 
         joueurs_par_club
     }
+    fn passer_a_la_journee_suivante(&mut self) {
+    if self.journee_actuelle < self.calendrier.nb_journees {
+        self.journee_actuelle += 1;
+    }
+
+    self.composition_match_actuelle = None;
+    self.reset_composition_state();
+    self.reset_simulation_state();
+
+    if let Some(club_id) = self.equipe_choisie.as_ref().and_then(|c| c.id) {
+        self.prochain_match = self
+            .next_game_facade
+            .get_next_game(club_id, self.journee_actuelle)
+            .ok();
+
+        self.matchs_du_jour = self
+            .calendrier_facade
+            .get_tous_matchs_par_journee(1, self.journee_actuelle)
+            .ok();
+    } else {
+        self.prochain_match = None;
+        self.matchs_du_jour = None;
+    }
+
+    self.match_deja_charge = true;
+}
 }
 
 impl eframe::App for MyApp {
@@ -402,6 +429,7 @@ impl eframe::App for MyApp {
                         }
 
                         self.simulation_deja_faite = true;
+                        
                     }
 
                     ui.heading("Résultats de la journée");
@@ -435,6 +463,17 @@ impl eframe::App for MyApp {
                     if ui.button("⬅ Retour").clicked() {
                         self.ecran_actuel = Ecran::MenuPrincipal;
                     }
+                    ui.add_space(10.0);
+                        if self.resultats_journee.is_some() && self.message_simulation.is_none() {
+                            if self.journee_actuelle < self.calendrier.nb_journees {
+                                if ui.button("➡ Passer à la prochaine journée").clicked() {
+                                    self.passer_a_la_journee_suivante();
+                                    self.ecran_actuel = Ecran::MenuPrincipal;
+                                }
+                            } else {
+                                ui.label("🏁 Fin de saison");
+                            }
+                        }
                 }
 
                 Ecran::Mercato => {
