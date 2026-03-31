@@ -1,16 +1,21 @@
 use std::collections::HashSet;
 use std::sync::OnceLock;
-
+use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
 use crate::simulation::config::composition_rules::CompositionRules;
 use crate::models::{CompositionMatch, Joueur};
+use std::sync::Arc;
 
-pub struct CompositionManager;
+pub struct CompositionManager {
+    composition_dao: Box<dyn CompositionDao>,
+}
 
-static INSTANCE: OnceLock<CompositionManager> = OnceLock::new();
+
 
 impl CompositionManager {
-    pub fn get_instance() -> &'static CompositionManager {
-        INSTANCE.get_or_init(|| CompositionManager)
+    pub fn new(conn: Arc<Connection>, ) -> Self {
+        Self {
+            composition_dao: Box::new(SqliteCompositionDao { conn: conn.clone() }),
+        }
     }
 
     pub fn creer_composition_match(
@@ -112,7 +117,8 @@ impl CompositionManager {
 
             somme += (note as f32) * poids;
             total_poids += poids;
-        }}
+        }
+    }
 
         if total_poids == 0.0 {
             return 0.0;

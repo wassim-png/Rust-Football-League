@@ -52,6 +52,14 @@ pub struct InfosClub {
     pub nom_meilleur_buteur: String
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Poste {
+    Gardien,
+    Defense,
+    Milieu,
+    Attaque,
+}
+
 #[derive(Debug, Clone)]
 pub struct Joueur {
     pub id: i32,
@@ -163,6 +171,7 @@ pub struct CompositionMatch {
     pub note_collectif: f32,
     pub forme_generale: f32,
     pub finition: f32,
+    pub joueurs: Vec<Joueur>,
 }
 
 #[derive(Debug, Clone)]

@@ -7,12 +7,11 @@ use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
 use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
 use crate::models::Club;
 use crate::models::CompositionMatch;
-use crate::models::poste::Poste;
 use crate::models::ResultatSimulationMatch;
 use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
 use crate::selection_club::persist_club::club_dao::ClubDAO;
-use crate::selection_club::persist_club::sqlite_club_dao::SqliteClubDao;
-"""use crate::::sqlite_composition_dao::SqliteCompositionDao;"""
+use crate::selection_club::persist_club::sql_club_dao::SqlClubDAO;
+
 pub struct MatchManager {
     match_dao:  Box<dyn MatchDao>,
     composition_dao: Box<dyn CompositionDao>,
@@ -26,7 +25,13 @@ pub struct MatchManager {
 impl MatchManager {
    pub fn new(conn: Arc<Connection>, ) -> Self {
         Self {
-            dao: Box::new(SqliteMatchDao { conn }),
+            match_dao: Box::new(SqliteMatchDao { conn: conn.clone() }),
+            
+           
+            composition_dao: Box::new(SqliteCompositionDao { conn: conn.clone() }),
+            
+          
+            club_dao: Box::new(SqlClubDAO { conn }),
         }
     }
 
@@ -126,17 +131,26 @@ impl MatchManager {
     }
 
     fn appliquer_baisse_forme_apres_match(&self, composition: &mut CompositionMatch) {
-        for joueur in &mut composition.joueurs {
-            let perte = match joueur.poste {
-                Poste::Gardien => MatchRules::PERTE_FORME_GARDIEN,
-                Poste::Defense => MatchRules::PERTE_FORME_DEFENSE,
-                Poste::Milieu => MatchRules::PERTE_FORME_MILIEU,
-                Poste::Attaque => MatchRules::PERTE_FORME_ATTAQUE,
-            };
+    for joueur in &mut composition.joueurs {
+        . On détermine la perte en f32 en fonction du poste
+        let perte = match joueur.poste {
+            Poste::Gardien => MatchRules::PERTE_FORME_GARDIEN,
+            Poste::Defense => MatchRules::PERTE_FORME_DEFENSE,
+            Poste::Milieu => MatchRules::PERTE_FORME_MILIEU,
+            Poste::Attaque => MatchRules::PERTE_FORME_ATTAQUE,
+        };
 
-            joueur.forme = (joueur.forme - perte).max(MatchRules::FORME_MIN);
+       
+        if let Some(forme_actuelle) = joueur.forme {
+            
+            
+            let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
+            
+           
+            joueur.forme = Some((nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32));
         }
     }
+}
 
     pub fn simuler_match(
         &self,
@@ -183,7 +197,6 @@ impl MatchManager {
             .find_by_match_and_club(
                 match_data.id,
                 match_data.club_domicile_id,
-                match_data.saison_id,
             )?
             .ok_or_else(|| "Composition domicile introuvable".to_string())?;
 
@@ -192,19 +205,18 @@ impl MatchManager {
             .find_by_match_and_club(
                 match_data.id,
                 match_data.club_exterieur_id,
-                match_data.saison_id,
             )?
             .ok_or_else(|| "Composition extérieure introuvable".to_string())?;
 
         let mut club_domicile = self
             .club_dao
-            .find_by_id(match_data.club_domicile_id)?
-            .ok_or_else(|| "Club domicile introuvable".to_string())?;
+            .get_club_by_id(match_data.club_domicile_id)
+            .map_err(|e| format!("Erreur SQL lors de la recherche du club extérieur : {}", e))?;
 
         let mut club_exterieur = self
             .club_dao
-            .find_by_id(match_data.club_exterieur_id)?
-            .ok_or_else(|| "Club extérieur introuvable".to_string())?;
+            .get_club_by_id(match_data.club_exterieur_id)
+            .map_err(|e| format!("Erreur SQL lors de la recherche du club extérieur : {}", e))?;
 
         let resultat = self.simuler_match(
             match_data.id,
@@ -215,44 +227,11 @@ impl MatchManager {
         );
 
         self.match_dao.save_resultat_match(&resultat)?;
-        self.club_dao.update_club(&club_domicile)?;
-        self.club_dao.update_club(&club_exterieur)?;
+        self.club_dao.update_club(&club_domicile);
+        self.club_dao.update_club(&club_exterieur);
 
         Ok(resultat)
     }
 
-    pub fn update_club(&self, club: &Club) -> rusqlite::Result<()> {
-  
-        let id = club.id.expect("Erreur : Impossible de mettre à jour un club sans ID !");
-
-        self.conn.execute(
-            "UPDATE clubs SET 
-                nom = ?1,
-                nom_court = ?2,
-                reputation = ?3,
-                budget_eur = ?4,
-                revenu_par_journee_eur = ?5,
-                avantage_domicile = ?6,
-                url_logo = ?7,
-                points = ?8,
-                buts_marques = ?9,
-                buts_encaisses = ?10
-            WHERE id = ?11",
-            params![
-                club.nom,
-                club.nom_court,
-                club.reputation,
-                club.budget_eur,
-                club.revenu_par_journee_eur,
-                club.avantage_domicile,
-                club.url_logo,
-                club.points,
-                club.buts_marques,
-                club.buts_encaisses,
-                id 
-            ],
-        )?;
-
-        Ok(())
-    }
+   
 }

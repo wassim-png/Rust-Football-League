@@ -2,7 +2,7 @@ use rusqlite::params;
 use std::sync::Arc;
 use rusqlite::{Connection, Result};
 use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
-
+use rusqlite::OptionalExtension;
 use crate::models::Match;
 use crate::models::ResultatSimulationMatch;
 
@@ -15,40 +15,47 @@ pub struct SqliteMatchDao{
 
 impl MatchDao for SqliteMatchDao {
     fn find_match_by_id(&self, match_id: i32) -> Result<Option<Match>, String> {
-       
+        
+        let resultat = self.conn.query_row(
+            "
+            SELECT 
+                m.id, m.journee, m.club_domicile_id, 
+                cd.nom, cd.url_logo,
+                m.club_exterieur_id, 
+                ce.nom, ce.url_logo,
+                m.date_coup_envoi, m.buts_domicile, m.buts_exterieur
+            FROM matchs m
+            JOIN clubs cd ON m.club_domicile_id = cd.id
+            JOIN clubs ce ON m.club_exterieur_id = ce.id
+            WHERE m.id = ?1
+            ",
+            rusqlite::params![match_id],
+            |row| {
+                // On lit tout simplement, sans messages d'erreurs à rallonge
+                Ok(Match {
+                    id: row.get(0)?,
+                    journee: row.get(1)?,
+                    club_domicile_id: row.get(2)?,
+                    club_domicile_nom: row.get(3)?,
+                    club_domicile_logo: row.get(4)?,
+                    club_exterieur_id: row.get(5)?,
+                    club_exterieur_nom: row.get(6)?,
+                    club_exterieur_logo: row.get(7)?,
+                    date_coup_envoi: row.get(8)?,
+                    buts_domicile: row.get(9)?,
+                    buts_exterieur: row.get(10)?,
+                })
+            },
+        );
 
-        let mut stmt = self.conn
-            .prepare(
-                "
-                SELECT id, saison_id, journee, club_domicile_id, club_exterieur_id, date_coup_envoi
-                FROM matchs
-                WHERE id = ?
-                ",
-            )
-            .map_err(|e| format!("Erreur préparation find_match_by_id : {}", e))?;
-
-        let mut rows = stmt
-            .query(params![match_id])
-            .map_err(|e| format!("Erreur exécution find_match_by_id : {}", e))?;
-
-        match rows.next().map_err(|e| format!("Erreur lecture match : {}", e))? {
-            Some(row) => Ok(Some(Match {
-                id: row.get(0).map_err(|e| format!("Erreur id : {}", e))?,
-                saison_id: row.get(1).map_err(|e| format!("Erreur saison_id : {}", e))?,
-                journee: row.get(2).map_err(|e| format!("Erreur journee : {}", e))?,
-                club_domicile_id: row
-                    .get(3)
-                    .map_err(|e| format!("Erreur club_domicile_id : {}", e))?,
-                club_exterieur_id: row
-                    .get(4)
-                    .map_err(|e| format!("Erreur club_exterieur_id : {}", e))?,
-                date_coup_envoi: row
-                    .get(5)
-                    .map_err(|e| format!("Erreur date_coup_envoi : {}", e))?,
-            })),
-            None => Ok(None),
-        }
+        // On convertit le résultat en Option (Some si trouvé, None si introuvable)
+        
+        resultat
+            .optional()
+            .map_err(|e| format!("Erreur SQL sur le match {} : {}", match_id, e))
     }
+
+    
 
     fn save_resultat_match(&self, resultat: &ResultatSimulationMatch) -> Result<(), String> {
          

@@ -5,6 +5,5 @@ pub trait CompositionDao {
         &self,
         match_id: i32,
         club_id: i32,
-        saison_id: i32,
     ) -> Result<Option<CompositionMatch>, String>;
 }

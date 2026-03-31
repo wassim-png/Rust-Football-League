@@ -68,5 +68,39 @@ impl ClubDAO for SqlClubDAO {
         )
     }
 
+    fn update_club(&self, club: &Club) -> Result<(), String> {
+        let id = club.id.expect("Erreur : Impossible de mettre à jour un club sans ID !");
+
+       
+        self.conn.execute(
+            "UPDATE clubs SET 
+                nom = ?1,
+                nom_court = ?2,
+                reputation = ?3,
+                budget_eur = ?4,
+                revenu_par_journee_eur = ?5,
+                avantage_domicile = ?6,
+                url_logo = ?7,
+                points = ?8,
+                buts_marques = ?9,
+                buts_encaisses = ?10
+            WHERE id = ?11",
+            rusqlite::params![
+                club.nom,
+                club.nom_court,
+                club.reputation,
+                club.budget_eur,
+                club.revenu_par_journee_eur,
+                club.avantage_domicile,
+                club.url_logo,
+                club.points,
+                club.buts_marques,
+                club.buts_encaisses,
+                id
+            ],
+        ).map_err(|e| format!("Erreur lors de la mise à jour du club : {}", e))?; 
+        Ok(())
+    }
+
 }
 

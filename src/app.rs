@@ -20,7 +20,7 @@ use crate::mercato::ui::ecran_mercato;
 use crate::calendrier::businessLogic::calendrier_facade::CalendrierFacade;
 use crate::calendrier::ui::ecran_calendrier;
 
-use crate::composition::business_logic::composition_manager::CompositionManager;
+use crate::composition::business_logic::composition_facade::CompositionFacade;
 use crate::composition::ui::ecran_composition;
 
 use crate::page::accueil;
@@ -36,6 +36,7 @@ pub struct MyApp {
     pub next_game_facade: NextGameFacade,
     pub calendrier_facade: CalendrierFacade,
     pub facade_infos_club: InfosClubFacade,
+    pub composition_facade: CompositionFacade,
 
     pub mercato: EtatMercato,
     pub calendrier: EtatCalendrier,
@@ -60,6 +61,7 @@ impl MyApp {
         let next_game_facade = NextGameFacade::new(conn.clone());
         let facade_infos_club = InfosClubFacade::new(conn.clone());
         let calendrier_facade = CalendrierFacade::new(conn.clone());
+        let composition_facade= CompositionFacade::new(conn.clone());
 
         let mut calendrier = EtatCalendrier::default();
 
@@ -95,6 +97,7 @@ impl MyApp {
             next_game_facade,
             calendrier_facade,
             facade_infos_club,
+            composition_facade,
 
             mercato: EtatMercato::default(),
             calendrier,
@@ -246,7 +249,7 @@ impl eframe::App for MyApp {
                                 .filter_map(|slot| slot.clone())
                                 .collect();
 
-                            let composition_match = CompositionManager::get_instance()
+                            let composition_manager = CompositionManager::new(conn.clone());
                                 .creer_composition_match(
                                     prochain_match.id,
                                     club.id.unwrap_or(0),
