@@ -192,6 +192,8 @@ impl MyApp {
     self.composition_match_actuelle = None;
     self.reset_composition_state();
     self.reset_simulation_state();
+    // Force le rechargement du calendrier depuis la DB (pour avoir les résultats à jour)
+    self.calendrier.donnees_chargees = false;
 
     if let Some(club_id) = self.equipe_choisie.as_ref().and_then(|c| c.id) {
         self.prochain_match = self
@@ -364,6 +366,8 @@ impl eframe::App for MyApp {
 
                         self.calendrier.nb_journees = 34;
                         self.calendrier.donnees_chargees = true;
+                        // Ouvre toujours sur la journée actuelle
+                        self.calendrier.journee_selectionnee = self.journee_actuelle;
                     }
 
                     let club_id = self.equipe_choisie.as_ref().and_then(|c| c.id).unwrap_or(0);
