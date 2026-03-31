@@ -266,15 +266,15 @@ pub fn render(
 
                                                 // Forme du joueur
                                                 if let Some(forme) = joueur.forme {
-                                                    let (forme_emoji, forme_color) = if forme >= 80 {
-                                                        ("🟢", Color32::from_rgb(76, 175, 80))
+                                                    let forme_color = if forme >= 80 {
+                                                        Color32::from_rgb(76, 175, 80)
                                                     } else if forme >= 50 {
-                                                        ("🟡", Color32::from_rgb(255, 193, 7))
+                                                        Color32::from_rgb(255, 193, 7)
                                                     } else {
-                                                        ("🔴", Color32::from_rgb(244, 67, 54))
+                                                        Color32::from_rgb(244, 67, 54)
                                                     };
                                                     ui.label(
-                                                        RichText::new(format!("{} {}%", forme_emoji, forme))
+                                                        RichText::new(format!("⚡ {}%", forme))
                                                             .font(FontId::proportional(12.0))
                                                             .color(forme_color),
                                                     );
