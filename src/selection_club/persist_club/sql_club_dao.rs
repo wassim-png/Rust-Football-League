@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use rusqlite::{Connection, Result, Row}; 
 use crate::models::Club;
-use crate::selection_club::persistClub::club_dao::ClubDAO;
+use crate::selection_club::persist_club::club_dao::ClubDAO;
 
 pub struct SqlClubDAO{
     pub conn: Arc<Connection>,
@@ -66,6 +66,26 @@ impl ClubDAO for SqlClubDAO {
                 })
             },
         )
+    }
+
+    fn update_club(&self, club: &Club) -> Result<(), String> {
+        let id = club.id.expect("Erreur : Impossible de mettre à jour un club sans ID !");
+
+       
+        self.conn.execute(
+            "UPDATE clubs SET 
+                points = ?1,
+                buts_marques = ?2,
+                buts_encaisses = ?3
+            WHERE id = ?4",
+            rusqlite::params![
+                club.points,
+                club.buts_marques,
+                club.buts_encaisses,
+                id
+            ],
+        ).map_err(|e| format!("Erreur lors de la mise à jour du club : {}", e))?; 
+        Ok(())
     }
 
 }

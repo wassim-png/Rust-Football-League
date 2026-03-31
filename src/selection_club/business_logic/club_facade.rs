@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 use crate::models::Club;
 use std::sync::Arc;
-use crate::selection_club::businessLogic::club_manager::ClubManager;
+use crate::selection_club::business_logic::club_manager::ClubManager;
 
 pub struct ClubFacade {
     manager: ClubManager,
