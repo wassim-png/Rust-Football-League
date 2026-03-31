@@ -3,7 +3,7 @@ use rusqlite::Connection;
 use std::sync::Arc;
 
 use crate::models::{
-    Club, CompositionMatch, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,
+    Club, CompositionMatch, Ecran, EtatCalendrier, EtatMercato, InfosClub, Joueur, Match,ResultatMatchJournee,
 };
 
 use crate::selection_club::business_logic::ClubFacade;
@@ -52,7 +52,11 @@ pub struct MyApp {
     pub slot_actif: Option<usize>,
 
     pub composition_match_actuelle: Option<CompositionMatch>,
-}
+
+    pub resultats_journee: Option<Vec<ResultatMatchJournee>>,
+    pub simulation_deja_faite: bool,
+    pub message_simulation: Option<String>,
+    }
 
 impl MyApp {
     pub fn new(conn: Arc<Connection>) -> Self {
@@ -62,6 +66,9 @@ impl MyApp {
         let facade_infos_club = InfosClubFacade::new(conn.clone());
         let calendrier_facade = CalendrierFacade::new(conn.clone());
         let composition_facade= CompositionFacade::new(conn.clone());
+        resultats_journee: None,
+        simulation_deja_faite: false,
+        message_simulation: None,
 
         let mut calendrier = EtatCalendrier::default();
 

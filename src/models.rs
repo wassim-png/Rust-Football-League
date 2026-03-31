@@ -181,3 +181,15 @@ pub struct ResultatSimulationMatch {
     pub buts_exterieur: i32,
     pub vainqueur_id: Option<i32>,
 }
+
+#[derive(Debug, Clone)]
+pub struct ResultatMatchJournee {
+    pub match_id: i32,
+    pub club_domicile_id: i32,
+    pub club_exterieur_id: i32,
+    pub nom_domicile: String,
+    pub nom_exterieur: String,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub est_match_utilisateur: bool,
+}

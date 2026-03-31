@@ -1,7 +1,8 @@
 use rusqlite::Connection;
+use std::collections::HashMap;
 use std::sync::Arc;
 
-use crate::models::{Club, CompositionMatch, ResultatSimulationMatch};
+use crate::models::{Club, CompositionMatch, Joueur, Match, ResultatMatchJournee};
 use crate::simulation::businessLogic::manager::match_manager::MatchManager;
 
 pub struct MatchFacade {
@@ -15,20 +16,20 @@ impl MatchFacade {
         }
     }
 
-    pub fn simuler_match_et_sauvegarder(
+    pub fn simuler_journee(
         &self,
-        match_id: i32,
-        equipe_domicile: &mut CompositionMatch,
-        equipe_exterieur: &mut CompositionMatch,
-        club_domicile: &mut Club,
-        club_exterieur: &mut Club,
-    ) -> Result<ResultatSimulationMatch, String> {
-        self.manager.simuler_match_et_sauvegarder(
-            match_id,
-            equipe_domicile,
-            equipe_exterieur,
-            club_domicile,
-            club_exterieur,
+        matchs: &[Match],
+        club_utilisateur_id: i32,
+        composition_utilisateur: &CompositionMatch,
+        clubs: &[Club],
+        joueurs_par_club: &HashMap<i32, Vec<Joueur>>,
+    ) -> Result<Vec<ResultatMatchJournee>, String> {
+        self.manager.simuler_journee(
+            matchs,
+            club_utilisateur_id,
+            composition_utilisateur,
+            clubs,
+            joueurs_par_club,
         )
     }
 }
