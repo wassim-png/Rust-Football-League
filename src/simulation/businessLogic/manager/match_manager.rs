@@ -11,11 +11,14 @@ use crate::selection_club::persist_club::club_dao::ClubDAO;
 use crate::selection_club::persist_club::sql_club_dao::SqlClubDAO;
 use crate::simulation::config::match_rules::MatchRules;
 use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
+use crate::composition::persist_joueur::joueur_dao::JoueurDAO;
+use crate::composition::persist_joueur::sql_club_dao::SqliteJoueurDAO ;
 use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
 
 pub struct MatchManager {
     match_dao: Box<dyn MatchDao>,
     club_dao: Box<dyn ClubDAO>,
+    joueur_dao: Box<dyn JoueurDAO>
 }
 
 impl MatchManager {
@@ -23,6 +26,7 @@ impl MatchManager {
         Self {
             match_dao: Box::new(SqliteMatchDao { conn: conn.clone() }),
             club_dao: Box::new(SqlClubDAO { conn }),
+            joueur_dao: Box::new(SqliteJoueurDAO{conn})
         }
     }
 
@@ -134,6 +138,7 @@ impl MatchManager {
             if let Some(forme_actuelle) = joueur.forme {
                 let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
                 joueur.forme = Some((nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32));
+                self.joueur_dao.udpate_forme_joueur(joueur)
             }
         }
     }
@@ -185,8 +190,9 @@ impl MatchManager {
         );
 
         self.match_dao.save_resultat_match(&resultat)?;
-        self.club_dao.update_club(club_domicile);
-        self.club_dao.update_club(club_exterieur);
+        println!("update des clubs");
+        self.club_dao.update_club(club_domicile)?;
+        self.club_dao.update_club(club_exterieur)?;
 
         Ok(resultat)
     }
@@ -296,13 +302,13 @@ impl MatchManager {
                 )
             };
 
-            let resultat = self.simuler_match(
+            let resultat = self.simuler_match_et_sauvegarder(
                 m.id,
                 &mut compo_dom,
                 &mut compo_ext,
                 &mut club_dom_sim,
                 &mut club_ext_sim,
-            );
+            )?;
 
             resultats.push(ResultatMatchJournee {
                 match_id: m.id,

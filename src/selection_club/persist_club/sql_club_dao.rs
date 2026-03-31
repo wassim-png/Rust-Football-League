@@ -74,25 +74,11 @@ impl ClubDAO for SqlClubDAO {
        
         self.conn.execute(
             "UPDATE clubs SET 
-                nom = ?1,
-                nom_court = ?2,
-                reputation = ?3,
-                budget_eur = ?4,
-                revenu_par_journee_eur = ?5,
-                avantage_domicile = ?6,
-                url_logo = ?7,
-                points = ?8,
-                buts_marques = ?9,
-                buts_encaisses = ?10
-            WHERE id = ?11",
+                points = ?1,
+                buts_marques = ?2,
+                buts_encaisses = ?3
+            WHERE id = ?4",
             rusqlite::params![
-                club.nom,
-                club.nom_court,
-                club.reputation,
-                club.budget_eur,
-                club.revenu_par_journee_eur,
-                club.avantage_domicile,
-                club.url_logo,
                 club.points,
                 club.buts_marques,
                 club.buts_encaisses,
