@@ -1,36 +1,23 @@
-use std::sync::OnceLock;
-use rusqlite::Connection;
 use rand::Rng;
+use rusqlite::Connection;
 use std::sync::Arc;
-use crate::simulation::config::match_rules::MatchRules;
-use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
-use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
-use crate::models::Club;
-use crate::models::CompositionMatch;
-use crate::models::ResultatSimulationMatch;
-use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
+
+use crate::models::{Club, CompositionMatch, ResultatSimulationMatch};
 use crate::selection_club::persist_club::club_dao::ClubDAO;
 use crate::selection_club::persist_club::sql_club_dao::SqlClubDAO;
+use crate::simulation::config::match_rules::MatchRules;
+use crate::simulation::persistSimulation::dao::match_dao::MatchDao;
+use crate::simulation::persistSimulation::sqlitedao::sqlite_match_dao::SqliteMatchDao;
 
 pub struct MatchManager {
-    match_dao:  Box<dyn MatchDao>,
-    composition_dao: Box<dyn CompositionDao>,
+    match_dao: Box<dyn MatchDao>,
     club_dao: Box<dyn ClubDAO>,
 }
 
-
-
-
-
 impl MatchManager {
-   pub fn new(conn: Arc<Connection>, ) -> Self {
+    pub fn new(conn: Arc<Connection>) -> Self {
         Self {
             match_dao: Box::new(SqliteMatchDao { conn: conn.clone() }),
-            
-           
-            composition_dao: Box::new(SqliteCompositionDao { conn: conn.clone() }),
-            
-          
             club_dao: Box::new(SqlClubDAO { conn }),
         }
     }
@@ -131,26 +118,21 @@ impl MatchManager {
     }
 
     fn appliquer_baisse_forme_apres_match(&self, composition: &mut CompositionMatch) {
-    for joueur in &mut composition.joueurs {
-        . On détermine la perte en f32 en fonction du poste
-        let perte = match joueur.poste {
-            Poste::Gardien => MatchRules::PERTE_FORME_GARDIEN,
-            Poste::Defense => MatchRules::PERTE_FORME_DEFENSE,
-            Poste::Milieu => MatchRules::PERTE_FORME_MILIEU,
-            Poste::Attaque => MatchRules::PERTE_FORME_ATTAQUE,
-        };
+        for joueur in &mut composition.joueurs {
+            let perte = match joueur.poste.as_str() {
+                "GARDIEN" => MatchRules::PERTE_FORME_GARDIEN,
+                "DEFENSE" => MatchRules::PERTE_FORME_DEFENSE,
+                "MILIEU" => MatchRules::PERTE_FORME_MILIEU,
+                "ATTAQUE" => MatchRules::PERTE_FORME_ATTAQUE,
+                _ => 0.0,
+            };
 
-       
-        if let Some(forme_actuelle) = joueur.forme {
-            
-            
-            let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
-            
-           
-            joueur.forme = Some((nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32));
+            if let Some(forme_actuelle) = joueur.forme {
+                let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
+                joueur.forme = Some((nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32));
+            }
         }
     }
-}
 
     pub fn simuler_match(
         &self,
@@ -171,7 +153,6 @@ impl MatchManager {
         };
 
         self.mettre_a_jour_stats_clubs(club_domicile, club_exterieur, buts_dom, buts_ext);
-
         self.appliquer_baisse_forme_apres_match(equipe_domicile);
         self.appliquer_baisse_forme_apres_match(equipe_exterieur);
 
@@ -186,52 +167,23 @@ impl MatchManager {
     pub fn simuler_match_et_sauvegarder(
         &self,
         match_id: i32,
+        equipe_domicile: &mut CompositionMatch,
+        equipe_exterieur: &mut CompositionMatch,
+        club_domicile: &mut Club,
+        club_exterieur: &mut Club,
     ) -> Result<ResultatSimulationMatch, String> {
-        let match_data = self
-            .match_dao
-            .find_match_by_id(match_id)?
-            .ok_or_else(|| format!("Aucun match trouvé avec l'id {}", match_id))?;
-
-        let mut equipe_domicile = self
-            .composition_dao
-            .find_by_match_and_club(
-                match_data.id,
-                match_data.club_domicile_id,
-            )?
-            .ok_or_else(|| "Composition domicile introuvable".to_string())?;
-
-        let mut equipe_exterieur = self
-            .composition_dao
-            .find_by_match_and_club(
-                match_data.id,
-                match_data.club_exterieur_id,
-            )?
-            .ok_or_else(|| "Composition extérieure introuvable".to_string())?;
-
-        let mut club_domicile = self
-            .club_dao
-            .get_club_by_id(match_data.club_domicile_id)
-            .map_err(|e| format!("Erreur SQL lors de la recherche du club extérieur : {}", e))?;
-
-        let mut club_exterieur = self
-            .club_dao
-            .get_club_by_id(match_data.club_exterieur_id)
-            .map_err(|e| format!("Erreur SQL lors de la recherche du club extérieur : {}", e))?;
-
         let resultat = self.simuler_match(
-            match_data.id,
-            &mut equipe_domicile,
-            &mut equipe_exterieur,
-            &mut club_domicile,
-            &mut club_exterieur,
+            match_id,
+            equipe_domicile,
+            equipe_exterieur,
+            club_domicile,
+            club_exterieur,
         );
 
         self.match_dao.save_resultat_match(&resultat)?;
-        self.club_dao.update_club(&club_domicile);
-        self.club_dao.update_club(&club_exterieur);
+        self.club_dao.update_club(club_domicile);
+        self.club_dao.update_club(club_exterieur);
 
         Ok(resultat)
     }
-
-   
 }

@@ -1,19 +1,15 @@
-use std::sync::OnceLock;
-use std::sync::Arc;
 use rusqlite::Connection;
-use crate::simulation::businessLogic::manager::match_manager::MatchManager;
-use crate::models::ResultatSimulationMatch;
+use std::sync::Arc;
 
-pub struct MatchFacade
-    {
+use crate::models::{Club, CompositionMatch, ResultatSimulationMatch};
+use crate::simulation::businessLogic::manager::match_manager::MatchManager;
+
+pub struct MatchFacade {
     manager: MatchManager,
 }
 
-
-
-
 impl MatchFacade {
-     pub fn new(conn: Arc<Connection>) -> Self {
+    pub fn new(conn: Arc<Connection>) -> Self {
         Self {
             manager: MatchManager::new(conn),
         }
@@ -22,7 +18,17 @@ impl MatchFacade {
     pub fn simuler_match_et_sauvegarder(
         &self,
         match_id: i32,
+        equipe_domicile: &mut CompositionMatch,
+        equipe_exterieur: &mut CompositionMatch,
+        club_domicile: &mut Club,
+        club_exterieur: &mut Club,
     ) -> Result<ResultatSimulationMatch, String> {
-       self.manager.simuler_match_et_sauvegarder(match_id)
+        self.manager.simuler_match_et_sauvegarder(
+            match_id,
+            equipe_domicile,
+            equipe_exterieur,
+            club_domicile,
+            club_exterieur,
+        )
     }
 }

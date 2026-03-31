@@ -1,21 +1,13 @@
 use std::collections::HashSet;
-use std::sync::OnceLock;
-use crate::simulation::persistSimulation::dao::composition_dao::CompositionDao;
+
 use crate::simulation::config::composition_rules::CompositionRules;
 use crate::models::{CompositionMatch, Joueur};
-use std::sync::Arc;
 
-pub struct CompositionManager {
-    composition_dao: Box<dyn CompositionDao>,
-}
-
-
+pub struct CompositionManager;
 
 impl CompositionManager {
-    pub fn new(conn: Arc<Connection>, ) -> Self {
-        Self {
-            composition_dao: Box::new(SqliteCompositionDao { conn: conn.clone() }),
-        }
+    pub fn new() -> Self {
+        Self
     }
 
     pub fn creer_composition_match(
@@ -27,6 +19,7 @@ impl CompositionManager {
         CompositionMatch {
             match_id,
             club_id,
+            joueurs: joueurs.to_vec(),
             note_generale: self.calculer_note_generale(joueurs),
             note_collectif: self.calculer_note_collectif(joueurs),
             forme_generale: self.calculer_forme_generale(joueurs),
@@ -43,10 +36,11 @@ impl CompositionManager {
         }
 
         let somme: f32 = joueurs
-    .iter()
-    .filter_map(|j| j.note_actuelle) 
-    .map(|note| note as f32)         
-    .sum();
+            .iter()
+            .filter_map(|j| j.note_actuelle)
+            .map(|note| note as f32)
+            .sum();
+
         somme / joueurs.len() as f32
     }
 
@@ -60,9 +54,10 @@ impl CompositionManager {
 
         let somme: f32 = joueurs
             .iter()
-            .filter_map(|j| j.forme)     
-            .map(|forme| forme as f32)   
+            .filter_map(|j| j.forme)
+            .map(|forme| forme as f32)
             .sum();
+
         somme / joueurs.len() as f32
     }
 
@@ -107,18 +102,18 @@ impl CompositionManager {
 
         for joueur in joueurs {
             if let Some(note) = joueur.note_actuelle {
-            let poids = match joueur.poste.as_str() {
-                "GARDIEN" => CompositionRules::POIDS_GARDIEN,
-                "DEFENSE" => CompositionRules::POIDS_DEFENSE,
-                "MILIEU" => CompositionRules::POIDS_MILIEU,
-                "ATTAQUE" => CompositionRules::POIDS_ATTAQUE,
-                _ => 0.0,
-            };
+                let poids = match joueur.poste.as_str() {
+                    "GARDIEN" => CompositionRules::POIDS_GARDIEN,
+                    "DEFENSE" => CompositionRules::POIDS_DEFENSE,
+                    "MILIEU" => CompositionRules::POIDS_MILIEU,
+                    "ATTAQUE" => CompositionRules::POIDS_ATTAQUE,
+                    _ => 0.0,
+                };
 
-            somme += (note as f32) * poids;
-            total_poids += poids;
+                somme += (note as f32) * poids;
+                total_poids += poids;
+            }
         }
-    }
 
         if total_poids == 0.0 {
             return 0.0;

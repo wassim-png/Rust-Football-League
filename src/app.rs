@@ -249,12 +249,11 @@ impl eframe::App for MyApp {
                                 .filter_map(|slot| slot.clone())
                                 .collect();
 
-                            let composition_manager = CompositionManager::new(conn.clone());
-                                .creer_composition_match(
-                                    prochain_match.id,
-                                    club.id.unwrap_or(0),
-                                    &joueurs_selectionnes,
-                                );
+                            let composition_match = self.composition_facade.creer_composition_match(
+                                prochain_match.id,
+                                club.id.unwrap_or(0),
+                                &joueurs_selectionnes,
+                            );
 
                             println!("Composition créée : {:#?}", composition_match);
 
