@@ -76,7 +76,6 @@ impl JoueurDAO for SqliteJoueurDAO {
 
   fn update_forme_joueur(&self, joueur_id: i32, forme: i32) -> Result<(), String> {
     
-   println!("update_forme_joueur called");
     self.conn.execute(
         "UPDATE attributs_joueur_saison 
          SET forme = ?1 

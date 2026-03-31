@@ -191,7 +191,6 @@ impl MatchManager {
         );
 
         self.match_dao.save_resultat_match(&resultat)?;
-        println!("update des clubs");
         self.club_dao.update_club(club_domicile)?;
         self.club_dao.update_club(club_exterieur)?;
 
