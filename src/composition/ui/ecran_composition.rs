@@ -131,10 +131,34 @@ pub fn render(
     ui.vertical_centered(|ui| {
         ui.add_space(8.0);
 
+        let nb_choisis = composition.iter().filter(|s| s.is_some()).count();
+        let somme_notes: i32 = composition
+            .iter()
+            .filter_map(|s| s.as_ref().and_then(|j| j.note_actuelle))
+            .sum();
+
+        let note_moyenne = if nb_choisis > 0 {
+            somme_notes / nb_choisis as i32
+        } else {
+            0
+        };
+
+        let couleur = if nb_choisis == 11 {
+            Color32::from_rgb(76, 175, 80)
+        } else {
+            Color32::from_rgb(255, 193, 7)
+        };
+
+        let couleur_moyenne = if note_moyenne == 0 {
+            Color32::GRAY
+        } else {
+            couleur_note(note_moyenne)
+        };
+
         ui.horizontal(|ui| {
             ui.label(
-                RichText::new(format!("COMPOSITION — {}", nom_club.to_uppercase()))
-                    .font(FontId::proportional(24.0))
+                RichText::new(format!("  COMPOSITION — {}  ", nom_club.to_uppercase()))
+                    .font(FontId::proportional(22.0))
                     .strong()
                     .color(Color32::WHITE)
                     .background_color(Color32::from_rgba_unmultiplied(0, 0, 0, 200)),
@@ -146,11 +170,11 @@ pub fn render(
             egui::ComboBox::from_id_source("choix_formation")
                 .selected_text(
                     RichText::new(*formation_nom)
-                        .font(FontId::proportional(18.0))
+                        .font(FontId::proportional(16.0))
                         .strong()
                         .color(Color32::from_rgb(100, 200, 255)),
                 )
-                .width(120.0)
+                .width(100.0)
                 .show_ui(ui, |ui| {
                     for (i, (nom, _)) in FORMATIONS.iter().enumerate() {
                         if ui.selectable_label(i == *formation_idx, *nom).clicked() {
@@ -159,6 +183,26 @@ pub fn render(
                     }
                 });
 
+            ui.add_space(20.0);
+
+            ui.label(
+                RichText::new(format!("  {}/11 postes remplis  ", nb_choisis))
+                    .font(FontId::proportional(16.0))
+                    .color(couleur)
+                    .strong()
+                    .background_color(Color32::from_rgba_unmultiplied(0, 0, 0, 200)),
+            );
+
+            ui.add_space(10.0);
+
+            ui.label(
+                RichText::new(format!("  ⭐ Note d'Équipe : {}  ", note_moyenne))
+                    .font(FontId::proportional(16.0))
+                    .color(couleur_moyenne)
+                    .strong()
+                    .background_color(Color32::from_rgba_unmultiplied(0, 0, 0, 200)),
+            );
+
             // Reset composition si on change de formation
             if *formation_idx != ancien_idx {
                 *composition = std::array::from_fn(|_| None);
@@ -166,20 +210,6 @@ pub fn render(
                 *capitaine_slot = None;
             }
         });
-
-        let nb_choisis = composition.iter().filter(|s| s.is_some()).count();
-        let couleur = if nb_choisis == 11 {
-            Color32::from_rgb(76, 175, 80)
-        } else {
-            Color32::from_rgb(255, 193, 7)
-        };
-
-        ui.label(
-            RichText::new(format!("{}/11 postes remplis", nb_choisis))
-                .font(FontId::proportional(15.0))
-                .color(couleur)
-                .strong(),
-        );
     });
 
     let terrain_rect = Rect::from_min_size(
