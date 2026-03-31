@@ -243,7 +243,7 @@ fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle:
         .show(ui, |ui| {
             ui.set_min_height(card_height - 28.0); // 28 = inner_margin haut+bas
 
-            // — Titre + bouton "Voir tout"
+            // — Titre
             ui.horizontal(|ui| {
                 ui.label(
                     RichText::new("🏆  CLASSEMENT LIGUE 1")
@@ -251,11 +251,6 @@ fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle:
                         .color(Color32::GOLD)
                         .strong(),
                 );
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui.small_button(RichText::new("Voir tout →").color(Color32::LIGHT_BLUE)).clicked() {
-                        voir_tout = true;
-                    }
-                });
             });
             ui.separator();
             ui.add_space(4.0);
