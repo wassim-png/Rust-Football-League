@@ -4,10 +4,12 @@ use std::sync::Arc;
 use crate::composition::persist_joueur::sql_joueur_dao::SqliteJoueurDAO;
 use crate::composition::persist_joueur::joueur_dao::JoueurDAO;
 
+#[allow(dead_code)]
 pub struct JoueurManager {
     dao: SqliteJoueurDAO,
 }
 
+#[allow(dead_code)]
 impl JoueurManager {
     pub fn new(conn: Arc<Connection>) -> Self {
         Self {

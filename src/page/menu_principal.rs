@@ -233,7 +233,7 @@ fn render_prochain_match_card(
 //  Carte : Classement Ligue 1
 // ─────────────────────────────────────────────
 fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle: i32, card_height: f32) -> bool {
-    let mut voir_tout = false;
+    let voir_tout = false;
 
     egui::Frame::none()
         .fill(Color32::from_rgba_unmultiplied(18, 18, 38, 220))

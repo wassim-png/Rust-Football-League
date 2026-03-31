@@ -137,7 +137,7 @@ impl MatchManager {
             if let Some(forme_actuelle) = joueur.forme {
                 let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
                 let forme = (nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32);
-                self.joueur_dao.update_forme_joueur(joueur.id, forme);
+                let _ = self.joueur_dao.update_forme_joueur(joueur.id, forme);
 
             }
         }

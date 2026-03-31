@@ -39,6 +39,7 @@ pub struct Club {
 
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct InfosClub {
     pub club_id: Option<i32>,  
     pub nom : String,
@@ -53,6 +54,7 @@ pub struct InfosClub {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum Poste {
     Gardien,
     Defense,
@@ -61,6 +63,7 @@ pub enum Poste {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct Joueur {
     pub id: i32,
     pub nom: String,
@@ -164,6 +167,7 @@ impl Default for EtatMercato {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct CompositionMatch {
     pub match_id: i32,
     pub club_id: i32,
@@ -175,6 +179,7 @@ pub struct CompositionMatch {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ResultatSimulationMatch {
     pub match_id: i32,
     pub buts_domicile: i32,
@@ -183,6 +188,7 @@ pub struct ResultatSimulationMatch {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct ResultatMatchJournee {
     pub match_id: i32,
     pub club_domicile_id: i32,

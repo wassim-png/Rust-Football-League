@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
 use crate::models::{Match};
 use crate::prochain_match::persistNextGame::sql_next_game_dao::SqlNextGameDAO;
 use crate::prochain_match::persistNextGame::next_game_dao::NextGameDAO;

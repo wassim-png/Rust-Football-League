@@ -3,10 +3,12 @@ use crate::models::Joueur;
 use std::sync::Arc;
 use crate::composition::business_logic::joueur_manager::JoueurManager;
 
+#[allow(dead_code)]
 pub struct JoueurFacade {
     manager: JoueurManager,
 }
 
+#[allow(dead_code)]
 impl JoueurFacade {
     pub fn new(conn: Arc<Connection>) -> Self {
         Self {

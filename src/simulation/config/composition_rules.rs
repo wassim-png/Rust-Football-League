@@ -1,5 +1,7 @@
+#[allow(dead_code)]
 pub struct CompositionRules;
 
+#[allow(dead_code)]
 impl CompositionRules {
     // -------- COLLECTIF --------
     pub const BASE_COLLECTIF: f32 = 50.0;

@@ -60,7 +60,7 @@ impl MatchDao for SqliteMatchDao {
     fn save_resultat_match(&self, resultat: &ResultatSimulationMatch) -> Result<(), String> {
          
 
-       let mut stmt = self.conn
+       self.conn
             .execute(
                 "
                 INSERT INTO resultats_matchs (match_id, buts_domicile, buts_exterieur)
