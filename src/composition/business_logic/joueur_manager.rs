@@ -6,14 +6,13 @@ use crate::composition::persist_joueur::joueur_dao::JoueurDAO;
 
 #[allow(dead_code)]
 pub struct JoueurManager {
-    dao: SqliteJoueurDAO,
+    dao: Box<dyn JoueurDAO>,
 }
 
-#[allow(dead_code)]
 impl JoueurManager {
     pub fn new(conn: Arc<Connection>) -> Self {
         Self {
-            dao: SqliteJoueurDAO { conn },
+            dao: Box::new(SqliteJoueurDAO { conn }),
         }
     }
 
