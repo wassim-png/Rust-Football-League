@@ -2,18 +2,91 @@ use eframe::egui;
 use egui::{Ui, RichText, Color32, FontId, Frame, Stroke, Vec2, Pos2, Rect, Align2};
 use crate::models::{Joueur, Ecran};
 
-const FORMATION_433: [(f32, f32, &str, &str); 11] = [
-    (0.50, 0.88, "GARDIEN", "GK"),
-    (0.15, 0.70, "DEFENSE", "LB"),
-    (0.38, 0.73, "DEFENSE", "CB"),
-    (0.62, 0.73, "DEFENSE", "CB"),
-    (0.85, 0.70, "DEFENSE", "RB"),
-    (0.25, 0.48, "MILIEU", "CM"),
-    (0.50, 0.45, "MILIEU", "CM"),
-    (0.75, 0.48, "MILIEU", "CM"),
-    (0.18, 0.22, "ATTAQUE", "LW"),
-    (0.50, 0.18, "ATTAQUE", "ST"),
-    (0.82, 0.22, "ATTAQUE", "RW"),
+const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
+    // 4-3-3
+    ("4-3-3", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.15, 0.70, "DEFENSE", "LB"),
+        (0.38, 0.73, "DEFENSE", "CB"),
+        (0.62, 0.73, "DEFENSE", "CB"),
+        (0.85, 0.70, "DEFENSE", "RB"),
+        (0.25, 0.48, "MILIEU", "CM"),
+        (0.50, 0.45, "MILIEU", "CM"),
+        (0.75, 0.48, "MILIEU", "CM"),
+        (0.18, 0.22, "ATTAQUE", "LW"),
+        (0.50, 0.18, "ATTAQUE", "ST"),
+        (0.82, 0.22, "ATTAQUE", "RW"),
+    ]),
+    // 4-4-2
+    ("4-4-2", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.15, 0.70, "DEFENSE", "LB"),
+        (0.38, 0.73, "DEFENSE", "CB"),
+        (0.62, 0.73, "DEFENSE", "CB"),
+        (0.85, 0.70, "DEFENSE", "RB"),
+        (0.15, 0.48, "MILIEU", "LM"),
+        (0.38, 0.45, "MILIEU", "CM"),
+        (0.62, 0.45, "MILIEU", "CM"),
+        (0.85, 0.48, "MILIEU", "RM"),
+        (0.35, 0.20, "ATTAQUE", "ST"),
+        (0.65, 0.20, "ATTAQUE", "ST"),
+    ]),
+    // 3-5-2
+    ("3-5-2", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.25, 0.72, "DEFENSE", "CB"),
+        (0.50, 0.75, "DEFENSE", "CB"),
+        (0.75, 0.72, "DEFENSE", "CB"),
+        (0.10, 0.50, "MILIEU", "LWB"),
+        (0.35, 0.48, "MILIEU", "CM"),
+        (0.50, 0.43, "MILIEU", "CM"),
+        (0.65, 0.48, "MILIEU", "CM"),
+        (0.90, 0.50, "MILIEU", "RWB"),
+        (0.35, 0.20, "ATTAQUE", "ST"),
+        (0.65, 0.20, "ATTAQUE", "ST"),
+    ]),
+    // 4-2-3-1
+    ("4-2-3-1", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.15, 0.70, "DEFENSE", "LB"),
+        (0.38, 0.73, "DEFENSE", "CB"),
+        (0.62, 0.73, "DEFENSE", "CB"),
+        (0.85, 0.70, "DEFENSE", "RB"),
+        (0.35, 0.53, "MILIEU", "CDM"),
+        (0.65, 0.53, "MILIEU", "CDM"),
+        (0.18, 0.35, "MILIEU", "LW"),
+        (0.50, 0.33, "MILIEU", "CAM"),
+        (0.82, 0.35, "MILIEU", "RW"),
+        (0.50, 0.18, "ATTAQUE", "ST"),
+    ]),
+    // 4-5-1
+    ("4-5-1", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.15, 0.70, "DEFENSE", "LB"),
+        (0.38, 0.73, "DEFENSE", "CB"),
+        (0.62, 0.73, "DEFENSE", "CB"),
+        (0.85, 0.70, "DEFENSE", "RB"),
+        (0.12, 0.48, "MILIEU", "LM"),
+        (0.35, 0.45, "MILIEU", "CM"),
+        (0.50, 0.42, "MILIEU", "CM"),
+        (0.65, 0.45, "MILIEU", "CM"),
+        (0.88, 0.48, "MILIEU", "RM"),
+        (0.50, 0.18, "ATTAQUE", "ST"),
+    ]),
+    // 3-4-3
+    ("3-4-3", [
+        (0.50, 0.88, "GARDIEN", "GK"),
+        (0.25, 0.72, "DEFENSE", "CB"),
+        (0.50, 0.75, "DEFENSE", "CB"),
+        (0.75, 0.72, "DEFENSE", "CB"),
+        (0.15, 0.48, "MILIEU", "LM"),
+        (0.38, 0.45, "MILIEU", "CM"),
+        (0.62, 0.45, "MILIEU", "CM"),
+        (0.85, 0.48, "MILIEU", "RM"),
+        (0.18, 0.22, "ATTAQUE", "LW"),
+        (0.50, 0.18, "ATTAQUE", "ST"),
+        (0.82, 0.22, "ATTAQUE", "RW"),
+    ]),
 ];
 
 fn couleur_poste(poste: &str) -> Color32 {
@@ -41,6 +114,7 @@ pub fn render(
     composition: &mut [Option<Joueur>; 11],
     slot_actif: &mut Option<usize>,
     capitaine_slot: &mut Option<usize>,
+    formation_idx: &mut usize,
     ecran_actuel: &mut Ecran,
     nom_club: &str,
 )->bool {
@@ -52,15 +126,46 @@ pub fn render(
         .max_size(ui.available_size())
         .paint_at(ui, panel_rect);
 
+    let (formation_nom, formation) = &FORMATIONS[*formation_idx];
+
     ui.vertical_centered(|ui| {
         ui.add_space(8.0);
-        ui.label(
-            RichText::new(format!("COMPOSITION 4-3-3 — {}", nom_club.to_uppercase()))
-                .font(FontId::proportional(28.0))
-                .strong()
-                .color(Color32::WHITE)
-                .background_color(Color32::from_rgba_unmultiplied(0, 0, 0, 200)),
-        );
+
+        ui.horizontal(|ui| {
+            ui.label(
+                RichText::new(format!("COMPOSITION — {}", nom_club.to_uppercase()))
+                    .font(FontId::proportional(24.0))
+                    .strong()
+                    .color(Color32::WHITE)
+                    .background_color(Color32::from_rgba_unmultiplied(0, 0, 0, 200)),
+            );
+
+            ui.add_space(10.0);
+
+            let ancien_idx = *formation_idx;
+            egui::ComboBox::from_id_source("choix_formation")
+                .selected_text(
+                    RichText::new(*formation_nom)
+                        .font(FontId::proportional(18.0))
+                        .strong()
+                        .color(Color32::from_rgb(100, 200, 255)),
+                )
+                .width(120.0)
+                .show_ui(ui, |ui| {
+                    for (i, (nom, _)) in FORMATIONS.iter().enumerate() {
+                        if ui.selectable_label(i == *formation_idx, *nom).clicked() {
+                            *formation_idx = i;
+                        }
+                    }
+                });
+
+            // Reset composition si on change de formation
+            if *formation_idx != ancien_idx {
+                *composition = std::array::from_fn(|_| None);
+                *slot_actif = None;
+                *capitaine_slot = None;
+            }
+        });
 
         let nb_choisis = composition.iter().filter(|s| s.is_some()).count();
         let couleur = if nb_choisis == 11 {
@@ -82,7 +187,7 @@ pub fn render(
         Vec2::new(panel_rect.width() - 40.0, panel_rect.height() - 140.0),
     );
 
-    for (slot_idx, (x_pct, y_pct, poste, label)) in FORMATION_433.iter().enumerate() {
+    for (slot_idx, (x_pct, y_pct, poste, label)) in formation.iter().enumerate() {
         let center = Pos2::new(
             terrain_rect.min.x + terrain_rect.width() * x_pct,
             terrain_rect.min.y + terrain_rect.height() * y_pct,
@@ -170,7 +275,7 @@ pub fn render(
     }
 
     if let Some(active_slot) = *slot_actif {
-        let (_, _, poste_requis, label) = FORMATION_433[active_slot];
+        let (_, _, poste_requis, label) = formation[active_slot];
 
         let deja_pris_ids: Vec<i32> = composition
             .iter()

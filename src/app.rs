@@ -56,6 +56,7 @@ pub struct MyApp {
     pub composition: [Option<Joueur>; 11],
     pub slot_actif: Option<usize>,
     pub capitaine_slot: Option<usize>,
+    pub formation_idx: usize,
 
     pub composition_match_actuelle: Option<CompositionMatch>,
 
@@ -124,6 +125,7 @@ impl MyApp {
             composition: std::array::from_fn(|_| None),
             slot_actif: None,
             capitaine_slot: None,
+            formation_idx: 0,
 
             composition_match_actuelle: None,
 
@@ -138,6 +140,7 @@ impl MyApp {
         self.composition = std::array::from_fn(|_| None);
         self.slot_actif = None;
         self.capitaine_slot = None;
+        self.formation_idx = 0;
     }
 
     fn reset_simulation_state(&mut self) {
@@ -325,6 +328,7 @@ impl eframe::App for MyApp {
                         &mut self.composition,
                         &mut self.slot_actif,
                         &mut self.capitaine_slot,
+                        &mut self.formation_idx,
                         &mut self.ecran_actuel,
                         &nom_club,
                     );
