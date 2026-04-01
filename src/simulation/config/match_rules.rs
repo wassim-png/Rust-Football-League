@@ -19,4 +19,12 @@ impl MatchRules {
     pub const COEF_FORME_GENERALE: f32 = 0.2;
     pub const COEF_REGULATEUR: f32 = 1.0;
     pub const COEF_REGULATEUR_BUT: f32 = 0.60;
+
+
+    // ---------CHOIX IA ---------
+    pub const COEF_CHOIX_NOTE_IA: f32 = 0.7;
+    pub const COEF_CHOIX_FORME_IA: f32 = 0.3;
+
 }
+
+    

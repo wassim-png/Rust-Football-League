@@ -197,14 +197,25 @@ impl MatchManager {
         Ok(resultat)
     }
 
+    
     fn choisir_11_meilleurs(&self, joueurs: &[Joueur]) -> Vec<Joueur> {
         let mut joueurs_tries = joueurs.to_vec();
 
         joueurs_tries.sort_by(|a, b| {
-            let note_b = b.note_actuelle.unwrap_or(0);
-            let note_a = a.note_actuelle.unwrap_or(0);
-            note_b.cmp(&note_a)
+           
+            let note_a = a.note_actuelle.unwrap_or(0) as f32;
+            let forme_a = a.forme.unwrap_or(0) as f32;
+          
+            let score_a = (note_a *  MatchRules::COEF_CHOIX_NOTE_IA) + (forme_a * MatchRules::COEF_CHOIX_FORME_IA);
+
+            let note_b = b.note_actuelle.unwrap_or(0) as f32;
+            let forme_b = b.forme.unwrap_or(0) as f32;
+            let score_b = (note_b * MatchRules::COEF_CHOIX_NOTE_IA) + (forme_b * MatchRules::COEF_CHOIX_FORME_IA);
+
+           
+            score_b.partial_cmp(&score_a).unwrap_or(std::cmp::Ordering::Equal)
         });
+
 
         joueurs_tries.into_iter().take(11).collect()
     }

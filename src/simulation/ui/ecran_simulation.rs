@@ -1,6 +1,6 @@
 use eframe::egui;
-use egui::{Ui, RichText, Color32, FontId, Frame, Stroke, Vec2, Align2};
-use crate::models::{Club, Ecran, ResultatMatchJournee};
+use egui::{RichText, Color32, FontId,  Vec2};
+use crate::models::{ResultatMatchJournee};
 pub fn render(
     ui: &mut egui::Ui, 
     resultats: &Vec<ResultatMatchJournee>, 

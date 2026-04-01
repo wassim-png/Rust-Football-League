@@ -85,10 +85,7 @@ impl MyApp {
                 calendrier.nb_journees = matchs.iter().map(|m| m.journee).max().unwrap_or(34);
                 calendrier.tous_matchs = matchs;
                 calendrier.donnees_chargees = true;
-                println!(
-                    "Calendrier préchargé au démarrage ({} matchs).",
-                    calendrier.tous_matchs.len()
-                );
+               
             }
             Err(e) => {
                 println!("Erreur préchargement calendrier : {:?}", e);
@@ -100,7 +97,7 @@ impl MyApp {
             vec![]
         });
 
-        println!("Nombre de clubs chargés : {}", equipes.len());
+      
 
         Self {
             ecran_actuel: Ecran::Accueil,
@@ -169,11 +166,7 @@ impl MyApp {
 
         self.reset_composition_state();
 
-        println!(
-            "Écran composition chargé : {} joueurs récupérés pour le club {}",
-            self.joueurs_club.len(),
-            club_id
-        );
+       
     }
 
     fn construire_joueurs_par_club(&self, matchs: &[Match]) -> HashMap<i32, Vec<Joueur>> {
@@ -261,7 +254,7 @@ impl eframe::App for MyApp {
                                 .get_tous_matchs_par_journee(1, self.journee_actuelle)
                                 .ok();
 
-                            println!("Matchs du jour chargés : {:#?}", self.matchs_du_jour);
+                           
 
                             self.match_deja_charge = true;
                         }
@@ -363,7 +356,7 @@ impl eframe::App for MyApp {
                                     &joueurs_selectionnes,
                                 );
 
-                            println!("Composition créée : {:#?}", composition_match);
+       
 
                             self.composition_match_actuelle = Some(composition_match);
                             self.ecran_actuel = Ecran::MenuPrincipal;
