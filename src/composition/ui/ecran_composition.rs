@@ -54,9 +54,9 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.85, 0.70, "DEFENSE", "RB"),
         (0.35, 0.53, "MILIEU", "CDM"),
         (0.65, 0.53, "MILIEU", "CDM"),
-        (0.18, 0.35, "MILIEU", "LW"),
-        (0.50, 0.33, "MILIEU", "CAM"),
-        (0.82, 0.35, "MILIEU", "RW"),
+        (0.18, 0.35, "ATTAQUE", "LW"),
+        (0.50, 0.33, "ATTAQUE", "CAM"),
+        (0.82, 0.35, "ATTAQUE", "RW"),
         (0.50, 0.18, "ATTAQUE", "ST"),
     ]),
     // 4-5-1
