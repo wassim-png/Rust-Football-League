@@ -316,6 +316,8 @@ impl MatchManager {
                 club_exterieur_id: m.club_exterieur_id,
                 nom_domicile: club_dom.nom.clone(),
                 nom_exterieur: club_ext.nom.clone(),
+                url_logo_domicile: Some(m.club_domicile_logo.clone()), 
+                url_logo_exterieur: Some(m.club_exterieur_logo.clone()),
                 buts_domicile: resultat.buts_domicile,
                 buts_exterieur: resultat.buts_exterieur,
                 est_match_utilisateur: m.club_domicile_id == club_utilisateur_id

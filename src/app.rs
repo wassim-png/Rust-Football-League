@@ -29,6 +29,7 @@ use crate::simulation::businessLogic::facade::match_facade::MatchFacade;
 
 use crate::page::accueil;
 use crate::page::menu_principal;
+use crate::simulation::ui::ecran_simulation;
 
 pub struct MyApp {
     pub ecran_actuel: Ecran,
@@ -445,8 +446,10 @@ impl eframe::App for MyApp {
                                 &joueurs_par_club,
                             ) {
                                 Ok(resultats) => {
+                                    self.passer_a_la_journee_suivante();
                                     self.resultats_journee = Some(resultats);
                                     self.message_simulation = None;
+                                    self.ecran_actuel = Ecran::ResultatsJournee;
                                 }
                                 Err(e) => {
                                     self.resultats_journee = None;
@@ -460,49 +463,20 @@ impl eframe::App for MyApp {
                         
                     }
 
-                    ui.heading("Résultats de la journée");
-                    ui.add_space(10.0);
-
-                    if let Some(message) = &self.message_simulation {
-                        ui.label(message);
-                        ui.add_space(10.0);
-                    }
-
-                    if let Some(resultats) = &self.resultats_journee {
-                        for resultat in resultats {
-                            ui.group(|ui| {
-                                if resultat.est_match_utilisateur {
-                                    ui.heading("Votre match");
-                                }
-
-                                ui.label(format!(
-                                    "{} {} - {} {}",
-                                    resultat.nom_domicile,
-                                    resultat.buts_domicile,
-                                    resultat.buts_exterieur,
-                                    resultat.nom_exterieur
-                                ));
-                            });
-
-                            ui.add_space(8.0);
+                    
                         }
-                    }
 
-                    if ui.button("⬅ Retour").clicked() {
-                        self.ecran_actuel = Ecran::MenuPrincipal;
-                    }
-                    ui.add_space(10.0);
-                        if self.resultats_journee.is_some() && self.message_simulation.is_none() {
-                            if self.journee_actuelle < self.calendrier.nb_journees {
-                                if ui.button("➡ Passer à la prochaine journée").clicked() {
-                                    self.passer_a_la_journee_suivante();
-                                    self.ecran_actuel = Ecran::MenuPrincipal;
-                                }
-                            } else {
-                                ui.label("🏁 Fin de saison");
-                            }
-                        }
-                }
+                 Ecran::ResultatsJournee => {
+    if let Some(resultats) = &self.resultats_journee {
+       
+        let clic = ecran_simulation::render(ui, resultats, self.journee_actuelle, self.calendrier.nb_journees);
+        if clic { self.ecran_actuel = Ecran::MenuPrincipal; }
+    } else {
+        // SI TU VOIS CE TEXTE, C'EST QUE TA LISTE EST VIDE
+        ui.heading("ERREUR : La liste des résultats est vide (None)");
+        if ui.button("Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
+    }
+}
 
                 Ecran::Mercato => {
                     if !self.mercato.donnees_chargees {
