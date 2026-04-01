@@ -100,4 +100,37 @@ impl JoueurDAO for SqliteJoueurDAO {
     Ok(())
 }
 
+    fn recuperation_forme_globale(&self, joueurs_exclus: &[i32]) -> Result<(), String> {
+        if joueurs_exclus.is_empty() {
+            self.conn.execute(
+                "UPDATE attributs_joueur_saison SET forme = MIN(100, IFNULL(forme, 100) + 15)",
+                [],
+            ).map_err(|e| format!("Erreur recup forme joueurs champ: {}", e))?;
+
+            self.conn.execute(
+                "UPDATE attributs_gardien_saison SET forme = MIN(100, IFNULL(forme, 100) + 15)",
+                [],
+            ).map_err(|e| format!("Erreur recup forme gardiens: {}", e))?;
+        } else {
+            let in_clause = joueurs_exclus
+                .iter()
+                .map(|id| id.to_string())
+                .collect::<Vec<_>>()
+                .join(",");
+
+            let stmt_joueur = format!(
+                "UPDATE attributs_joueur_saison SET forme = MIN(100, IFNULL(forme, 100) + 15) WHERE joueur_id NOT IN ({})",
+                in_clause
+            );
+            self.conn.execute(&stmt_joueur, []).map_err(|e| format!("Erreur recup forme joueurs champ avec exclusions: {}", e))?;
+
+            let stmt_gardien = format!(
+                "UPDATE attributs_gardien_saison SET forme = MIN(100, IFNULL(forme, 100) + 15) WHERE joueur_id NOT IN ({})",
+                in_clause
+            );
+            self.conn.execute(&stmt_gardien, []).map_err(|e| format!("Erreur recup forme gardiens avec exclusions: {}", e))?;
+        }
+
+        Ok(())
+    }
 }
