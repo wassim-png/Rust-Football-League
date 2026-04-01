@@ -63,6 +63,8 @@ pub struct MyApp {
     pub resultats_journee: Option<Vec<ResultatMatchJournee>>,
     pub simulation_deja_faite: bool,
     pub message_simulation: Option<String>,
+
+    pub popup_alerte: Option<String>,
 }
 
 impl MyApp {
@@ -132,6 +134,8 @@ impl MyApp {
             resultats_journee: None,
             simulation_deja_faite: false,
             message_simulation: None,
+
+            popup_alerte: None,
         }
     }
 
@@ -275,7 +279,15 @@ impl eframe::App for MyApp {
                         if !matches!(ancien_ecran, Ecran::ProchainMatch)
                             && matches!(self.ecran_actuel, Ecran::ProchainMatch)
                         {
-                            self.reset_simulation_state();
+                            if self.composition_match_actuelle.is_none() {
+                                // Compo pas validée → bloquer la navigation et afficher une popup
+                                self.ecran_actuel = Ecran::MenuPrincipal;
+                                self.popup_alerte = Some(
+                                    "Vous devez valider votre composition\navant de lancer la simulation.".to_string(),
+                                );
+                            } else {
+                                self.reset_simulation_state();
+                            }
                         }
 
                         if matches!(self.ecran_actuel, Ecran::InfosClub) {
@@ -549,5 +561,43 @@ impl eframe::App for MyApp {
                 }
             }
         });
+
+        // Popup d'alerte générique (ex: compo manquante)
+        if let Some(msg) = self.popup_alerte.clone() {
+            let mut fermer = false;
+            egui::Window::new("⚠  Action impossible")
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, egui::vec2(0.0, 0.0))
+                .min_width(320.0)
+                .show(ctx, |ui| {
+                    ui.add_space(8.0);
+                    for ligne in msg.lines() {
+                        ui.label(
+                            egui::RichText::new(ligne)
+                                .font(egui::FontId::proportional(15.0))
+                                .color(egui::Color32::WHITE),
+                        );
+                    }
+                    ui.add_space(14.0);
+                    ui.with_layout(egui::Layout::top_down(egui::Align::Center), |ui| {
+                        if ui.add(
+                            egui::Button::new(
+                                egui::RichText::new("  OK  ")
+                                    .color(egui::Color32::WHITE)
+                                    .font(egui::FontId::proportional(14.0)),
+                            )
+                            .fill(egui::Color32::from_rgb(40, 100, 200))
+                            .rounding(6.0),
+                        ).clicked() {
+                            fermer = true;
+                        }
+                    });
+                    ui.add_space(6.0);
+                });
+            if fermer {
+                self.popup_alerte = None;
+            }
+        }
     }
 }
