@@ -81,7 +81,7 @@ Chaque module suit la même structure : `ui/` → `business_logic/` (Facade + Ma
 
 ```bash
 # Cloner le projet
-git clone <git@github.com:wassim-png/Rust-Football-League.git>
+git clone git@github.com:wassim-png/Rust-Football-League.git
 cd rust-football-league
 
 # Compiler et lancer
