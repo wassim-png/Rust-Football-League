@@ -31,7 +31,7 @@ impl MatchDao for SqliteMatchDao {
             ",
             rusqlite::params![match_id],
             |row| {
-                // On lit tout simplement, sans messages d'erreurs à rallonge
+                
                 Ok(Match {
                     id: row.get(0)?,
                     journee: row.get(1)?,

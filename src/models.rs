@@ -10,6 +10,7 @@ pub enum Ecran {
     Calendrier,
     Classement,
     ProchainMatch,
+    ResultatsJournee
 }
 
 #[derive(PartialEq, Clone)]
@@ -195,6 +196,8 @@ pub struct ResultatMatchJournee {
     pub club_exterieur_id: i32,
     pub nom_domicile: String,
     pub nom_exterieur: String,
+    pub url_logo_domicile: Option<String>,   
+    pub url_logo_exterieur: Option<String>,
     pub buts_domicile: i32,
     pub buts_exterieur: i32,
     pub est_match_utilisateur: bool,
