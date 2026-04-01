@@ -277,22 +277,19 @@ pub fn render(
             );
 
             // Nom en pill semi-transparente sous le cercle
-            let nom_court = if joueur.nom.len() > 10 {
-                format!("{}.", &joueur.nom[..9])
-            } else {
-                joueur.nom.clone()
-            };
-            let pill_center = Pos2::new(center.x, center.y + radius + 9.0);
+            let nom = &joueur.nom;
+            let pill_w = (nom.len() as f32 * 7.5).max(70.0).min(120.0);
+            let pill_center = Pos2::new(center.x, center.y + radius + 10.0);
             ui.painter().rect_filled(
-                Rect::from_center_size(pill_center, Vec2::new(66.0, 15.0)),
+                Rect::from_center_size(pill_center, Vec2::new(pill_w, 17.0)),
                 4.0,
-                Color32::from_rgba_unmultiplied(0, 0, 0, 180),
+                Color32::from_rgba_unmultiplied(0, 0, 0, 185),
             );
             ui.painter().text(
                 pill_center,
                 Align2::CENTER_CENTER,
-                &nom_court,
-                FontId::proportional(10.5),
+                nom.as_str(),
+                FontId::proportional(12.0),
                 Color32::WHITE,
             );
 
