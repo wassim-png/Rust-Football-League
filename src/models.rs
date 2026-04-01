@@ -142,10 +142,6 @@ pub struct EtatMercato {
     /// Index dans tous_joueurs du joueur sélectionné pour recrutement/offre
     pub joueur_selectionne: Option<usize>,
     pub offre_montant: f64,
-    /// (joueur_id, club_id) à persister en DB après recrutement/achat
-    pub action_recrutement: Option<(i32, i32)>,
-    /// (joueur_id, Option<nouveau_club_id>) — None = libéré sur le marché
-    pub action_vente: Option<(i32, Option<i32>)>,
 }
 
 impl Default for EtatMercato {
@@ -161,8 +157,29 @@ impl Default for EtatMercato {
             message: None,
             joueur_selectionne: None,
             offre_montant: 0.0,
-            action_recrutement: None,
-            action_vente: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ErreurMercato {
+    BudgetInsuffisant { budget: i64, cout: i64 },
+    EffectifMinimum { taille: usize },
+    OffreRefusee { club: String, montant: i64 },
+    ErreurDB(String),
+}
+
+impl std::fmt::Display for ErreurMercato {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ErreurMercato::BudgetInsuffisant { budget, cout } =>
+                write!(f, "Budget insuffisant ({} disponible, {} requis)", budget, cout),
+            ErreurMercato::EffectifMinimum { taille } =>
+                write!(f, "Effectif minimum de 15 joueurs atteint ({} joueurs)", taille),
+            ErreurMercato::OffreRefusee { club, montant } =>
+                write!(f, "{} a refusé votre offre de {}€", club, montant),
+            ErreurMercato::ErreurDB(e) =>
+                write!(f, "Erreur base de données : {}", e),
         }
     }
 }

@@ -8,4 +8,5 @@ pub trait MercatoDAO {
     fn recruter_joueur(&self, joueur_id: i32, club_id: i32) -> Result<()>;
     /// None = libéré (joueur libre), Some(id) = transféré dans le club acheteur
     fn vendre_joueur(&self, joueur_id: i32, nouveau_club_id: Option<i32>) -> Result<()>;
+    fn mettre_a_jour_budget_club(&self, club_id: i32, nouveau_budget: i64) -> Result<()>;
 }

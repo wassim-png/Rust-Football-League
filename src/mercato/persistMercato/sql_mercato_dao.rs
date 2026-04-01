@@ -140,4 +140,12 @@ impl MercatoDAO for SqlMercatoDAO {
         )?;
         Ok(())
     }
+
+    fn mettre_a_jour_budget_club(&self, club_id: i32, nouveau_budget: i64) -> Result<()> {
+        self.conn.execute(
+            "UPDATE clubs SET budget_eur = ?1 WHERE id = ?2",
+            rusqlite::params![nouveau_budget, club_id],
+        )?;
+        Ok(())
+    }
 }

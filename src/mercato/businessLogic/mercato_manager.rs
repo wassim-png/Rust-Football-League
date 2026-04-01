@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use rusqlite::{Connection, Result};
-use crate::models::{Joueur, OffreTransfert};
+use crate::models::{ErreurMercato, Joueur, OffreTransfert};
 use crate::mercato::persistMercato::mercato_dao::MercatoDAO;
 use crate::mercato::persistMercato::sql_mercato_dao::SqlMercatoDAO;
 
@@ -27,11 +27,92 @@ impl MercatoManager {
         self.dao.generer_offres_ia(mon_club_id)
     }
 
-    pub fn recruter_joueur(&self, joueur_id: i32, club_id: i32) -> Result<()> {
-        self.dao.recruter_joueur(joueur_id, club_id)
+    /// Recrute un joueur libre au prix fixe de sa valeur marchande.
+    pub fn recruter_joueur_libre(
+        &self,
+        joueur: &Joueur,
+        club_id: i32,
+        budget_actuel: i64,
+    ) -> Result<i64, ErreurMercato> {
+        let cout = joueur.valeur_marche_eur;
+        if budget_actuel < cout {
+            return Err(ErreurMercato::BudgetInsuffisant { budget: budget_actuel, cout });
+        }
+        self.dao.recruter_joueur(joueur.id, club_id)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        let nouveau_budget = budget_actuel - cout;
+        self.dao.mettre_a_jour_budget_club(club_id, nouveau_budget)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        Ok(nouveau_budget)
     }
 
-    pub fn vendre_joueur(&self, joueur_id: i32, nouveau_club_id: Option<i32>) -> Result<()> {
-        self.dao.vendre_joueur(joueur_id, nouveau_club_id)
+    /// Soumet une offre pour un joueur sous contrat.
+    /// Acceptation selon seuil basé sur la réputation du joueur.
+    pub fn faire_offre_transfert(
+        &self,
+        joueur: &Joueur,
+        montant: i64,
+        club_id: i32,
+        budget_actuel: i64,
+    ) -> Result<i64, ErreurMercato> {
+        if budget_actuel < montant {
+            return Err(ErreurMercato::BudgetInsuffisant { budget: budget_actuel, cout: montant });
+        }
+        let seuil = if joueur.reputation > 90 { 1.15 }
+                    else if joueur.reputation > 80 { 1.0 }
+                    else { 0.85 };
+        let seuil_montant = (joueur.valeur_marche_eur as f64 * seuil) as i64;
+        if montant < seuil_montant {
+            return Err(ErreurMercato::OffreRefusee {
+                club: joueur.club_nom.clone().unwrap_or_default(),
+                montant,
+            });
+        }
+        self.dao.recruter_joueur(joueur.id, club_id)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        let nouveau_budget = budget_actuel - montant;
+        self.dao.mettre_a_jour_budget_club(club_id, nouveau_budget)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        Ok(nouveau_budget)
+    }
+
+    /// Accepte une offre reçue d'un club adverse.
+    pub fn accepter_offre_recue(
+        &self,
+        joueur_id: i32,
+        club_acheteur_id: i32,
+        montant: i64,
+        club_vendeur_id: i32,
+        budget_actuel: i64,
+        taille_effectif: usize,
+    ) -> Result<i64, ErreurMercato> {
+        if taille_effectif <= 15 {
+            return Err(ErreurMercato::EffectifMinimum { taille: taille_effectif });
+        }
+        self.dao.vendre_joueur(joueur_id, Some(club_acheteur_id))
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        let nouveau_budget = budget_actuel + montant;
+        self.dao.mettre_a_jour_budget_club(club_vendeur_id, nouveau_budget)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        Ok(nouveau_budget)
+    }
+
+    /// Libère un joueur sur le marché libre et récupère sa valeur marchande.
+    pub fn vendre_joueur_marche(
+        &self,
+        joueur: &Joueur,
+        club_id: i32,
+        budget_actuel: i64,
+        taille_effectif: usize,
+    ) -> Result<i64, ErreurMercato> {
+        if taille_effectif <= 15 {
+            return Err(ErreurMercato::EffectifMinimum { taille: taille_effectif });
+        }
+        self.dao.vendre_joueur(joueur.id, None)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        let nouveau_budget = budget_actuel + joueur.valeur_marche_eur;
+        self.dao.mettre_a_jour_budget_club(club_id, nouveau_budget)
+            .map_err(|e| ErreurMercato::ErreurDB(e.to_string()))?;
+        Ok(nouveau_budget)
     }
 }

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use rusqlite::{Connection, Result};
-use crate::models::{Joueur, OffreTransfert};
+use crate::models::{ErreurMercato, Joueur, OffreTransfert};
 use crate::mercato::businessLogic::mercato_manager::MercatoManager;
 
 pub struct MercatoFacade {
@@ -26,11 +26,47 @@ impl MercatoFacade {
         self.manager.generer_offres_ia(mon_club_id)
     }
 
-    pub fn recruter_joueur(&self, joueur_id: i32, club_id: i32) -> Result<()> {
-        self.manager.recruter_joueur(joueur_id, club_id)
+    pub fn recruter_joueur_libre(
+        &self,
+        joueur: &Joueur,
+        club_id: i32,
+        budget_actuel: i64,
+    ) -> Result<i64, ErreurMercato> {
+        self.manager.recruter_joueur_libre(joueur, club_id, budget_actuel)
     }
 
-    pub fn vendre_joueur(&self, joueur_id: i32, nouveau_club_id: Option<i32>) -> Result<()> {
-        self.manager.vendre_joueur(joueur_id, nouveau_club_id)
+    pub fn faire_offre_transfert(
+        &self,
+        joueur: &Joueur,
+        montant: i64,
+        club_id: i32,
+        budget_actuel: i64,
+    ) -> Result<i64, ErreurMercato> {
+        self.manager.faire_offre_transfert(joueur, montant, club_id, budget_actuel)
+    }
+
+    pub fn accepter_offre_recue(
+        &self,
+        joueur_id: i32,
+        club_acheteur_id: i32,
+        montant: i64,
+        club_vendeur_id: i32,
+        budget_actuel: i64,
+        taille_effectif: usize,
+    ) -> Result<i64, ErreurMercato> {
+        self.manager.accepter_offre_recue(
+            joueur_id, club_acheteur_id, montant,
+            club_vendeur_id, budget_actuel, taille_effectif,
+        )
+    }
+
+    pub fn vendre_joueur_marche(
+        &self,
+        joueur: &Joueur,
+        club_id: i32,
+        budget_actuel: i64,
+        taille_effectif: usize,
+    ) -> Result<i64, ErreurMercato> {
+        self.manager.vendre_joueur_marche(joueur, club_id, budget_actuel, taille_effectif)
     }
 }

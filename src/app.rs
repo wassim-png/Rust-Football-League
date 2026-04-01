@@ -516,21 +516,8 @@ impl eframe::App for MyApp {
                             eq,
                             &mut self.mercato,
                             &mut self.ecran_actuel,
+                            &self.mercato_facade,
                         );
-                    }
-
-                    if let Some((joueur_id, club_id)) = self.mercato.action_recrutement.take() {
-                        if let Err(e) = self.mercato_facade.recruter_joueur(joueur_id, club_id) {
-                            println!("Erreur DB recrutement : {:?}", e);
-                        }
-                    }
-
-                    if let Some((joueur_id, nouveau_club_id)) = self.mercato.action_vente.take() {
-                        if let Err(e) =
-                            self.mercato_facade.vendre_joueur(joueur_id, nouveau_club_id)
-                        {
-                            println!("Erreur DB vente : {:?}", e);
-                        }
                     }
                 }
             }
