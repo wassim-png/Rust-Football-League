@@ -1,15 +1,30 @@
 
-mod models; // Déclare l'existence de models.rs
+mod models;
 mod app;
-pub mod db_setup; // Module for DB initialization
+mod selection_club;
+mod infos_club;
+mod prochain_match;
+pub mod page;
+mod database;
+mod mercato;
+mod calendrier;
+mod composition;
+mod simulation;
+use database:: Database;
+
 
 use app::MyApp;
 fn main() -> eframe::Result<()> {
     // Initialize the database before starting the GUI
-    if let Err(e) = db_setup::init_db("db/simulation.db") {
-        eprintln!("Failed to initialize database: {}", e);
-    }
+   let db = Database::new("db/simulation.db")
+   .expect("Erreur fatale : Impossible d'initialiser la base de données");
 
     let options = eframe::NativeOptions::default();
-    eframe::run_native("Foot Manager Rust", options, Box::new(|_cc| Box::new(MyApp::default())))
+    eframe::run_native("Rust Football League", options, 
+    Box::new(move |cc| {  
+        egui_extras::install_image_loaders(&cc.egui_ctx); 
+
+        Box::new(MyApp::new(db.conn.clone()))
+    }),
+)
 }

@@ -1,16 +1,221 @@
+#[derive(Clone)]
 pub enum Ecran {
+    Accueil,
     Selection,
     MenuPrincipal,
     Composition,
     InfosClub,
     DetailsJoueur,
+    Mercato,
+    Calendrier,
+    Classement,
+    ProchainMatch,
+    ResultatsJournee
 }
 
-// Pour pouvoir copier l'équipe choisie dans l'équipe actuel
-#[derive(Clone)]
-pub struct Equipe {
+#[derive(PartialEq, Clone)]
+pub enum OngletMercato {
+    JoueursDisponibles,
+    OffresRecues,
+    MesJoueurs,
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct Club {
+    pub id: Option<i32>,
+    pub nom: String,
+    pub nom_court: String,
+    pub reputation: i32,
+    pub budget_eur: i64,
+    pub revenu_par_journee_eur: i64,
+    pub avantage_domicile: i32, 
+    pub url_logo: String,
+    pub points: i32,
+    pub buts_marques: i32,
+    pub buts_encaisses: i32,
+
+
+}
+
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct InfosClub {
+    pub club_id: Option<i32>,  
+    pub nom : String,
+    pub nom_stade: String,        
+    pub stade_capacite: i32,
+    pub reputation : i32,
+    pub avantage_domicile : i32,
+    pub revenu_par_journee_eur : i64,
+    pub url_logo: String,          
+    pub url_stade: String,
+    pub nom_meilleur_buteur: String
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(dead_code)]
+pub enum Poste {
+    Gardien,
+    Defense,
+    Milieu,
+    Attaque,
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct Joueur {
     pub id: i32,
     pub nom: String,
-    pub stade: String,
-    pub budget: i32,
+    pub age: i32,
+    pub poste: String,
+    pub reputation: i32,
+
+    pub note_actuelle: Option<i32>, 
+    pub forme: Option<i32>,
+    pub nationalite: Option<String>,
+
+    pub valeur_marche_eur: i64,
+    pub salaire_semaine_eur: i64,
+    
+    pub club_nom: Option<String>,
+}
+
+
+#[derive(Clone)]
+pub struct OffreTransfert {
+    pub joueur_id: i32,
+    pub joueur_nom: String,
+    pub club_acheteur_id: i32,
+    pub club_acheteur: String,
+    pub montant_eur: i64,
+}
+
+#[derive(Debug, Clone)]
+pub struct Match {
+    pub id: i32,
+    pub journee: i32,
+    pub club_domicile_id: i32,
+    pub club_domicile_nom: String,
+    pub club_domicile_logo: String,
+    pub club_exterieur_id: i32,
+    pub club_exterieur_nom: String,
+    pub club_exterieur_logo: String,
+    pub date_coup_envoi: Option<String>,
+    pub buts_domicile: Option<i32>,
+    pub buts_exterieur: Option<i32>,
+}
+
+
+
+
+
+pub struct EtatCalendrier {
+    pub tous_matchs: Vec<Match>,
+    pub journee_selectionnee: i32,
+    pub nb_journees: i32,
+    pub donnees_chargees: bool,
+}
+
+impl Default for EtatCalendrier {
+    fn default() -> Self {
+        Self {
+            tous_matchs: vec![],
+            journee_selectionnee: 1,
+            nb_journees: 34,
+            donnees_chargees: false,
+        }
+    }
+}
+
+pub struct EtatMercato {
+    pub onglet: OngletMercato,
+    pub tous_joueurs: Vec<Joueur>,
+    pub mes_joueurs: Vec<Joueur>,
+    pub offres_recues: Vec<OffreTransfert>,
+    pub donnees_chargees: bool,
+    pub recherche: String,
+    /// None = tous les postes, Some("ATTAQUE") etc.
+    pub filtre_poste: Option<String>,
+    pub message: Option<String>,
+    /// Index dans tous_joueurs du joueur sélectionné pour recrutement/offre
+    pub joueur_selectionne: Option<usize>,
+    pub offre_montant: f64,
+}
+
+impl Default for EtatMercato {
+    fn default() -> Self {
+        Self {
+            onglet: OngletMercato::JoueursDisponibles,
+            tous_joueurs: vec![],
+            mes_joueurs: vec![],
+            offres_recues: vec![],
+            donnees_chargees: false,
+            recherche: String::new(),
+            filtre_poste: None,
+            message: None,
+            joueur_selectionne: None,
+            offre_montant: 0.0,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ErreurMercato {
+    BudgetInsuffisant { budget: i64, cout: i64 },
+    EffectifMinimum { taille: usize },
+    OffreRefusee { club: String, montant: i64 },
+    ErreurDB(String),
+}
+
+impl std::fmt::Display for ErreurMercato {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ErreurMercato::BudgetInsuffisant { budget, cout } =>
+                write!(f, "Budget insuffisant ({} disponible, {} requis)", budget, cout),
+            ErreurMercato::EffectifMinimum { taille } =>
+                write!(f, "Effectif minimum de 15 joueurs atteint ({} joueurs)", taille),
+            ErreurMercato::OffreRefusee { club, montant } =>
+                write!(f, "{} a refusé votre offre de {}€", club, montant),
+            ErreurMercato::ErreurDB(e) =>
+                write!(f, "Erreur base de données : {}", e),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct CompositionMatch {
+    pub match_id: i32,
+    pub club_id: i32,
+    pub note_generale: f32,
+    pub note_collectif: f32,
+    pub forme_generale: f32,
+    pub finition: f32,
+    pub joueurs: Vec<Joueur>,
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct ResultatSimulationMatch {
+    pub match_id: i32,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub vainqueur_id: Option<i32>,
+}
+
+#[derive(Debug, Clone)]
+#[allow(dead_code)]
+pub struct ResultatMatchJournee {
+    pub match_id: i32,
+    pub club_domicile_id: i32,
+    pub club_exterieur_id: i32,
+    pub nom_domicile: String,
+    pub nom_exterieur: String,
+    pub url_logo_domicile: Option<String>,   
+    pub url_logo_exterieur: Option<String>,
+    pub buts_domicile: i32,
+    pub buts_exterieur: i32,
+    pub est_match_utilisateur: bool,
 }

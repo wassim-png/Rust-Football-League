@@ -26,24 +26,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS competitions (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
   nom              TEXT NOT NULL UNIQUE,
-  type_competition TEXT NOT NULL CHECK (type_competition IN ('championnat', 'coupe')),
-
-  -- Règles (simple)
-  nb_equipes       INTEGER CHECK (nb_equipes IS NULL OR nb_equipes >= 2),
- 
-
-  -- Championnat uniquement (NULL autorisés si coupe)
-  points_victoire  INTEGER CHECK (points_victoire IS NULL OR points_victoire >= 0),
-  points_nul       INTEGER CHECK (points_nul IS NULL OR points_nul >= 0),
-  points_defaite   INTEGER CHECK (points_defaite IS NULL OR points_defaite >= 0),
-
-  CHECK (
-    (type_competition <> 'championnat')
-    OR (nb_equipes IS NOT NULL
-        AND points_victoire IS NOT NULL
-        AND points_nul IS NOT NULL
-        AND points_defaite IS NOT NULL)
-  )
+  nb_equipes       INTEGER CHECK (nb_equipes IS NULL OR nb_equipes >= 2)
 );
 
 CREATE TABLE IF NOT EXISTS saisons (
@@ -68,9 +51,12 @@ CREATE TABLE IF NOT EXISTS clubs (
   -- Argent (simple)
   budget_eur             INTEGER NOT NULL DEFAULT 0 CHECK (budget_eur >= 0),
   revenu_par_journee_eur INTEGER NOT NULL DEFAULT 500000 CHECK (revenu_par_journee_eur >= 0),
+  points INTEGER DEFAULT 0,
+  buts_marques INTEGER DEFAULT 0,
+  buts_encaisses INTEGER DEFAULT 0,
 
    
-  avantage_domicile      INTEGER NOT NULL DEFAULT 5 CHECK (avantage_domicile BETWEEN 0 AND 30)
+  avantage_domicile      INTEGER NOT NULL DEFAULT 50 CHECK (avantage_domicile BETWEEN 0 AND 100)
 );
 
 
@@ -114,7 +100,7 @@ CREATE TABLE IF NOT EXISTS etat_club_saison (
 -- =========================
 CREATE TABLE IF NOT EXISTS joueurs (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-  club_id             INTEGER NOT NULL,
+  club_id             INTEGER,
 
   nom                 TEXT NOT NULL,
   age                 INTEGER NOT NULL CHECK (age BETWEEN 14 AND 60),
@@ -132,9 +118,14 @@ CREATE TABLE IF NOT EXISTS joueurs (
 
   fin_contrat         TEXT,
 
-  FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE RESTRICT
+  FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS joueurs_libres (
+  joueur_id INTEGER PRIMARY KEY,
+  
+  FOREIGN KEY (joueur_id) REFERENCES joueurs(id) ON DELETE CASCADE
+);
 
 
 CREATE TABLE IF NOT EXISTS attributs_joueur_saison (
@@ -147,7 +138,8 @@ CREATE TABLE IF NOT EXISTS attributs_joueur_saison (
   dribble      INTEGER NOT NULL CHECK (dribble BETWEEN 1 AND 99),
   defense    INTEGER NOT NULL CHECK (defense BETWEEN 1 AND 99),
   physique   INTEGER NOT NULL CHECK (physique BETWEEN 1 AND 99),
-  forme      INTEGER NOT NULL DEFAULT 100 CHECK (sante BETWEEN 0 AND 100),
+
+  forme   INTEGER NOT NULL DEFAULT 100 CHECK (forme BETWEEN 0 AND 100),
 
   moral         INTEGER NOT NULL DEFAULT 50 CHECK (moral BETWEEN 0 AND 100),
 
@@ -172,7 +164,7 @@ CREATE TABLE IF NOT EXISTS attributs_gardien_saison (
   reflexe   INTEGER NOT NULL CHECK (reflexe BETWEEN 1 AND 99),
   vitesse   INTEGER NOT NULL CHECK (vitesse BETWEEN 1 AND 99),
   position   INTEGER NOT NULL CHECK (position BETWEEN 1 AND 99),
-  forme      INTEGER NOT NULL DEFAULT 100 CHECK (forme BETWEEN 0 AND 100),
+  forme    INTEGER NOT NULL DEFAULT 100 CHECK (forme BETWEEN 0 AND 100),
 
   moral         INTEGER NOT NULL DEFAULT 50 CHECK (moral BETWEEN 0 AND 100),
 
@@ -234,8 +226,6 @@ CREATE TABLE IF NOT EXISTS compositions_match (
   collectif INTEGER NOT NULL CHECK (collectif BETWEEN 0 AND 100),
   forme_generale INTEGER NOT NULL CHECK (forme_generale BETWEEN 0 AND 100),
 
-
-  est_titulaire  INTEGER NOT NULL DEFAULT 1 CHECK (est_titulaire IN (0,1)),
   poste_match    TEXT CHECK (poste_match IN ('GARDIEN','DEFENSE','MILIEU','ATTAQUE')),
 
   PRIMARY KEY (match_id, joueur_id),
@@ -269,13 +259,7 @@ CREATE TABLE IF NOT EXISTS evenement_matchs (
 
 
 
-CREATE TABLE IF NOT EXISTS joueur_libre (
-  id                    INTEGER PRIMARY KEY AUTOINCREMENT,
-  joueur_id             INTEGER NOT NULL UNIQUE,
-  
-  
-  FOREIGN KEY (joueur_id) REFERENCES joueurs(id) ON DELETE CASCADE
-);
+
 
 CREATE TABLE IF NOT EXISTS transferts (
   id                           INTEGER PRIMARY KEY AUTOINCREMENT,

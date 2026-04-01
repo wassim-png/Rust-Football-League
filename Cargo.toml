@@ -5,6 +5,12 @@ edition = "2024"
 
 [dependencies]
 csv = "1.4.0"
+rand = "0.8"
 eframe = "0.26.2"
 rusqlite = { version = "0.39.0", features = ["bundled"] }
 serde = { version = "1.0.228", features = ["derive"] }
+egui_extras = { version = "0.26", features = ["all_loaders"] }
+image = { version = "0.24", features = ["jpeg", "png"] }
+
+[profile.dev.package."*"]
+opt-level = 3
