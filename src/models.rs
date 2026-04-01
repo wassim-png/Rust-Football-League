@@ -10,7 +10,8 @@ pub enum Ecran {
     Calendrier,
     Classement,
     ProchainMatch,
-    ResultatsJournee
+    ResultatsJournee,
+    ResultatsFinaux
 }
 
 #[derive(PartialEq, Clone)]

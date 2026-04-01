@@ -24,5 +24,7 @@ impl ClubManager {
         self.dao.get_all_clubs_by_points()
     }
 
-    
+    pub fn reset_saison(&self) -> Result<(), String> {
+        self.dao.reset_saison()
+    }    
 }
