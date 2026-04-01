@@ -58,8 +58,9 @@ impl MercatoManager {
         if budget_actuel < montant {
             return Err(ErreurMercato::BudgetInsuffisant { budget: budget_actuel, cout: montant });
         }
-        let seuil = if joueur.reputation > 90 { 1.15 }
-                    else if joueur.reputation > 80 { 1.0 }
+        let seuil = if joueur.reputation > 85 { 1.20 }
+                    else if joueur.reputation > 79 { 1.10 }
+                    else if joueur.reputation > 70 { 1.0 }
                     else { 0.85 };
         let seuil_montant = (joueur.valeur_marche_eur as f64 * seuil) as i64;
         if montant < seuil_montant {
