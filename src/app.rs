@@ -66,6 +66,8 @@ pub struct MyApp {
     pub message_simulation: Option<String>,
 
     pub popup_alerte: Option<String>,
+
+    pub annee: i32
 }
 
 impl MyApp {
@@ -134,6 +136,7 @@ impl MyApp {
             message_simulation: None,
 
             popup_alerte: None,
+            annee : 2025
         }
     }
 
@@ -227,7 +230,7 @@ impl eframe::App for MyApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.ecran_actuel {
                 Ecran::Accueil => {
-                    accueil::render(ui, &mut self.ecran_actuel);
+                    accueil::render(ui, &mut self.ecran_actuel, self.annee);
                 }
 
                 Ecran::Selection => {
@@ -268,6 +271,8 @@ impl eframe::App for MyApp {
                             &self.prochain_match,
                             &self.liste_equipes,
                             self.journee_actuelle,
+                            self.calendrier.nb_journees, 
+                            self.annee
                         );
 
                         if !matches!(ancien_ecran, Ecran::ProchainMatch)
@@ -460,22 +465,22 @@ impl eframe::App for MyApp {
                         }
 
                  Ecran::ResultatsJournee => {
-    if let Some(resultats) = &self.resultats_journee {
-       
-        let clic = ecran_simulation::render(ui, resultats, self.journee_actuelle, self.calendrier.nb_journees);
-        if clic { 
-            if self.journee_actuelle > self.calendrier.nb_journees {
-                // Mettre à jour la liste des équipes pour avoir les points définitifs de la saison !
-                if let Ok(updated_clubs) = self.club_facade.get_all_clubs_by_points() {
-                    self.liste_equipes = updated_clubs;
-                }
-                self.ecran_actuel = Ecran::ResultatsFinaux;
-            } else {
-                self.ecran_actuel = Ecran::MenuPrincipal; 
-            }
-        }
+                    if let Some(resultats) = &self.resultats_journee {
+                    
+                        let clic = ecran_simulation::render(ui, resultats, self.journee_actuelle, self.calendrier.nb_journees);
+                        if clic { 
+                            if self.journee_actuelle > self.calendrier.nb_journees {
+                                // Mettre à jour la liste des équipes pour avoir les points définitifs de la saison !
+                                if let Ok(updated_clubs) = self.club_facade.get_all_clubs_by_points() {
+                                    self.liste_equipes = updated_clubs;
+                                }
+                                self.ecran_actuel = Ecran::ResultatsFinaux;
+                            } else {
+                                self.ecran_actuel = Ecran::MenuPrincipal; 
+                            }
+                        }
     } else {
-        // SI TU VOIS CE TEXTE, C'EST QUE TA LISTE EST VIDE
+        
         ui.heading("ERREUR : La liste des résultats est vide (None)");
         if ui.button("Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
     }
@@ -501,7 +506,7 @@ impl eframe::App for MyApp {
 
                          self.equipe_choisie = None;
                          self.journee_actuelle = 1;
-                         // Ouvre toujours sur la journée actuelle avec un calendrier vidé
+                        
                          self.calendrier = Default::default();
                          self.mercato = Default::default();
                          self.resultats_journee = None;
@@ -514,6 +519,8 @@ impl eframe::App for MyApp {
                          self.reset_composition_state();
                          self.reset_simulation_state();
                          self.ecran_actuel = Ecran::Accueil;
+                         self.calendrier.nb_journees = 2;
+                         self.annee +=1;
                      }
                  }
 

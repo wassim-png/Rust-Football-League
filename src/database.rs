@@ -63,7 +63,7 @@ impl Database {
 
         // Import spécial : joueurs_libres.csv contient des joueurs complets (sans club)
         // On les insère d'abord dans 'joueurs', puis on référence leurs IDs dans 'joueurs_libres'
-        Self::import_joueurs_libres(&conn)?;
+        
 
         conn.execute_batch("PRAGMA foreign_keys = ON;")?;
 

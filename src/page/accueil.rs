@@ -2,7 +2,7 @@ use eframe::egui;
 use egui::{Ui, Color32, RichText, FontId, Vec2, Stroke, Align2};
 use crate::models::Ecran;
 
-pub fn render(ui: &mut Ui, ecran_actuel: &mut Ecran) {
+pub fn render(ui: &mut Ui, ecran_actuel: &mut Ecran, annee : i32) {
     let rect = ui.max_rect();
     let cx = rect.center().x;
 
@@ -53,7 +53,7 @@ pub fn render(ui: &mut Ui, ecran_actuel: &mut Ecran) {
     ui.painter().text(
         egui::pos2(cx, title_rect.center().y + 36.0),
         Align2::CENTER_CENTER,
-        "LIGUE 1  \u{2022}  SAISON 2025 - 2026",
+        format!("LIGUE 1  \u{2022}  SAISON {} - {}", annee, annee + 1),
         FontId::proportional(17.0),
         Color32::GOLD,
     );

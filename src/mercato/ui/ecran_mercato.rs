@@ -178,7 +178,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
 
     // --- Message feedback ---
     if let Some(msg) = &etat.message.clone() {
-        let color = if msg.starts_with("✓") { VERT } else { ROUGE_VIF };
+        let color = if msg.starts_with(" v") { VERT } else { ROUGE_VIF };
         Frame::none()
             .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 120))
             .rounding(6.0)
@@ -249,7 +249,7 @@ fn render_joueurs(ui: &mut Ui, etat: &mut EtatMercato) {
                 .hint_text("Rechercher un joueur...")
                 .desired_width(200.0),
         );
-        if !etat.recherche.is_empty() && ui.small_button("✕").clicked() {
+        if !etat.recherche.is_empty() && ui.small_button("x").clicked() {
             etat.recherche.clear();
         }
 
@@ -540,14 +540,14 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, 
                     etat.mes_joueurs.retain(|j| j.id != offre.joueur_id);
                     etat.offres_recues.retain(|o| o.joueur_id != offre.joueur_id);
                     etat.message = Some(format!(
-                        "✓ {} vendu à {} pour {} — budget : {}",
+                        "{} vendu à {} pour {} — budget : {}",
                         offre.joueur_nom, offre.club_acheteur,
                         fmt_eur(offre.montant_eur), fmt_eur(nouveau_budget)
                     ));
                 }
                 Err(e) => {
                     etat.offres_recues.insert(idx, offre);
-                    etat.message = Some(format!("✗ {}", e));
+                    etat.message = Some(format!("{}", e));
                 }
             }
         } else {
@@ -664,12 +664,12 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, fa
                 joueur_libre.club_nom = None;
                 etat.tous_joueurs.push(joueur_libre);
                 etat.message = Some(format!(
-                    "✓ {} libéré de son contrat pour {} — budget : {}",
+                    " {} libéré de son contrat pour {} — budget : {}",
                     joueur.nom, fmt_eur(joueur.valeur_marche_eur), fmt_eur(nouveau_budget)
                 ));
             }
             Err(e) => {
-                etat.message = Some(format!("✗ {}", e));
+                etat.message = Some(format!(" {}", e));
             }
         }
     }
@@ -729,7 +729,7 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                 }
                 ui.add_space(14.0);
                 ui.horizontal(|ui| {
-                    let ok = egui::Button::new(RichText::new("✓  Confirmer").color(Color32::WHITE))
+                    let ok = egui::Button::new(RichText::new("  Confirmer").color(Color32::WHITE))
                         .fill(if peut_payer { VERT } else { Color32::from_rgb(60, 60, 80) })
                         .stroke(Stroke::NONE)
                         .rounding(6.0);
@@ -744,12 +744,12 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                                 etat.mes_joueurs.push(joueur_recrute);
                                 trier_mes_joueurs(&mut etat.mes_joueurs);
                                 etat.message = Some(format!(
-                                    "✓ {} recruté pour {} — budget restant : {}",
+                                    " {} recruté pour {} — budget restant : {}",
                                     joueur.nom, fmt_eur(cout), fmt_eur(nouveau_budget)
                                 ));
                             }
                             Err(e) => {
-                                etat.message = Some(format!("✗ {}", e));
+                                etat.message = Some(format!(" {}", e));
                             }
                         }
                         etat.joueur_selectionne = None;
@@ -816,13 +816,13 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                                 etat.mes_joueurs.push(joueur_recrute);
                                 trier_mes_joueurs(&mut etat.mes_joueurs);
                                 etat.message = Some(format!(
-                                    "✓ {} rejoint votre club pour {} — budget restant : {}",
+                                    " {} rejoint votre club pour {} — budget restant : {}",
                                     joueur.nom, fmt_eur(montant), fmt_eur(nouveau_budget)
                                 ));
                             }
                             Err(ErreurMercato::OffreRefusee { club, montant: montant_refuse }) => {
                                 etat.message = Some(format!(
-                                    "✗ {} a refusé votre offre de {}.",
+                                    " {} a refusé votre offre de {}.",
                                     club, fmt_eur(montant_refuse)
                                 ));
                             }

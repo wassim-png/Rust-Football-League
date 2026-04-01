@@ -2,7 +2,7 @@ use eframe::egui;
 use egui::{Ui, Color32, RichText, FontId, Vec2, Stroke};
 use crate::models::{Club, Ecran, Match};
 
-pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Option<Match>, classement: &Vec<Club>, journee_actuelle: i32) {
+pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Option<Match>, classement: &Vec<Club>, journee_actuelle: i32, nb_journee : i32, annee: i32) {
     let rect_ecran = ui.max_rect();
 
     // --- Fond d'écran ---
@@ -22,7 +22,7 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Op
         Vec2::new(rect_ecran.width(), 90.0),
     );
     ui.allocate_ui_at_rect(header_rect, |ui| {
-        render_header(ui, club, classement, journee_actuelle);
+        render_header(ui, club, classement, journee_actuelle, nb_journee, annee);
     });
     // allocate_ui_at_rect avance le curseur, on ajoute un gap
     ui.add_space(10.0);
@@ -42,7 +42,7 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Op
     );
     ui.allocate_ui_at_rect(mid_rect, |ui| {
         ui.columns(2, |cols| {
-            if render_prochain_match_card(&mut cols[0], club, next_game, classement, mid_height, journee_actuelle) {
+            if render_prochain_match_card(&mut cols[0], club, next_game, classement, mid_height, journee_actuelle, nb_journee, annee) {
                 action = Some(Ecran::ProchainMatch);
             }
             if render_classement_card(&mut cols[1], classement, journee_actuelle, mid_height) {
@@ -85,6 +85,8 @@ fn render_prochain_match_card(
     classement: &Vec<Club>,
     card_height: f32,
     journee_actuelle: i32,
+    nb_journee: i32,
+    annee: i32
 ) -> bool {
     let mut play_clicked = false;
 
@@ -153,9 +155,21 @@ fn render_prochain_match_card(
                     });
 
                     if let Some(date) = &m.date_coup_envoi {
+                        let parts: Vec<&str> = date.split_whitespace().collect();
+
+                        let date_sans_annee = if parts.len() >= 2 {
+                            format!("{} {}", parts[0], parts[1])
+                        } else {
+                            date.to_string() 
+                        };
+
+
+                        let date_dynamique = format!("{} {}", date_sans_annee, annee);
+
+
                         ui.add_space(4.0);
                         ui.vertical_centered(|ui| {
-                            ui.label(RichText::new(format!("📅  {}", date)).font(FontId::proportional(13.0)).color(Color32::from_gray(155)));
+                            ui.label(RichText::new(format!("📅  {}", date_dynamique)).font(FontId::proportional(13.0)).color(Color32::from_gray(155)));
                         });
                     }
 
@@ -192,7 +206,7 @@ fn render_prochain_match_card(
                             egui::ProgressBar::new(progress)
                                 .desired_width(ui.available_width() - 60.0)
                                 .fill(Color32::from_rgb(50, 120, 200))
-                                .text(RichText::new(format!("J{} / 34", journee_actuelle - 1)).font(FontId::proportional(11.0))),
+                                .text(RichText::new(format!("J{} / {}", journee_actuelle - 1, nb_journee)).font(FontId::proportional(11.0))),
                         );
                     });
                 }
@@ -375,7 +389,7 @@ fn carte_nav(ui: &mut Ui, icon: &str, titre: &str, sous_titre: &str, bg: Color32
 // ─────────────────────────────────────────────
 //  Header : logo + nom + budget + étoiles
 // ─────────────────────────────────────────────
-fn render_header(ui: &mut Ui, club: &Club, classement: &Vec<Club>, journee_actuelle: i32) {
+fn render_header(ui: &mut Ui, club: &Club, classement: &Vec<Club>, journee_actuelle: i32, nb_journee: i32, annee: i32) {
     // Calcul position du club dans le classement
     let position = classement.iter().position(|c| c.id == club.id).map(|i| i + 1);
     let points = classement.iter().find(|c| c.id == club.id).map(|c| c.points).unwrap_or(club.points);
@@ -407,7 +421,7 @@ fn render_header(ui: &mut Ui, club: &Club, classement: &Vec<Club>, journee_actue
                             .color(Color32::WHITE),
                     );
                     ui.label(
-                        RichText::new("Ligue 1 • Saison 2025 / 2026")
+                        RichText::new(format!("Ligue 1 • Saison {} / {}", annee, annee + 1))
                             .font(FontId::proportional(12.0))
                             .color(Color32::from_gray(150)),
                     );
@@ -420,7 +434,7 @@ fn render_header(ui: &mut Ui, club: &Club, classement: &Vec<Club>, journee_actue
                     // Pill journée
                     stat_pill(ui,
                         "📅",
-                        &format!("J.{} / 34", (journee_actuelle - 1).max(0)),
+                        &format!("J.{} / {}", (journee_actuelle - 1).max(0), nb_journee),
                         Color32::from_rgba_unmultiplied(30, 60, 120, 200),
                         Color32::from_rgb(120, 170, 255),
                     );
