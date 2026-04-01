@@ -531,7 +531,7 @@ pub fn render(
             ui.add_space(15.0);
 
             let nb_choisis = composition.iter().filter(|s| s.is_some()).count();
-            let peut_valider = nb_choisis == 11;
+            let peut_valider = (nb_choisis == 11 && *capitaine_slot!= None);
 
             let btn_couleur = if peut_valider {
                 Color32::from_rgb(46, 125, 50)
