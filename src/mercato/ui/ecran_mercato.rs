@@ -32,6 +32,75 @@ fn etoiles(rep: i32) -> String {
     format!("{}{}", "★".repeat(n.min(5)), "☆".repeat(5 - n.min(5)))
 }
 
+fn drapeau_pays(pays: &str) -> String {
+    let fichier = match pays {
+        "France" => "france",
+        "Bresil" => "bresil",
+        "Portugal" => "portugal",
+        "Maroc" => "maroc",
+        "Espagne" => "espagne",
+        "Angleterre" => "angleterre",
+        "Allemagne" => "allemagne",
+        "Argentine" => "argentine",
+        "Senegal" => "senegal",
+        "Pays-Bas" => "pays-bas",
+        "Belgique" => "belgique",
+        "Cote d'Ivoire" => "cote_divoire",
+        "Algerie" => "algerie",
+        "Cameroun" => "cameroun",
+        "Canada" => "canada",
+        "Suisse" => "suisse",
+        "Danemark" => "danemark",
+        "Croatie" => "croatie",
+        "Colombie" => "colombie",
+        "Norvege" => "norvege",
+        "Pologne" => "pologne",
+        "Suede" => "suede",
+        "Tunisie" => "tunisie",
+        "Egypte" => "egypte",
+        "Ghana" => "ghana",
+        "Nigeria" => "nigeria",
+        "Mali" => "mali",
+        "Guinee" => "guinee",
+        "Russie" => "russie",
+        "Japon" => "japon",
+        "Coree du Sud" => "coree_du_sud",
+        "Etats-Unis" => "etats-unis",
+        "Uruguay" => "uruguay",
+        "Equateur" => "equateur",
+        "Chili" => "chili",
+        "Slovaquie" => "slovaquie",
+        "Slovenie" => "slovenie",
+        "Autriche" => "autriche",
+        "Serbie" => "serbie",
+        "Turquie" => "turquie",
+        "Georgie" => "georgie",
+        "Kosovo" => "kosovo",
+        "Roumanie" => "roumanie",
+        "Hongrie" => "hongrie",
+        "Finlande" => "finlande",
+        "Angola" => "angola",
+        "RD Congo" => "rd_congo",
+        "Centrafrique" => "centrafrique",
+        "Burundi" => "burundi",
+        "Gabon" => "gabon",
+        "Benin" => "benin",
+        "Gambie" => "gambie",
+        "Madagascar" => "madagascar",
+        "Zimbabwe" => "zimbabwe",
+        "Haiti" => "haiti",
+        "Panama" => "panama",
+        "Venezuela" => "venezuela",
+        "Bosnie" => "bosnie",
+        "Australie" => "australie",
+        "Guinee-Bissau" => "guinee-bissau",
+        "Ouzbekistan" => "ouzbekistan",
+        "Pays de Galles" => "pays_de_galles",
+        _ => "france",
+    };
+    format!("file://assets/flags/{}.png", fichier)
+}
+
 fn fmt_eur(v: i64) -> String {
     if v >= 1_000_000 {
         format!("{:.1}M€", v as f64 / 1_000_000.0)
@@ -288,7 +357,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                             }
                         }
                     });
-                    // Infos : âge, poste, étoiles
+                    // Infos : âge, poste, étoiles, drapeau
                     ui.horizontal(|ui| {
                         ui.label(
                             RichText::new(format!("{} ans", j.age))
@@ -303,6 +372,14 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                                 .color(OR)
                                 .font(FontId::proportional(12.0)),
                         );
+                        if let Some(nat) = &j.nationalite {
+                            ui.label(RichText::new("·").color(Color32::from_gray(60)));
+                            ui.add(
+                                egui::Image::new(drapeau_pays(nat))
+                                    .fit_to_exact_size(egui::vec2(18.0, 13.0))
+                                    .rounding(2.0),
+                            );
+                        }
                     });
                     // Valeur / Salaire
                     if est_libre {
@@ -532,14 +609,23 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, fa
                                 );
                                 badge_poste(ui, &j.poste);
                             });
-                            ui.label(
-                                RichText::new(format!(
-                                    "{} ans  ·  {}  ·  Valeur : {}",
-                                    j.age, etoiles(j.reputation), fmt_eur(j.valeur_marche_eur)
-                                ))
-                                .color(Color32::GRAY)
-                                .font(FontId::proportional(12.0)),
-                            );
+                            ui.horizontal(|ui| {
+                                ui.label(
+                                    RichText::new(format!(
+                                        "{} ans  ·  {}  ·  Valeur : {}",
+                                        j.age, etoiles(j.reputation), fmt_eur(j.valeur_marche_eur)
+                                    ))
+                                    .color(Color32::GRAY)
+                                    .font(FontId::proportional(12.0)),
+                                );
+                                if let Some(nat) = &j.nationalite {
+                                    ui.add(
+                                        egui::Image::new(drapeau_pays(nat))
+                                            .fit_to_exact_size(egui::vec2(18.0, 13.0))
+                                            .rounding(2.0),
+                                    );
+                                }
+                            });
                         });
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             let peut_vendre = nb_joueurs > 15;

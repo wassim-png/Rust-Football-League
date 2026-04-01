@@ -14,9 +14,12 @@ impl MercatoDAO for SqlMercatoDAO {
         let mut stmt = self.conn.prepare(
             "SELECT j.id, j.nom, j.age, j.poste, j.reputation,
                     j.valeur_marche_eur, j.salaire_semaine_eur,
-                    c.nom as club_nom
+                    c.nom as club_nom,
+                    COALESCE(a.nationalite, g.nationalite) as nationalite
              FROM joueurs j
              LEFT JOIN clubs c ON c.id = j.club_id
+             LEFT JOIN attributs_joueur_saison a ON a.joueur_id = j.id
+             LEFT JOIN attributs_gardien_saison g ON g.joueur_id = j.id
              WHERE j.club_id IS NULL OR j.club_id != ?1
              ORDER BY j.valeur_marche_eur DESC",
         )?;
@@ -30,9 +33,9 @@ impl MercatoDAO for SqlMercatoDAO {
                 valeur_marche_eur: row.get(5)?,
                 salaire_semaine_eur: row.get(6)?,
                 club_nom: row.get(7)?,
+                nationalite: row.get(8)?,
                 note_actuelle: None,
                 forme: None,
-                nationalite: None,
             })
         })?;
         iter.collect()
