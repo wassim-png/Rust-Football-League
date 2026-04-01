@@ -377,6 +377,8 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
 
     let mut action: Option<(usize, bool)> = None;
 
+    let peut_vendre = etat.mes_joueurs.len() > 15;
+
     ScrollArea::vertical().id_source("scroll_offres").show(ui, |ui| {
         for (i, offre) in etat.offres_recues.iter().enumerate() {
             Frame::none()
@@ -417,16 +419,21 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) 
                                 action = Some((i, false));
                             }
                             ui.add_space(8.0);
+                            let fill_accept = if peut_vendre { VERT } else { Color32::from_rgb(60, 60, 80) };
                             let btn_accept = egui::Button::new(
                                 RichText::new("  Accepter")
                                     .color(Color32::WHITE)
                                     .font(FontId::proportional(13.0)),
                             )
-                            .fill(VERT)
+                            .fill(fill_accept)
                             .stroke(Stroke::NONE)
                             .rounding(6.0);
-                            if ui.add(btn_accept).clicked() {
+                            let resp = ui.add_enabled(peut_vendre, btn_accept);
+                            if resp.clicked() {
                                 action = Some((i, true));
+                            }
+                            if !peut_vendre {
+                                resp.on_hover_text("Effectif minimum de 15 joueurs atteint");
                             }
                         });
                     });
@@ -472,11 +479,22 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
         return;
     }
 
-    ui.label(
-        RichText::new("Vendre un joueur au marché : il devient libre et vous récupérez sa valeur marchande.")
-            .color(Color32::GRAY)
-            .font(FontId::proportional(12.0)),
-    );
+    let nb_joueurs = etat.mes_joueurs.len();
+    ui.horizontal(|ui| {
+        ui.label(
+            RichText::new("Vendre un joueur au marché : il devient libre et vous récupérez sa valeur marchande.")
+                .color(Color32::GRAY)
+                .font(FontId::proportional(12.0)),
+        );
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            let color = if nb_joueurs <= 15 { ROUGE_VIF } else { Color32::GRAY };
+            ui.label(
+                RichText::new(format!("Effectif : {}/15 min", nb_joueurs))
+                    .color(color)
+                    .font(FontId::proportional(12.0)),
+            );
+        });
+    });
     ui.add_space(8.0);
 
     let mut vente: Option<usize> = None;
@@ -510,16 +528,22 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato) {
                             );
                         });
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                            let peut_vendre = nb_joueurs > 15;
+                            let fill = if peut_vendre { ROUGE_VIF } else { Color32::from_rgb(60, 60, 80) };
                             let btn = egui::Button::new(
                                 RichText::new(format!("Vendre  {}", fmt_eur(j.valeur_marche_eur)))
                                     .color(Color32::WHITE)
                                     .font(FontId::proportional(13.0)),
                             )
-                            .fill(ROUGE_VIF)
+                            .fill(fill)
                             .stroke(Stroke::NONE)
                             .rounding(6.0);
-                            if ui.add(btn).clicked() {
+                            let resp = ui.add_enabled(peut_vendre, btn);
+                            if resp.clicked() {
                                 vente = Some(i);
+                            }
+                            if !peut_vendre {
+                                resp.on_hover_text("Effectif minimum de 15 joueurs atteint");
                             }
                         });
                     });
