@@ -27,7 +27,7 @@ impl MercatoManager {
         self.dao.generer_offres_ia(mon_club_id)
     }
 
-    /// Recrute un joueur libre au prix fixe de sa valeur marchande.
+    
     pub fn recruter_joueur_libre(
         &self,
         joueur: &Joueur,

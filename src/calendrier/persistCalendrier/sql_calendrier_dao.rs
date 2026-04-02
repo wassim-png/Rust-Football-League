@@ -38,7 +38,7 @@ impl SqlCalendrierDAO {
     }
 
     /// Round-robin classique : 18 clubs → 34 journées, 9 matchs/journée
-    /// Retourne Vec<(journee, home_id, away_id, date_str)>
+    
     fn generer_matchs_round_robin(clubs: &[i32]) -> Vec<(i32, i32, i32, String)> {
         let n = clubs.len(); // 18
         let fixed = clubs[0];

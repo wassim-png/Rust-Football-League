@@ -8,7 +8,7 @@ const VERT_BTN: Color32 = Color32::from_rgb(46, 125, 50);
 const ROUGE_BTN: Color32 = Color32::from_rgb(198, 40, 40);
 
 const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
-    // 4-3-3
+  
     ("4-3-3", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.15, 0.70, "DEFENSE", "LB"),
@@ -22,7 +22,7 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.50, 0.18, "ATTAQUE", "ST"),
         (0.82, 0.22, "ATTAQUE", "RW"),
     ]),
-    // 4-4-2
+   
     ("4-4-2", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.15, 0.70, "DEFENSE", "LB"),
@@ -36,7 +36,7 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.35, 0.20, "ATTAQUE", "ST"),
         (0.65, 0.20, "ATTAQUE", "ST"),
     ]),
-    // 3-5-2
+    
     ("3-5-2", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.25, 0.72, "DEFENSE", "CB"),
@@ -50,7 +50,7 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.35, 0.20, "ATTAQUE", "ST"),
         (0.65, 0.20, "ATTAQUE", "ST"),
     ]),
-    // 4-2-3-1
+  
     ("4-2-3-1", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.15, 0.70, "DEFENSE", "LB"),
@@ -64,7 +64,7 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.82, 0.35, "ATTAQUE", "RW"),
         (0.50, 0.18, "ATTAQUE", "ST"),
     ]),
-    // 4-5-1
+   
     ("4-5-1", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.15, 0.70, "DEFENSE", "LB"),
@@ -78,7 +78,7 @@ const FORMATIONS: [(&str, [(f32, f32, &str, &str); 11]); 6] = [
         (0.88, 0.48, "MILIEU", "RM"),
         (0.50, 0.18, "ATTAQUE", "ST"),
     ]),
-    // 3-4-3
+ 
     ("3-4-3", [
         (0.50, 0.88, "GARDIEN", "GK"),
         (0.25, 0.72, "DEFENSE", "CB"),
@@ -276,7 +276,7 @@ pub fn render(
                 col_note,
             );
 
-            // Nom en pill semi-transparente sous le cercle
+           
             let nom = &joueur.nom;
             let pill_w = (nom.len() as f32 * 7.5).max(70.0).min(120.0);
             let pill_center = Pos2::new(center.x, center.y + radius + 10.0);

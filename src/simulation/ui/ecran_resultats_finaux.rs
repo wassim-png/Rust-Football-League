@@ -1,13 +1,13 @@
 use eframe::egui;
-use eframe::egui::{Ui, RichText, Color32, FontId, Frame, Stroke, Vec2, Pos2, Rect, Align2};
-use crate::models::{Club, Ecran};
+use eframe::egui::{Ui, RichText, Color32, FontId, Frame, Stroke, Vec2};
+use crate::models::{Club};
 
 const OR: Color32 = Color32::from_rgb(212, 175, 55);
 
 pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>) -> bool {
     let mut restart_game = false;
     let mut classement = liste_equipes.to_vec();
-    // Tri : Points (décroissant), Diff buts (décroissant), Buts marqués (décroissant)
+   
     classement.sort_by(|a, b| {
         let diff_a = a.buts_marques - a.buts_encaisses;
         let diff_b = b.buts_marques - b.buts_encaisses;
@@ -26,7 +26,6 @@ pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>
     ui.vertical_centered(|ui| {
         ui.add_space(20.0);
 
-        // Titre
         ui.label(
             RichText::new("FIN DE LA SAISON")
                 .font(FontId::proportional(32.0))
@@ -43,7 +42,7 @@ pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>
         ui.add_space(30.0);
 
         ui.horizontal(|ui| {
-            // COLONNE GAUCHE : LE CLASSEMENT //
+            
             ui.vertical(|ui| {
                 Frame::none()
                     .fill(Color32::from_rgba_unmultiplied(15, 15, 25, 240))
@@ -60,7 +59,7 @@ pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>
                         ui.add_space(10.0);
 
                         egui::ScrollArea::vertical()
-                            // Pas de max_height ici pour laisser le tableau s'étendre
+                           
                             .show(ui, |ui| {
                                 egui::Grid::new("grid_classement_final")
                                     .num_columns(6)
@@ -96,7 +95,7 @@ pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>
 
                                             ui.label(RichText::new(texte_rang).color(couleur_txt));
                                             
-                                            // Highlight pour l'utilisateur
+                                           
                                             if let Some(user_club) = club_utilisateur {
                                                 if club.id == user_club.id {
                                                     ui.label(RichText::new(&club.nom).strong().color(Color32::from_rgb(100, 255, 100)));
@@ -123,7 +122,6 @@ pub fn render(ui: &mut Ui, liste_equipes: &[Club], equipe_choisie: &Option<Club>
 
             ui.add_space(30.0);
 
-            // COLONNE DROITE : STATS & BOUTONS //
             ui.vertical(|ui| {
                 Frame::none()
                     .fill(Color32::from_rgba_unmultiplied(15, 15, 25, 240))

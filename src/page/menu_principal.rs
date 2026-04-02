@@ -5,7 +5,7 @@ use crate::models::{Club, Ecran, Match};
 pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Option<Match>, classement: &Vec<Club>, journee_actuelle: i32, nb_journee : i32, annee: i32) {
     let rect_ecran = ui.max_rect();
 
-    // --- Fond d'écran ---
+   
     egui::Image::new("file://assets/pelouse.jpg")
         .maintain_aspect_ratio(false)
         .max_size(ui.available_size())
@@ -16,7 +16,7 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Op
         Color32::from_rgba_unmultiplied(12, 12, 22, 195),
     );
 
-    // --- Header absolu en haut ---
+    
     let header_rect = egui::Rect::from_min_size(
         rect_ecran.min,
         Vec2::new(rect_ecran.width(), 90.0),
@@ -24,13 +24,10 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Op
     ui.allocate_ui_at_rect(header_rect, |ui| {
         render_header(ui, club, classement, journee_actuelle, nb_journee, annee);
     });
-    // allocate_ui_at_rect avance le curseur, on ajoute un gap
+  
     ui.add_space(10.0);
 
-    // ─────────────────────────────────────────────
-    //  Section du milieu : 2 colonnes (hauteur fixée
-    //  pour laisser la place aux cartes nav en bas)
-    // ─────────────────────────────────────────────
+    
     let mut action: Option<Ecran> = None;
 
     let nav_height = 112.0 + 12.0 + 12.0; // cartes + espacement haut/bas
@@ -53,9 +50,7 @@ pub fn render(ui: &mut Ui, club: &Club, ecran_actuel: &mut Ecran, next_game: &Op
 
     ui.add_space(12.0);
 
-    // ─────────────────────────────────────────────
-    //  5 cartes de navigation en bas
-    // ─────────────────────────────────────────────
+   
     ui.columns(4, |cols| {
         let nav = [
             ("🏢", "Infos Club",  "Stade & finances",   Ecran::InfosClub,   Color32::from_rgba_unmultiplied(20, 55, 115, 220),  Color32::from_rgba_unmultiplied(35, 80, 160, 240)),
@@ -98,7 +93,7 @@ fn render_prochain_match_card(
         .show(ui, |ui| {
             ui.set_min_height(card_height - 32.0);
 
-            // — Titre + journée + badge domicile/extérieur
+            
             ui.horizontal(|ui| {
                 ui.label(
                     RichText::new("⚽  PROCHAIN MATCH")
@@ -173,7 +168,7 @@ fn render_prochain_match_card(
                         });
                     }
 
-                    // — Infos adversaire
+                    
                     ui.add_space(12.0);
                     ui.separator();
                     ui.add_space(8.0);
@@ -255,9 +250,9 @@ fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle:
         .stroke(Stroke::new(1.5, Color32::from_rgba_unmultiplied(120, 100, 20, 180)))
         .inner_margin(egui::Margin::symmetric(14.0, 14.0))
         .show(ui, |ui| {
-            ui.set_min_height(card_height - 28.0); // 28 = inner_margin haut+bas
+            ui.set_min_height(card_height - 28.0); 
 
-            // — Titre
+            
             ui.horizontal(|ui| {
                 ui.label(
                     RichText::new("🏆  CLASSEMENT LIGUE 1")
@@ -269,7 +264,7 @@ fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle:
             ui.separator();
             ui.add_space(4.0);
 
-            // — En-tête colonnes
+           
             ui.horizontal(|ui| {
                 ui.add_sized([26.0, 16.0], egui::Label::new(RichText::new("#").font(FontId::proportional(11.0)).color(Color32::GRAY).strong()));
                 ui.add_sized([26.0, 16.0], egui::Label::new(RichText::new("").size(11.0)));
@@ -282,7 +277,7 @@ fn render_classement_card(ui: &mut Ui, classement: &Vec<Club>, journee_actuelle:
 
             let mj = if journee_actuelle > 1 { journee_actuelle - 1 } else { 0 };
 
-            // Hauteur scroll = hauteur totale allouée moins les widgets titre/séparateurs (~80px)
+           
             let scroll_h = (card_height - 80.0).max(100.0);
             egui::ScrollArea::vertical()
                 .max_height(scroll_h)
@@ -390,7 +385,7 @@ fn carte_nav(ui: &mut Ui, icon: &str, titre: &str, sous_titre: &str, bg: Color32
 //  Header : logo + nom + budget + étoiles
 // ─────────────────────────────────────────────
 fn render_header(ui: &mut Ui, club: &Club, classement: &Vec<Club>, journee_actuelle: i32, nb_journee: i32, annee: i32) {
-    // Calcul position du club dans le classement
+   
     let position = classement.iter().position(|c| c.id == club.id).map(|i| i + 1);
     let points = classement.iter().find(|c| c.id == club.id).map(|c| c.points).unwrap_or(club.points);
 

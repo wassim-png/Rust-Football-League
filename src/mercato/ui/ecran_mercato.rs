@@ -116,13 +116,13 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
     ui.painter().rect_filled(rect, 0.0, FOND_SOMBRE);
     ui.add_space(6.0);
 
-    // --- Bouton retour en haut ---
+    
     if ui.button(RichText::new("⬅  Retour").color(Color32::LIGHT_GRAY)).clicked() {
         *ecran_actuel = Ecran::MenuPrincipal;
     }
     ui.add_space(4.0);
 
-    // --- Header ---
+    
     Frame::none()
         .fill(Color32::from_rgb(10, 12, 22))
         .stroke(Stroke::new(1.5, OR))
@@ -176,7 +176,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
     );
     ui.add_space(8.0);
 
-    // --- Message feedback ---
+
     if let Some(msg) = &etat.message.clone() {
         let color = if msg.starts_with(" v") { VERT } else { ROUGE_VIF };
         Frame::none()
@@ -189,7 +189,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
         ui.add_space(6.0);
     }
 
-    // --- Contenu ---
+  
     match etat.onglet {
         OngletMercato::JoueursDisponibles => render_joueurs(ui, etat),
         OngletMercato::OffresRecues => render_offres_recues(ui, equipe, etat, facade),
@@ -236,12 +236,9 @@ fn badge_poste(ui: &mut Ui, poste: &str) {
         });
 }
 
-// ──────────────────────────────────────────────────────────
-// Onglet : liste unifiée avec barre de recherche
-// ──────────────────────────────────────────────────────────
 
 fn render_joueurs(ui: &mut Ui, etat: &mut EtatMercato) {
-    // Barre de recherche + filtre poste sur la même ligne
+    
     ui.horizontal(|ui| {
         ui.label(RichText::new("🔍").font(FontId::proportional(15.0)));
         ui.add(
@@ -255,7 +252,7 @@ fn render_joueurs(ui: &mut Ui, etat: &mut EtatMercato) {
 
         ui.add_space(16.0);
 
-        // Filtres de poste
+        
         for (label, poste) in [
             ("Tous", None),
             ("GK", Some("GARDIEN")),
@@ -357,7 +354,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                             }
                         }
                     });
-                    // Infos : âge, poste, étoiles, drapeau
+                    
                     ui.horizontal(|ui| {
                         ui.label(
                             RichText::new(format!("{} ans", j.age))
@@ -381,7 +378,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                             );
                         }
                     });
-                    // Valeur / Salaire
+                   
                     if est_libre {
                         ui.label(
                             RichText::new(format!(
@@ -405,7 +402,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                     }
                 });
 
-                // Bouton d'action
+              
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if est_libre {
                         let btn = egui::Button::new(
@@ -700,7 +697,7 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
             ui.add_space(6.0);
 
             if est_libre {
-                // ── Joueur libre : prix fixe = valeur marché ──
+            
                 let cout = joueur.valeur_marche_eur;
                 let peut_payer = equipe.budget_eur >= cout;
 

@@ -20,7 +20,7 @@ impl Database {
         let schema = fs::read_to_string("db/schema.sql").expect("Failed to read schema.sql");
         conn.execute_batch(&schema)?;
 
-        // Désactiver les FK pendant l'import (le schéma les active)
+        // Désactiver les FK pendant l'import 
         conn.execute_batch("PRAGMA foreign_keys = OFF;")?;
 
         // Importer les données CSV (dans l'ordre des tables)
@@ -61,10 +61,8 @@ impl Database {
             Self::import_csv(&conn, csv_path, table_name, columns)?;
         }
 
-        // Import spécial : joueurs_libres.csv contient des joueurs complets (sans club)
-        // On les insère d'abord dans 'joueurs', puis on référence leurs IDs dans 'joueurs_libres'
+       
         
-
         conn.execute_batch("PRAGMA foreign_keys = ON;")?;
 
         println!("Database initialized successfully with schema.");
@@ -74,7 +72,7 @@ impl Database {
     }
 
     /// Importe un fichier CSV dans une table SQLite en utilisant
-    /// les noms de colonnes spécifiés (par position dans le CSV).
+    /// les noms de colonnes spécifiés (par position dans le CSV)
     fn import_csv(
         conn: &Connection,
         csv_path: &str,
@@ -120,53 +118,5 @@ impl Database {
         Ok(())
     }
 
-    /// Import spécial pour joueurs_libres.csv :
-    /// Le CSV contient des joueurs complets (sans club).
-    /// On les insère dans `joueurs` puis on les référence dans `joueurs_libres`.
-    fn import_joueurs_libres(conn: &Connection) -> Result<()> {
-        let mut reader = csv::ReaderBuilder::new()
-            .has_headers(true)
-            .from_path("db/data/joueurs_libres.csv")
-            .expect("Impossible de lire joueurs_libres.csv");
-
-        let mut stmt_joueur = conn.prepare(
-            "INSERT OR IGNORE INTO joueurs (id, nom, age, numero, poste, pied, potentiel, reputation, valeur_marche_eur, salaire_semaine_eur, fin_contrat)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        )?;
-
-        let mut stmt_libre = conn.prepare(
-            "INSERT OR IGNORE INTO joueurs_libres (joueur_id) VALUES (?)"
-        )?;
-
-        let mut count = 0;
-        for result in reader.records() {
-            let record = result.expect("Erreur lecture joueurs_libres.csv");
-            // Colonnes CSV: id, nom, age, numero, poste, pied, potentiel, reputation,
-            //               valeur_marche_eur, salaire_semaine_eur, fin_contrat, nationalite
-            let id: String = record[0].to_string();
-            let nom: String = record[1].to_string();
-            let age: String = record[2].to_string();
-            let numero: String = record[3].to_string();
-            let poste: String = record[4].to_string();
-            let pied: String = record[5].to_string();
-            let potentiel: String = record[6].to_string();
-            let reputation: String = record[7].to_string();
-            let valeur: String = record[8].to_string();
-            let salaire: String = record[9].to_string();
-            let fin_contrat: String = record[10].to_string();
-
-            // Insérer dans joueurs (sans club_id => NULL)
-            stmt_joueur.execute(rusqlite::params![
-                id, nom, age, numero, poste, pied, potentiel, reputation,
-                valeur, salaire, fin_contrat
-            ])?;
-
-            // Référencer dans joueurs_libres
-            stmt_libre.execute(rusqlite::params![id])?;
-            count += 1;
-        }
-
-        println!("  > joueurs_libres : {} lignes", count);
-        Ok(())
-    }
+   
 }

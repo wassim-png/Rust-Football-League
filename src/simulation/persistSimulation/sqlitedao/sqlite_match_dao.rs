@@ -48,7 +48,7 @@ impl MatchDao for SqliteMatchDao {
             },
         );
 
-        // On convertit le résultat en Option (Some si trouvé, None si introuvable)
+        
         
         resultat
             .optional()

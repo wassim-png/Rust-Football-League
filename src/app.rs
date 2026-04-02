@@ -494,12 +494,12 @@ impl eframe::App for MyApp {
                      );
 
                      if recommencer {
-                         // 1. Réinitialiser la base de données SQL pour une nouvelle partie !
+                         
                          if let Err(e) = self.club_facade.reset_saison() {
                              println!("Erreur lors du reset DB : {}", e);
                          }
 
-                         // 2. Re-récupérer les équipes avec les stats à 0
+                        
                          if let Ok(clubs_reset) = self.club_facade.get_all_clubs_by_points() {
                              self.liste_equipes = clubs_reset;
                          }
@@ -569,7 +569,7 @@ impl eframe::App for MyApp {
             }
         });
 
-        // Popup d'alerte générique (ex: compo manquante)
+        
         if let Some(msg) = self.popup_alerte.clone() {
             let mut fermer = false;
             egui::Window::new("⚠  Action impossible")

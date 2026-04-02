@@ -33,14 +33,14 @@ pub fn render(
         ui.add_space(10.0);
         ui.add(
             egui::Image::new(&chemin_logo)
-                .max_size(Vec2::new(100.0, 100.0)) // Logo un peu plus discret
+                .max_size(Vec2::new(100.0, 100.0)) 
         );
         
         ui.add_space(30.0);
 
         
         
-        // Le nom du stade (en haut de l'image)
+        
         ui.label(
             RichText::new(format!(" {}", info_club.nom_stade))
                 .font(FontId::proportional(35.0))
@@ -53,13 +53,13 @@ pub fn render(
        
         ui.add(
             egui::Image::new(&chemin_stade)
-                .max_size(Vec2::new(800.0, 500.0)) // Taille beaucoup plus généreuse
-                .rounding(15.0) // Bords arrondis
+                .max_size(Vec2::new(800.0, 500.0)) 
+                .rounding(15.0) 
         );
         
         ui.add_space(10.0);
         
-        // La capacité (en bas de l'image)
+
         let texte_capacite = format!("👥 Capacité : {} places", info_club.stade_capacite);
         ui.label(
             RichText::new(texte_capacite)
@@ -69,7 +69,7 @@ pub fn render(
 
         ui.add_space(40.0);
 
-        // --- 3. INFOS SPORTIVES : Sur une ligne en bas ---
+       
         ui.columns(3, |cols| {
             cols[0].vertical_centered(|ui| {
                 ui.label(RichText::new("⭐ Réputation").font(FontId::proportional(20.0)).color(Color32::YELLOW));
