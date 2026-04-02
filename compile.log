@@ -1,0 +1,100 @@
+    Checking football_simulation v0.1.0 (C:\Users\wassi\Desktop\IG4\Rust, test et qualit├⌐\Rust Football League\Rust-Football-League)
+error[E0432]: unresolved import `egui`
+ --> src\simulation\ui\ecran_resultats_finaux.rs:1:5
+  |
+1 | use egui::{Ui, RichText, Color32, FontId, Frame, Stroke, Vec2, Pos2, Rect, Align2};
+  |     ^^^^ help: a similar path exists: `eframe::egui`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `egui`
+  --> src\simulation\ui\ecran_resultats_finaux.rs:64:25
+   |
+64 |                         egui::ScrollArea::vertical()
+   |                         ^^^^ use of unresolved module or unlinked crate `egui`
+   |
+   = help: if you wanted to use a crate named `egui`, use `cargo add egui` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `egui`
+  --> src\simulation\ui\ecran_resultats_finaux.rs:67:33
+   |
+67 | ...                   egui::Grid::new("grid_classement_final")
+   |                       ^^^^ use of unresolved module or unlinked crate `egui`
+   |
+   = help: if you wanted to use a crate named `egui`, use `cargo add egui` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `egui`
+   --> src\simulation\ui\ecran_resultats_finaux.rs:178:34
+    |
+178 |                 let btn_retour = egui::Button::new(
+    |                                  ^^^^ use of unresolved module or unlinked crate `egui`
+    |
+    = help: if you wanted to use a crate named `egui`, use `cargo add egui` to add it to your `Cargo.toml`
+
+error[E0282]: type annotations needed
+  --> src\simulation\ui\ecran_resultats_finaux.rs:28:27
+   |
+28 |     ui.vertical_centered(|ui| {
+   |                           ^^
+29 |         ui.add_space(20.0);
+   |         -- type must be known at this point
+   |
+help: consider giving this closure parameter an explicit type
+   |
+28 |     ui.vertical_centered(|ui: /* Type */| {
+   |                             ++++++++++++
+
+error[E0282]: type annotations needed
+  --> src\simulation\ui\ecran_resultats_finaux.rs:47:24
+   |
+47 |         ui.horizontal(|ui| {
+   |                        ^^
+48 |             // COLONNE GAUCHE : LE CLASSEMENT //
+49 |             ui.vertical(|ui| {
+   |             -- type must be known at this point
+   |
+help: consider giving this closure parameter an explicit type
+   |
+47 |         ui.horizontal(|ui: /* Type */| {
+   |                          ++++++++++++
+
+error[E0282]: type annotations needed
+  --> src\simulation\ui\ecran_resultats_finaux.rs:55:32
+   |
+55 |                     .show(ui, |ui| {
+   |                                ^^
+56 |                         ui.label(
+   |                         -- type must be known at this point
+   |
+help: consider giving this closure parameter an explicit type
+   |
+55 |                     .show(ui, |ui: /* Type */| {
+   |                                  ++++++++++++
+
+error[E0282]: type annotations needed
+  --> src\simulation\ui\ecran_resultats_finaux.rs:70:48
+   |
+70 | ...                   .show(ui, |ui| {
+   |                                  ^^
+71 | ...                       ui.label(RichText::new("#").strong().color(Color32::GRAY));
+   |                           -- type must be known at this point
+   |
+help: consider giving this closure parameter an explicit type
+   |
+70 |                                     .show(ui, |ui: /* Type */| {
+   |                                                  ++++++++++++
+
+error[E0282]: type annotations needed
+   --> src\simulation\ui\ecran_resultats_finaux.rs:135:32
+    |
+135 |                     .show(ui, |ui| {
+    |                                ^^
+136 |                         ui.label(
+    |                         -- type must be known at this point
+    |
+help: consider giving this closure parameter an explicit type
+    |
+135 |                     .show(ui, |ui: /* Type */| {
+    |                                  ++++++++++++
+
+Some errors have detailed explanations: E0282, E0432, E0433.
+For more information about an error, try `rustc --explain E0282`.
+error: could not compile `football_simulation` (bin "football_simulation") due to 9 previous errors

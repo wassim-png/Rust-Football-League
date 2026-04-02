@@ -32,4 +32,8 @@ impl MatchFacade {
             joueurs_par_club,
         )
     }
+
+    pub fn appliquer_recuperation_forme_globale(&self, joueurs_exclus: &[i32]) {
+        self.manager.appliquer_recuperation_forme_globale(joueurs_exclus);
+    }
 }

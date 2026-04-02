@@ -138,10 +138,15 @@ impl MatchManager {
                 let nouvelle_forme_f32 = (forme_actuelle as f32) - perte;
                 let forme = (nouvelle_forme_f32 as i32).max(MatchRules::FORME_MIN as i32);
                 let _ = self.joueur_dao.update_forme_joueur(joueur.id, forme);
-
             }
         }
-        
+    }
+    pub fn appliquer_recuperation_forme_globale(&self, joueurs_exclus: &[i32]) {
+        if let Err(e) = self.joueur_dao.recuperation_forme_globale(joueurs_exclus) {
+            println!("Erreur lors de la recupération de la forme globale: {}", e);
+        } else {
+            println!("Forme globale restaurée (+15) pour les joueurs au repos ({} joueurs exclus) !", joueurs_exclus.len());
+        }
     }
 
     pub fn simuler_match(
@@ -197,14 +202,25 @@ impl MatchManager {
         Ok(resultat)
     }
 
+    
     fn choisir_11_meilleurs(&self, joueurs: &[Joueur]) -> Vec<Joueur> {
         let mut joueurs_tries = joueurs.to_vec();
 
         joueurs_tries.sort_by(|a, b| {
-            let note_b = b.note_actuelle.unwrap_or(0);
-            let note_a = a.note_actuelle.unwrap_or(0);
-            note_b.cmp(&note_a)
+           
+            let note_a = a.note_actuelle.unwrap_or(0) as f32;
+            let forme_a = a.forme.unwrap_or(0) as f32;
+          
+            let score_a = (note_a *  MatchRules::COEF_CHOIX_NOTE_IA) + (forme_a * MatchRules::COEF_CHOIX_FORME_IA);
+
+            let note_b = b.note_actuelle.unwrap_or(0) as f32;
+            let forme_b = b.forme.unwrap_or(0) as f32;
+            let score_b = (note_b * MatchRules::COEF_CHOIX_NOTE_IA) + (forme_b * MatchRules::COEF_CHOIX_FORME_IA);
+
+           
+            score_b.partial_cmp(&score_a).unwrap_or(std::cmp::Ordering::Equal)
         });
+
 
         joueurs_tries.into_iter().take(11).collect()
     }
@@ -219,6 +235,7 @@ impl MatchManager {
     ) -> Result<Vec<ResultatMatchJournee>, String> {
         let composition_manager = CompositionManager::new();
         let mut resultats = Vec::new();
+        let mut joueurs_exclus = Vec::new();
 
         for m in matchs {
             let club_dom = clubs
@@ -302,6 +319,13 @@ impl MatchManager {
                 )
             };
 
+            for j in &compo_dom.joueurs {
+                joueurs_exclus.push(j.id);
+            }
+            for j in &compo_ext.joueurs {
+                joueurs_exclus.push(j.id);
+            }
+
             let resultat = self.simuler_match_et_sauvegarder(
                 m.id,
                 &mut compo_dom,
@@ -326,6 +350,8 @@ impl MatchManager {
         }
 
         resultats.sort_by_key(|r| if r.est_match_utilisateur { 0 } else { 1 });
+
+        self.appliquer_recuperation_forme_globale(&joueurs_exclus);
 
         Ok(resultats)
     }

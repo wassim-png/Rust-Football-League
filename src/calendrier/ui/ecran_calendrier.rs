@@ -6,7 +6,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
     let rect = ui.max_rect();
     let cx = rect.center().x;
 
-    // Fond + overlay
+   
     egui::Image::new("file://assets/pelouse.jpg")
         .maintain_aspect_ratio(false)
         .max_size(ui.available_size())
@@ -14,7 +14,6 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
     ui.painter()
         .rect_filled(rect, 0.0, Color32::from_rgba_unmultiplied(0, 0, 0, 170));
 
-    // Header peint (ne modifie pas le curseur de layout)
     let header_h = 88.0;
     let header_rect = egui::Rect::from_min_size(rect.min, Vec2::new(rect.width(), header_h));
     ui.painter()
@@ -42,7 +41,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
         Color32::GOLD,
     );
 
-    // Bouton retour positionné dans le header (allocate_ui_at_rect hors ScrollArea = OK)
+    
     ui.allocate_ui_at_rect(
         egui::Rect::from_min_size(
             header_rect.min + Vec2::new(14.0, 28.0),
@@ -86,7 +85,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
     let j = etat.journee_selectionnee;
     let nb_j = etat.nb_journees;
 
-    // --- Navigation : booleans pour éviter le borrow conflict ---
+
     let mut go_prev = false;
     let mut go_next = false;
 
@@ -94,7 +93,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
         let btn_w = 46.0;
         let btn_h = 46.0;
         let center_w = 300.0;
-        // Centrer manuellement : espace gauche = (total - contenu) / 2
+        
         let side = (ui.available_width() - btn_w * 2.0 - center_w).max(0.0) / 2.0;
 
         ui.add_space(side);
@@ -135,7 +134,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
             },
         );
 
-        // Flèche droite
+        
         let next_col = if j < nb_j { Color32::WHITE } else { Color32::from_white_alpha(35) };
         if ui
             .add_sized(
@@ -152,13 +151,13 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
         }
     });
 
-    // Appliquer navigation après la closure
+ 
     if go_prev { etat.journee_selectionnee -= 1; }
     if go_next { etat.journee_selectionnee += 1; }
 
     ui.add_space(12.0);
 
-    // --- Liste des matchs (pas de allocate_ui_at_rect ici) ---
+    // --- Liste des matchs 
     egui::ScrollArea::vertical().show(ui, |ui| {
         // Mesurer la largeur disponible UNE fois, avant les frames
         let card_w = ui.available_width();
@@ -182,7 +181,7 @@ pub fn render(ui: &mut Ui, etat: &mut EtatCalendrier, mon_club_id: i32, ecran_ac
                 ))
                 .inner_margin(inner_margin)
                 .show(ui, |ui| {
-                    // Forcer la largeur interne pour que toutes les frames soient identiques
+                   
                     ui.set_min_width(inner_w);
                     render_ligne_match(ui, m, mon_club_id, inner_w);
                 });
@@ -225,7 +224,7 @@ fn render_ligne_match(ui: &mut Ui, m: &crate::models::Match, mon_club_id: i32, t
             },
         );
 
-        // Colonne score — centré sur largeur fixe
+        
         ui.allocate_ui_with_layout(
             Vec2::new(score_w, 48.0),
             egui::Layout::centered_and_justified(egui::Direction::TopDown),
@@ -243,7 +242,7 @@ fn render_ligne_match(ui: &mut Ui, m: &crate::models::Match, mon_club_id: i32, t
             },
         );
 
-        // Colonne EXT — left_to_right sur largeur fixe
+       
         ui.allocate_ui_with_layout(
             Vec2::new(team_w, 48.0),
             egui::Layout::left_to_right(egui::Align::Center),

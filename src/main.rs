@@ -15,7 +15,7 @@ use database:: Database;
 
 use app::MyApp;
 fn main() -> eframe::Result<()> {
-    // Initialize the database before starting the GUI
+   
    let db = Database::new("db/simulation.db")
    .expect("Erreur fatale : Impossible d'initialiser la base de données");
 

@@ -12,7 +12,7 @@ impl CompositionRules {
     // -------- MALUS --------
     pub const MALUS_HORS_POSTE: f32 = 0.20;
 
-    // -------- FINITION (pondérations) --------
+    // -------- FINITION  --------
     pub const POIDS_GARDIEN: f32 = 0.05;
     pub const POIDS_DEFENSE: f32 = 0.3;
     pub const POIDS_MILIEU: f32 = 0.7;

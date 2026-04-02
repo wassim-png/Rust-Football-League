@@ -6,21 +6,21 @@ pub fn render(ui: &mut Ui, clubs: &[Club], equipe_choisie: &mut Option<Club>, ec
     let rect = ui.max_rect();
     let cx = rect.center().x;
 
-    // Fond pelouse
+    
     egui::Image::new("file://assets/pelouse.jpg")
         .maintain_aspect_ratio(false)
         .max_size(ui.available_size())
         .paint_at(ui, rect);
 
-    // Overlay sombre
+    
     ui.painter().rect_filled(rect, 0.0, Color32::from_rgba_unmultiplied(0, 0, 0, 150));
 
-    // --- Header ---
+    
     let header_h = 88.0;
     let header_rect = egui::Rect::from_min_size(rect.min, Vec2::new(rect.width(), header_h));
     ui.painter().rect_filled(header_rect, 0.0, Color32::from_rgba_unmultiplied(0, 0, 0, 175));
 
-    // Ligne dorée en bas du header
+    
     let line_w = (rect.width() * 0.55).min(550.0);
     ui.painter().line_segment(
         [egui::pos2(cx - line_w / 2.0, header_rect.bottom()), egui::pos2(cx + line_w / 2.0, header_rect.bottom())],
@@ -42,10 +42,10 @@ pub fn render(ui: &mut Ui, clubs: &[Club], equipe_choisie: &mut Option<Club>, ec
         Color32::GOLD,
     );
 
-    // Espace réservé pour le header
+    
     ui.add_space(header_h + 12.0);
 
-    // --- Grille des cartes ---
+    
     egui::ScrollArea::vertical().show(ui, |ui| {
         for groupe in clubs.chunks(3) {
             ui.columns(3, |colonnes| {
@@ -97,7 +97,7 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
             ui.vertical_centered(|ui| {
                 ui.add_space(8.0);
 
-                // Logo
+               
                 let chemin_logo = format!("file://.{}", club.url_logo);
                 ui.add(
                     egui::Image::new(&chemin_logo)
@@ -106,7 +106,7 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
                 );
                 ui.add_space(8.0);
 
-                // Nom
+               
                 ui.label(
                     RichText::new(&club.nom)
                         .font(FontId::proportional(17.0))
@@ -122,7 +122,7 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
                         .color(Color32::GOLD),
                 );
 
-                // Budget
+                
                 ui.label(
                     RichText::new(format!("{} M€", club.budget_eur / 1_000_000))
                         .font(FontId::proportional(13.5))
@@ -131,7 +131,7 @@ fn render_club_card(ui: &mut Ui, club: &Club, equipe_choisie: &mut Option<Club>,
 
                 ui.add_space(10.0);
 
-                // Bouton
+               
                 let (btn_fill, btn_text_col, label) = if is_selected {
                     (Color32::GOLD, Color32::from_rgb(15, 15, 15), "SÉLECTIONNÉ  ✓")
                 } else {

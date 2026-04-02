@@ -124,5 +124,15 @@ impl ClubDAO for SqlClubDAO {
         Ok(())
     }
 
+    fn reset_saison(&self) -> Result<(), String> {
+        self.conn.execute_batch(
+            "BEGIN;
+             UPDATE clubs SET points = 0, buts_marques = 0, buts_encaisses = 0;
+             DELETE FROM resultats_matchs;
+             UPDATE attributs_joueur_saison SET forme = 100;
+             COMMIT;"
+        ).map_err(|e| format!("Erreur lors du reset de la saison : {}", e))?;
+        Ok(())
+    }
 }
 

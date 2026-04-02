@@ -66,6 +66,8 @@ pub struct MyApp {
     pub message_simulation: Option<String>,
 
     pub popup_alerte: Option<String>,
+
+    pub annee: i32
 }
 
 impl MyApp {
@@ -82,13 +84,10 @@ impl MyApp {
 
         match calendrier_facade.init_et_get_matchs() {
             Ok(matchs) => {
-                calendrier.nb_journees = matchs.iter().map(|m| m.journee).max().unwrap_or(34);
+                calendrier.nb_journees = 2;
                 calendrier.tous_matchs = matchs;
                 calendrier.donnees_chargees = true;
-                println!(
-                    "Calendrier préchargé au démarrage ({} matchs).",
-                    calendrier.tous_matchs.len()
-                );
+               
             }
             Err(e) => {
                 println!("Erreur préchargement calendrier : {:?}", e);
@@ -100,7 +99,7 @@ impl MyApp {
             vec![]
         });
 
-        println!("Nombre de clubs chargés : {}", equipes.len());
+      
 
         Self {
             ecran_actuel: Ecran::Accueil,
@@ -137,6 +136,7 @@ impl MyApp {
             message_simulation: None,
 
             popup_alerte: None,
+            annee : 2025
         }
     }
 
@@ -169,11 +169,7 @@ impl MyApp {
 
         self.reset_composition_state();
 
-        println!(
-            "Écran composition chargé : {} joueurs récupérés pour le club {}",
-            self.joueurs_club.len(),
-            club_id
-        );
+       
     }
 
     fn construire_joueurs_par_club(&self, matchs: &[Match]) -> HashMap<i32, Vec<Joueur>> {
@@ -200,7 +196,7 @@ impl MyApp {
         joueurs_par_club
     }
     fn passer_a_la_journee_suivante(&mut self) {
-    if self.journee_actuelle < self.calendrier.nb_journees {
+    if self.journee_actuelle <= self.calendrier.nb_journees {
         self.journee_actuelle += 1;
     }
 
@@ -234,7 +230,7 @@ impl eframe::App for MyApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self.ecran_actuel {
                 Ecran::Accueil => {
-                    accueil::render(ui, &mut self.ecran_actuel);
+                    accueil::render(ui, &mut self.ecran_actuel, self.annee);
                 }
 
                 Ecran::Selection => {
@@ -261,7 +257,7 @@ impl eframe::App for MyApp {
                                 .get_tous_matchs_par_journee(1, self.journee_actuelle)
                                 .ok();
 
-                            println!("Matchs du jour chargés : {:#?}", self.matchs_du_jour);
+                           
 
                             self.match_deja_charge = true;
                         }
@@ -275,6 +271,8 @@ impl eframe::App for MyApp {
                             &self.prochain_match,
                             &self.liste_equipes,
                             self.journee_actuelle,
+                            self.calendrier.nb_journees, 
+                            self.annee
                         );
 
                         if !matches!(ancien_ecran, Ecran::ProchainMatch)
@@ -363,7 +361,7 @@ impl eframe::App for MyApp {
                                     &joueurs_selectionnes,
                                 );
 
-                            println!("Composition créée : {:#?}", composition_match);
+       
 
                             self.composition_match_actuelle = Some(composition_match);
                             self.ecran_actuel = Ecran::MenuPrincipal;
@@ -389,7 +387,7 @@ impl eframe::App for MyApp {
                                 vec![]
                             });
 
-                        self.calendrier.nb_journees = 34;
+                        self.calendrier.nb_journees = 2;
                         self.calendrier.donnees_chargees = true;
                         // Ouvre toujours sur la journée actuelle
                         self.calendrier.journee_selectionnee = self.journee_actuelle;
@@ -467,16 +465,64 @@ impl eframe::App for MyApp {
                         }
 
                  Ecran::ResultatsJournee => {
-    if let Some(resultats) = &self.resultats_journee {
-       
-        let clic = ecran_simulation::render(ui, resultats, self.journee_actuelle, self.calendrier.nb_journees);
-        if clic { self.ecran_actuel = Ecran::MenuPrincipal; }
+                    if let Some(resultats) = &self.resultats_journee {
+                    
+                        let clic = ecran_simulation::render(ui, resultats, self.journee_actuelle, self.calendrier.nb_journees);
+                        if clic { 
+                            if self.journee_actuelle > self.calendrier.nb_journees {
+                                // Mettre à jour la liste des équipes pour avoir les points définitifs de la saison !
+                                if let Ok(updated_clubs) = self.club_facade.get_all_clubs_by_points() {
+                                    self.liste_equipes = updated_clubs;
+                                }
+                                self.ecran_actuel = Ecran::ResultatsFinaux;
+                            } else {
+                                self.ecran_actuel = Ecran::MenuPrincipal; 
+                            }
+                        }
     } else {
-        // SI TU VOIS CE TEXTE, C'EST QUE TA LISTE EST VIDE
+        
         ui.heading("ERREUR : La liste des résultats est vide (None)");
         if ui.button("Retour").clicked() { self.ecran_actuel = Ecran::MenuPrincipal; }
     }
 }
+
+                 Ecran::ResultatsFinaux => {
+                     let recommencer = crate::simulation::ui::ecran_resultats_finaux::render(
+                         ui,
+                         &self.liste_equipes,
+                         &self.equipe_choisie,
+                     );
+
+                     if recommencer {
+                         
+                         if let Err(e) = self.club_facade.reset_saison() {
+                             println!("Erreur lors du reset DB : {}", e);
+                         }
+
+                        
+                         if let Ok(clubs_reset) = self.club_facade.get_all_clubs_by_points() {
+                             self.liste_equipes = clubs_reset;
+                         }
+
+                         self.equipe_choisie = None;
+                         self.journee_actuelle = 1;
+                        
+                         self.calendrier = Default::default();
+                         self.mercato = Default::default();
+                         self.resultats_journee = None;
+                         self.matchs_du_jour = None;
+                         self.composition_match_actuelle = None;
+                         self.prochain_match = None;
+                         self.match_deja_charge = false;
+                         self.info_club_actuel = None;
+                         self.popup_alerte = None;
+                         self.reset_composition_state();
+                         self.reset_simulation_state();
+                         self.ecran_actuel = Ecran::Accueil;
+                         self.calendrier.nb_journees = 2;
+                         self.annee +=1;
+                     }
+                 }
 
                 Ecran::Mercato => {
                     if !self.mercato.donnees_chargees {
@@ -523,7 +569,7 @@ impl eframe::App for MyApp {
             }
         });
 
-        // Popup d'alerte générique (ex: compo manquante)
+        
         if let Some(msg) = self.popup_alerte.clone() {
             let mut fermer = false;
             egui::Window::new("⚠  Action impossible")

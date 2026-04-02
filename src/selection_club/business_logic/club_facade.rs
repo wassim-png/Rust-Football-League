@@ -21,4 +21,8 @@ impl ClubFacade {
     pub fn get_all_clubs_by_points(&self) -> rusqlite::Result<Vec<Club>> {
         self.manager.obtenir_tous_les_clubs_par_points()
     }
+
+    pub fn reset_saison(&self) -> Result<(), String> {
+        self.manager.reset_saison()
+    }
 }

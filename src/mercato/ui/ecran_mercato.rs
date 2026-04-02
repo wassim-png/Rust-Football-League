@@ -32,6 +32,75 @@ fn etoiles(rep: i32) -> String {
     format!("{}{}", "★".repeat(n.min(5)), "☆".repeat(5 - n.min(5)))
 }
 
+fn drapeau_pays(pays: &str) -> String {
+    let fichier = match pays {
+        "France" => "france",
+        "Bresil" => "bresil",
+        "Portugal" => "portugal",
+        "Maroc" => "maroc",
+        "Espagne" => "espagne",
+        "Angleterre" => "angleterre",
+        "Allemagne" => "allemagne",
+        "Argentine" => "argentine",
+        "Senegal" => "senegal",
+        "Pays-Bas" => "pays-bas",
+        "Belgique" => "belgique",
+        "Cote d'Ivoire" => "cote_divoire",
+        "Algerie" => "algerie",
+        "Cameroun" => "cameroun",
+        "Canada" => "canada",
+        "Suisse" => "suisse",
+        "Danemark" => "danemark",
+        "Croatie" => "croatie",
+        "Colombie" => "colombie",
+        "Norvege" => "norvege",
+        "Pologne" => "pologne",
+        "Suede" => "suede",
+        "Tunisie" => "tunisie",
+        "Egypte" => "egypte",
+        "Ghana" => "ghana",
+        "Nigeria" => "nigeria",
+        "Mali" => "mali",
+        "Guinee" => "guinee",
+        "Russie" => "russie",
+        "Japon" => "japon",
+        "Coree du Sud" => "coree_du_sud",
+        "Etats-Unis" => "etats-unis",
+        "Uruguay" => "uruguay",
+        "Equateur" => "equateur",
+        "Chili" => "chili",
+        "Slovaquie" => "slovaquie",
+        "Slovenie" => "slovenie",
+        "Autriche" => "autriche",
+        "Serbie" => "serbie",
+        "Turquie" => "turquie",
+        "Georgie" => "georgie",
+        "Kosovo" => "kosovo",
+        "Roumanie" => "roumanie",
+        "Hongrie" => "hongrie",
+        "Finlande" => "finlande",
+        "Angola" => "angola",
+        "RD Congo" => "rd_congo",
+        "Centrafrique" => "centrafrique",
+        "Burundi" => "burundi",
+        "Gabon" => "gabon",
+        "Benin" => "benin",
+        "Gambie" => "gambie",
+        "Madagascar" => "madagascar",
+        "Zimbabwe" => "zimbabwe",
+        "Haiti" => "haiti",
+        "Panama" => "panama",
+        "Venezuela" => "venezuela",
+        "Bosnie" => "bosnie",
+        "Australie" => "australie",
+        "Guinee-Bissau" => "guinee-bissau",
+        "Ouzbekistan" => "ouzbekistan",
+        "Pays de Galles" => "pays_de_galles",
+        _ => "france",
+    };
+    format!("file://assets/flags/{}.png", fichier)
+}
+
 fn fmt_eur(v: i64) -> String {
     if v >= 1_000_000 {
         format!("{:.1}M€", v as f64 / 1_000_000.0)
@@ -47,13 +116,13 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
     ui.painter().rect_filled(rect, 0.0, FOND_SOMBRE);
     ui.add_space(6.0);
 
-    // --- Bouton retour en haut ---
+    
     if ui.button(RichText::new("⬅  Retour").color(Color32::LIGHT_GRAY)).clicked() {
         *ecran_actuel = Ecran::MenuPrincipal;
     }
     ui.add_space(4.0);
 
-    // --- Header ---
+    
     Frame::none()
         .fill(Color32::from_rgb(10, 12, 22))
         .stroke(Stroke::new(1.5, OR))
@@ -107,9 +176,9 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
     );
     ui.add_space(8.0);
 
-    // --- Message feedback ---
+
     if let Some(msg) = &etat.message.clone() {
-        let color = if msg.starts_with("✓") { VERT } else { ROUGE_VIF };
+        let color = if msg.starts_with(" v") { VERT } else { ROUGE_VIF };
         Frame::none()
             .fill(Color32::from_rgba_unmultiplied(0, 0, 0, 120))
             .rounding(6.0)
@@ -120,7 +189,7 @@ pub fn render(ctx: &Context, ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMerc
         ui.add_space(6.0);
     }
 
-    // --- Contenu ---
+  
     match etat.onglet {
         OngletMercato::JoueursDisponibles => render_joueurs(ui, etat),
         OngletMercato::OffresRecues => render_offres_recues(ui, equipe, etat, facade),
@@ -167,12 +236,9 @@ fn badge_poste(ui: &mut Ui, poste: &str) {
         });
 }
 
-// ──────────────────────────────────────────────────────────
-// Onglet : liste unifiée avec barre de recherche
-// ──────────────────────────────────────────────────────────
 
 fn render_joueurs(ui: &mut Ui, etat: &mut EtatMercato) {
-    // Barre de recherche + filtre poste sur la même ligne
+    
     ui.horizontal(|ui| {
         ui.label(RichText::new("🔍").font(FontId::proportional(15.0)));
         ui.add(
@@ -180,13 +246,13 @@ fn render_joueurs(ui: &mut Ui, etat: &mut EtatMercato) {
                 .hint_text("Rechercher un joueur...")
                 .desired_width(200.0),
         );
-        if !etat.recherche.is_empty() && ui.small_button("✕").clicked() {
+        if !etat.recherche.is_empty() && ui.small_button("x").clicked() {
             etat.recherche.clear();
         }
 
         ui.add_space(16.0);
 
-        // Filtres de poste
+        
         for (label, poste) in [
             ("Tous", None),
             ("GK", Some("GARDIEN")),
@@ -288,7 +354,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                             }
                         }
                     });
-                    // Infos : âge, poste, étoiles
+                    
                     ui.horizontal(|ui| {
                         ui.label(
                             RichText::new(format!("{} ans", j.age))
@@ -303,8 +369,16 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                                 .color(OR)
                                 .font(FontId::proportional(12.0)),
                         );
+                        if let Some(nat) = &j.nationalite {
+                            ui.label(RichText::new("·").color(Color32::from_gray(60)));
+                            ui.add(
+                                egui::Image::new(drapeau_pays(nat))
+                                    .fit_to_exact_size(egui::vec2(18.0, 13.0))
+                                    .rounding(2.0),
+                            );
+                        }
                     });
-                    // Valeur / Salaire
+                   
                     if est_libre {
                         ui.label(
                             RichText::new(format!(
@@ -328,7 +402,7 @@ fn carte_joueur(ui: &mut Ui, idx: usize, j: &Joueur, etat: &mut EtatMercato) {
                     }
                 });
 
-                // Bouton d'action
+              
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if est_libre {
                         let btn = egui::Button::new(
@@ -463,14 +537,14 @@ fn render_offres_recues(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, 
                     etat.mes_joueurs.retain(|j| j.id != offre.joueur_id);
                     etat.offres_recues.retain(|o| o.joueur_id != offre.joueur_id);
                     etat.message = Some(format!(
-                        "✓ {} vendu à {} pour {} — budget : {}",
+                        "{} vendu à {} pour {} — budget : {}",
                         offre.joueur_nom, offre.club_acheteur,
                         fmt_eur(offre.montant_eur), fmt_eur(nouveau_budget)
                     ));
                 }
                 Err(e) => {
                     etat.offres_recues.insert(idx, offre);
-                    etat.message = Some(format!("✗ {}", e));
+                    etat.message = Some(format!("{}", e));
                 }
             }
         } else {
@@ -532,14 +606,23 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, fa
                                 );
                                 badge_poste(ui, &j.poste);
                             });
-                            ui.label(
-                                RichText::new(format!(
-                                    "{} ans  ·  {}  ·  Valeur : {}",
-                                    j.age, etoiles(j.reputation), fmt_eur(j.valeur_marche_eur)
-                                ))
-                                .color(Color32::GRAY)
-                                .font(FontId::proportional(12.0)),
-                            );
+                            ui.horizontal(|ui| {
+                                ui.label(
+                                    RichText::new(format!(
+                                        "{} ans  ·  {}  ·  Valeur : {}",
+                                        j.age, etoiles(j.reputation), fmt_eur(j.valeur_marche_eur)
+                                    ))
+                                    .color(Color32::GRAY)
+                                    .font(FontId::proportional(12.0)),
+                                );
+                                if let Some(nat) = &j.nationalite {
+                                    ui.add(
+                                        egui::Image::new(drapeau_pays(nat))
+                                            .fit_to_exact_size(egui::vec2(18.0, 13.0))
+                                            .rounding(2.0),
+                                    );
+                                }
+                            });
                         });
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             let peut_vendre = nb_joueurs > 15;
@@ -578,12 +661,12 @@ fn render_mes_joueurs(ui: &mut Ui, equipe: &mut Club, etat: &mut EtatMercato, fa
                 joueur_libre.club_nom = None;
                 etat.tous_joueurs.push(joueur_libre);
                 etat.message = Some(format!(
-                    "✓ {} libéré de son contrat pour {} — budget : {}",
+                    " {} libéré de son contrat pour {} — budget : {}",
                     joueur.nom, fmt_eur(joueur.valeur_marche_eur), fmt_eur(nouveau_budget)
                 ));
             }
             Err(e) => {
-                etat.message = Some(format!("✗ {}", e));
+                etat.message = Some(format!(" {}", e));
             }
         }
     }
@@ -614,7 +697,7 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
             ui.add_space(6.0);
 
             if est_libre {
-                // ── Joueur libre : prix fixe = valeur marché ──
+            
                 let cout = joueur.valeur_marche_eur;
                 let peut_payer = equipe.budget_eur >= cout;
 
@@ -643,7 +726,7 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                 }
                 ui.add_space(14.0);
                 ui.horizontal(|ui| {
-                    let ok = egui::Button::new(RichText::new("✓  Confirmer").color(Color32::WHITE))
+                    let ok = egui::Button::new(RichText::new("  Confirmer").color(Color32::WHITE))
                         .fill(if peut_payer { VERT } else { Color32::from_rgb(60, 60, 80) })
                         .stroke(Stroke::NONE)
                         .rounding(6.0);
@@ -658,12 +741,12 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                                 etat.mes_joueurs.push(joueur_recrute);
                                 trier_mes_joueurs(&mut etat.mes_joueurs);
                                 etat.message = Some(format!(
-                                    "✓ {} recruté pour {} — budget restant : {}",
+                                    " {} recruté pour {} — budget restant : {}",
                                     joueur.nom, fmt_eur(cout), fmt_eur(nouveau_budget)
                                 ));
                             }
                             Err(e) => {
-                                etat.message = Some(format!("✗ {}", e));
+                                etat.message = Some(format!(" {}", e));
                             }
                         }
                         etat.joueur_selectionne = None;
@@ -730,13 +813,13 @@ fn render_modal(ctx: &Context, equipe: &mut Club, etat: &mut EtatMercato, facade
                                 etat.mes_joueurs.push(joueur_recrute);
                                 trier_mes_joueurs(&mut etat.mes_joueurs);
                                 etat.message = Some(format!(
-                                    "✓ {} rejoint votre club pour {} — budget restant : {}",
+                                    " {} rejoint votre club pour {} — budget restant : {}",
                                     joueur.nom, fmt_eur(montant), fmt_eur(nouveau_budget)
                                 ));
                             }
                             Err(ErreurMercato::OffreRefusee { club, montant: montant_refuse }) => {
                                 etat.message = Some(format!(
-                                    "✗ {} a refusé votre offre de {}.",
+                                    " {} a refusé votre offre de {}.",
                                     club, fmt_eur(montant_refuse)
                                 ));
                             }
